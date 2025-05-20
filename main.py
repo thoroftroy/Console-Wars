@@ -11,7 +11,7 @@ import json
 # Player Varibles
 class playerVariables:
     name = "Comment"
-    baseHealth = 25
+    baseHealth = 1 #25
     baseDamage = 3.5
     baseDefense = 0
     actionList = ["Attack","Retreat","Level","Inventory","Exit"]
@@ -77,6 +77,7 @@ currentFloor = 0
 
 currentSaveName = ''
 savedGames = []
+globalSavePath = ''
 saveDirectory = "saves"
 os.makedirs(saveDirectory, exist_ok=True)
 player = playerVariables()
@@ -111,8 +112,9 @@ def clearScreen():
 
 # Functions
 def saveToFile():
-    global currentMonsterFight, currentMonsterHealth
+    global currentMonsterFight, currentMonsterHealth, globalSavePath
     save_path = os.path.join(saveDirectory, currentSaveName)
+    globalSavePath = save_path
     
     data = {
         "player": player.__dict__,
@@ -153,7 +155,7 @@ def loadFromFile(filename):
     global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
-    global currentMonsterFight, currentMonsterhealth
+    global currentMonsterFight, currentMonsterHealth
 
     save_path = os.path.join(saveDirectory, filename)
     try:
@@ -466,8 +468,14 @@ def combat():
                 damage = 1
             currentHealth = round(currentHealth - damage,2)
             print(Fore.RED +currentMonsterFight,"deals",damage,"damage!")
+    # What happens when you die
     if currentHealth <= 0:
         print("You died!")
+        path = globalSavePath
+        print(Fore.CYAN,path," is the current path")
+        if os.path.exists(str(path)):
+            print(Fore.RED,str(path)," is being deleted")
+            os.remove(path)
         time.sleep(1)
         print(Style.RESET_ALL)
         sys.exit()
