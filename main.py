@@ -508,7 +508,7 @@ def combat():
     saveToFile() # Saves the file every turn
     # Player's actions
     choice = input().lower()
-    if choice == "attack" or choice == "atk":
+    if choice == "attack" or choice == "atk" or choice == "":
         print(Fore.YELLOW +"You are attacking!")
         damage = round((currentDamage + random.uniform(0,5)) - currentMonsterDefense,2) 
         if damage <= 1:
