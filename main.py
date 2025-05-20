@@ -432,7 +432,7 @@ def levelup():
                 currentHealth = maxHealth
             healthBoostMod = round(healthBoostMod * healthboostCostFactor,1)
             player.xp -= healthboostCost
-            currentHealth += round(maxHealth / 2,1)
+            currentHealth += round(maxHealth / 4,1)
             healthboostCost = round(healthboostCost * healthboostCostFactor,1)
             apply_inventory_boosts()
         else:
@@ -544,8 +544,8 @@ def combat():
             endlessKills += 1
             print(Fore.MAGENTA + f"Demon Lord defeated! Total defeated: {endlessKills}")
             xpGain = round(currentMonsterHealth / 12, 1)
-            if xpGain <= 1000000:
-                xpGain = 1000000
+            if xpGain <= 100000000:
+                xpGain = 100000000
             player.xp += xpGain
             resetMonster()
             apply_inventory_boosts()
