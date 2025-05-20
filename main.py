@@ -586,17 +586,18 @@ def combat():
             resetMonster()
         else:
             print(Fore.YELLOW +currentMonsterFight,"is attacking you!")
-        if endlessMode:
-            base_min = demonLordBaseStats["minDamage"]
-            base_max = demonLordBaseStats["maxDamage"]
-            scale = 4 ** endlessKills
-            damage = round(random.uniform(base_min, base_max) * scale - currentDefense, 2)
-        else:
-            damage = round(random.uniform(monsterVariables.minDamage[monsterId], monsterVariables.maxDamage[monsterId]) - currentDefense, 2)
-            if damage <= 1:
-                damage = 1
-            currentHealth = round(currentHealth - damage,2)
-            print(Fore.RED+currentMonsterFight,"deals",damage,"damage!")
+            if endlessMode:
+                base_min = demonLordBaseStats["minDamage"]
+                base_max = demonLordBaseStats["maxDamage"]
+                scale = 4 ** endlessKills
+                damage = round(random.uniform(base_min, base_max) * scale - currentDefense, 2)
+                currentHealth -= damage
+            else:
+                damage = round(random.uniform(monsterVariables.minDamage[monsterId], monsterVariables.maxDamage[monsterId]) - currentDefense, 2)
+                if damage <= 1:
+                    damage = 1
+                currentHealth = round(currentHealth - damage,2)
+                print(Fore.RED+currentMonsterFight,"deals",damage,"damage!")
     # What happens when you die
     if currentHealth <= 0:
         print("You died!")
