@@ -3,130 +3,298 @@ import time
 from colorama import Fore, Back, Style
 import os
 import sys
+import platform
+import math
 
 # Variables
 # Player Varibles
-class playerValriables:
+class playerVariables:
     name = "Comment"
     baseHealth = 25
     baseDamage = 3.5
     baseDefense = 0
-    actionList = ["Attack","Dodge","Retreat","Level"]
-    xp = 10
+    actionList = ["Attack","Retreat","Level","Inventory","Exit"]
+    buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop Chance"]
+    xp = 3
+    levelHealthBonus = 0
+    levelDamageBonus = 0
+    levelDefenseBonus = 0
+    inventory = []
 class monsterVariables:
-    names = ["Slime","Skeleton","Zombie",]
-    maxHealth = [10,20,50]
-    maxDamage = [3,  7,12]
-    minDamage = [1,  3, 7]
-    Defense =   [0.5,  1.2, 3.0]
+    names =     ["Slime","Goblin","Skeleton","Zombie","Vampire","Orc","Giant","Ent","Warg","Banshee","Ghoul","Bandit","Troll","Shade","Basilisk","Minotaur","Witch","Drake","Warlock","Knight","Behemoth","Chimera","Specter","Ogre","Harpy","Revenant","Lich","Manticore","Wyvern","Wyrm","Juggernaut","Hydra","Phantom","Colossus","Ifrit","Kraken","Dreadnought","Leviathan","Titan","Demon Lord"]
+    maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
+    maxDamage = [4,        7,      10,        15,      23,       34,    51,     77,  115,   173,      259,    389,      584,    876,   1314,      1971,      2956,   4434,    6651,     9976,   14964,     22445,    33668,     50502, 75754, 113630,    170445,255668,     383502,  575253,  862880,    1294320,1941479,  2912219,   4368329, 6552493,9828740,      14743110,   22114665,33171997,]
+    minDamage = [2,        2,       3,         5,       8,       11,    17,     26,   38,    58,       86,    130,      195,    292,    438,       657,       985,   1478,    2217,     3325,    4988,      7482,    11223,     16834, 25251,  37877,     56815, 85223,     127834,  191751,  287627,     431440, 647160,   970740,   1456110, 2184164,3276247,       4914370,    7371555,11057332,]
+    Defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
+
+# Drop Table
+drop_table = [
+    {"name": "Iron Sword",         "desc": "A basic blade. Reliable and sharp.",                         "boosts": {"damage": 5}},
+    {"name": "Leather Armor",      "desc": "Worn leather armor that offers minor protection.",           "boosts": {"defense": 2}},
+    {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}},
+    {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3}},
+    {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}},
+    {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7}},
+    {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}},
+    {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}},
+    {"name": "War Axe",            "desc": "Brutal and unforgiving.",                                    "boosts": {"damage": 9}},
+    {"name": "Plated Boots",       "desc": "These boots make you stand strong.",                         "boosts": {"defense": 3}},
+    {"name": "Gold Locket",        "desc": "Gives you a sense of strength from within.",                 "boosts": {"health": 15}},
+    {"name": "Enchanted Blade",    "desc": "Magical edge hums with power.",                              "boosts": {"damage": 10}},
+    {"name": "Guardian Cloak",     "desc": "It deflects incoming strikes slightly.",                     "boosts": {"defense": 6}},
+    {"name": "Heartstone",         "desc": "A gem filled with life essence.",                            "boosts": {"health": 25}},
+    {"name": "Spiked Mace",        "desc": "Devastating on impact.",                                     "boosts": {"damage": 11}},
+    {"name": "Reinforced Helmet",  "desc": "Takes the edge off headshots.",                              "boosts": {"defense": 4}},
+    {"name": "Elixir Band",        "desc": "Increases vitality just by wearing it.",                     "boosts": {"health": 30}},
+    {"name": "Battle Spear",       "desc": "Longer reach and deadly force.",                             "boosts": {"damage": 12}},
+    {"name": "Dragonhide Vest",    "desc": "Tough as ancient scales.",                                   "boosts": {"defense": 7}},
+    {"name": "Phoenix Feather",    "desc": "Emits a life-giving aura.",                                  "boosts": {"health": 35}},
+    {"name": "Silver Rapier",      "desc": "Elegant and efficient.",                                     "boosts": {"damage": 8}},
+    {"name": "Knight’s Gauntlets", "desc": "Enhances arm protection and grip.",                          "boosts": {"defense": 5}},
+    {"name": "Talisman of Grace",  "desc": "Blessed with ancient healing runes.",                        "boosts": {"health": 40}},
+    {"name": "Greatsword",         "desc": "Two hands. One purpose.",                                    "boosts": {"damage": 14}},
+    {"name": "Stoneplate Armor",   "desc": "Like wearing a wall.",                                       "boosts": {"defense": 8}},
+    {"name": "Blood Orb",          "desc": "Pulses with crimson power.",                                 "boosts": {"health": 50}},
+    {"name": "Venom Blade",        "desc": "Lightweight, but extremely deadly.",                         "boosts": {"damage": 13}},
+    {"name": "Shield of Valor",    "desc": "A legacy of ancient kings.",                                 "boosts": {"defense": 6}},
+    {"name": "Moonstone Charm",    "desc": "Gives subtle resilience under pressure.",                    "boosts": {"health": 22}},
+    {"name": "Doomhammer",         "desc": "Slow but apocalyptic.",                                      "boosts": {"damage": 16}}
+]
 
 # Current Variables
-currentHealth = playerValriables.baseHealth
-currentDamage = playerValriables.baseDamage
-currentDefense = playerValriables.baseDefense
+currentHealth = playerVariables.baseHealth
+currentDamage = playerVariables.baseDamage
+currentDefense = playerVariables.baseDefense
 
-monsterId = random.randint(0,len(monsterVariables.names)-1)
-currentMonsterFight = monsterVariables.names[monsterId-1]
-currentMonsterHealth = monsterVariables.maxHealth[monsterId-1]
-currentMonsterDefense = monsterVariables.Defense[monsterId-1]
+monsterId = 0
+currentMonsterFight = monsterVariables.names[monsterId]
+currentMonsterHealth = monsterVariables.maxHealth[monsterId]
+currentMonsterDefense = monsterVariables.Defense[monsterId]
 
-healthboostCost = 3
+maxHealth = playerVariables.baseHealth
+currentFloor = 0
+
+healthboostCost = 2
 damageBoostCost = 3
-DefenseBoostCost = 3
+DefenseBoostCost = 4
 dodgeBoostCost = 5
 escapeBoostCost = 2
+dropChanceBoostCost = 10
 
-healthboostCostFactor = 1.3
-damageBoostCostFactor = 1.4
-DefenseBoostCostFactor = 1.9
-dodgeBoostCostFactor = 1.9
-escapeboostCostFactor = 1.4
+healthboostCostFactor = 1.1
+damageBoostCostFactor = 1.2
+DefenseBoostCostFactor = 1.3
+dodgeBoostCostFactor = 1.25
+escapeboostCostFactor = 1.1
+dropChanceBoostCostFactor = 1.4
 
 healthBoostMod = 5
 damageBoostMod = 3
 defenseBoostMod = 1
-dodgeBoostMod = 50
-escapeBoostMod = 25
+dodgeBoostMod = 10
+escapeBoostMod = 20
+dropChanceBoostMod = 0.1
+
+# Define the current os and clear screen properly
+def clearScreen():
+    if platform.system() == 'Linux':
+        os.system('clear')
+    elif platform.system() == 'Windows':
+        os.system('cls')
 
 # Functions
+def try_drop_item():
+    global drop_table,dropChanceBoostMod
+    if drop_table and random.random() < dropChanceBoostMod:  # 10% drop chance
+        item = random.choice(drop_table)
+        playerVariables.inventory.append(item)
+        drop_table.remove(item)
+        print(Fore.BLACK+"|")
+        print(Fore.MAGENTA + f"You found: {item['name']}!")
+        print(Fore.YELLOW + item['desc'])
+        print(Fore.BLACK+"|")
+        apply_inventory_boosts()
+        time.sleep(0.5)
+
+def apply_inventory_boosts():
+    global currentHealth, maxHealth, currentDamage, currentDefense
+
+    # Start with base + level-up
+    maxHealth = playerVariables.baseHealth + playerVariables.levelHealthBonus
+    currentDamage = playerVariables.baseDamage + playerVariables.levelDamageBonus
+    currentDefense = playerVariables.baseDefense + playerVariables.levelDefenseBonus
+
+    # Apply item boosts
+    for item in playerVariables.inventory:
+        boosts = item.get("boosts", {})
+        maxHealth += boosts.get("health", 0)
+        currentDamage += boosts.get("damage", 0)
+        currentDefense += boosts.get("defense", 0)
+
+    # Cap health
+    if currentHealth > maxHealth:
+        currentHealth = maxHealth
+
+def get_dynamic_weights(currentFloor, total_monsters):
+    kills = int(currentFloor * 100)
+    tier_step = 10  # New tier every 10 kills
+    tier_size = 3   # Always 3 monsters at once
+
+    # Calculate the tier index
+    tier_start = min((kills // tier_step), total_monsters - tier_size)
+    tier_end = tier_start + tier_size
+
+    # Assign fixed rarity-based weights to the active trio
+    base_weights = [1.0, 0.75, 0.5]  # common, uncommon, rare
+
+    weights = []
+    for i in range(total_monsters):
+        if tier_start <= i < tier_end:
+            weights.append(base_weights[i - tier_start])
+        else:
+            weights.append(0)
+    return weights
+
+def showInventory():
+    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
+    global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    clearScreen()
+    print(Style.RESET_ALL)
+    print(Fore.BLACK+"|")
+    print(Fore.BLUE+"Inventory:")
+    print(Fore.BLACK+"|")
+    if len(playerVariables.inventory) == 0:
+        print(Fore.RED+"Your inventory is empty!")
+        print(Fore.BLUE+"When you kill monsters you have a rare chance to collect an artifact")
+        print(Fore.BLUE+"These artifacts grant perminent passive boosts")
+    else:
+        for item in playerVariables.inventory:
+            print(Fore.CYAN,item["name"])
+            print(Fore.YELLOW,item["desc"])
+            print(Fore.MAGENTA,item["boosts"])
+    print(Fore.BLACK+"|")
+    print(Fore.BLACK+"|")
+    print(Fore.BLUE+"Hit 'enter' to leave this screen")
+    choice = input().lower
+    combat()
+
 def resetMonster():
-    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense
-    monsterId = random.randint(0,len(monsterVariables.names))
-    currentMonsterFight = monsterVariables.names[monsterId-1]
-    currentMonsterHealth = monsterVariables.maxHealth[monsterId-1]
-    currentMonsterDefense = monsterVariables.Defense[monsterId-1]
+    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
+    global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    #monsterId = random.randint(0,len(monsterVariables.names)-1)
+    weights = get_dynamic_weights(currentFloor, len(monsterVariables.names))
+    monsterId = random.choices(range(len(monsterVariables.names)), weights=weights, k=1)[0]
+    currentMonsterFight = monsterVariables.names[monsterId]
+    currentMonsterHealth = monsterVariables.maxHealth[monsterId]
+    currentMonsterDefense = monsterVariables.Defense[monsterId]
 
 def showCombatStats():
-    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,dodgeBoostMod,escapeBoostMod
-    os.system('cls')
+    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
+    global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    clearScreen()
     print(Style.RESET_ALL)
-    monsterHealthPercentage = round((currentMonsterHealth / monsterVariables.maxHealth[monsterId-1]) * 100,2)
-    print(Fore.WHITE +"You are currently fighting a",currentMonsterFight)
+    monsterHealthPercentage = round((currentMonsterHealth / monsterVariables.maxHealth[monsterId]) * 100,2)
+    print(Fore.WHITE +"You are currently fighting a",currentMonsterFight," ( Difficulty:",round(currentFloor*100),")")
     print(Fore.BLACK +"|")
     print(Fore.RED +currentMonsterFight,"Health:")
     print(Fore.BLACK +"|",end='')
-    for i in range(round(monsterHealthPercentage/5)): print(Fore.RED +'=',end='')
+    for i in range(round(monsterHealthPercentage/2)): print(Fore.RED +'=',end='')
     print("",monsterHealthPercentage,"%")
     print(Fore.BLACK +"|")
     print(Fore.BLACK +"|")
-    print(Fore.GREEN +"Player Stats:  \n","Health:",currentHealth," |  Damage:",currentDamage, " |  Defense:",currentDefense," |  Xp:",playerValriables.xp)
-    print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%")
-    print(Fore.BLUE +"Actions:",playerValriables.actionList)
+    currentHealthPercentage = round((currentHealth / maxHealth) * 100,2)
+    print(Fore.GREEN+"Player Stats:")
+    print(Fore.GREEN+" Health: ",end='')
+    for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
+    print("",currentHealthPercentage,"%")
+    print(Fore.GREEN +" Damage:",round(currentDamage), " |  Defense:",round(currentDefense)," |  Xp:",round(playerVariables.xp))
+    print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%"," |  Item Drop Chance:",round(dropChanceBoostMod*100),"%")
+    print(Fore.BLACK +"|")
+    print(Fore.BLUE +"Actions:",playerVariables.actionList)
     print(Style.RESET_ALL)
     
 def levelup():
-    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost,damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod,dodgeBoostMod,escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor, escapeBoostCost, escapeboostCostFactor
-    os.system('cls')
+    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
+    global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
-    print(Fore.GREEN+"Ugrade Costs (Current Xp:",playerValriables.xp,")")
-    print(Fore.GREEN+"Health Boost:",healthboostCost," |  Damage Boost:",damageBoostCost," |  Defense Boost:",DefenseBoostCost," |  Dodge Boost:",dodgeBoostCost," |  Retreat Boost:",escapeBoostCost)
+    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(playerVariables.xp),")")
+    print(Fore.GREEN+" Health Boost:",healthboostCost," |  Damage Boost:",damageBoostCost," |  Defense Boost:",DefenseBoostCost,"\n Dodge Boost:",dodgeBoostCost,"  | Retreat Boost:",escapeBoostCost, " |  Item Drop Boost:",dropChanceBoostCost)
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
-    print(Fore.BLUE+"Type 'health', 'damage', 'defense', 'dodge', or 'retreat' to purchase! (Type 'exit' to go back to combat)")
+    print(Fore.BLUE+"Things you can buy:",playerVariables.buyList)
+    print(Fore.BLUE+"(Type 'exit' to go back to combat)")
     choice = input().lower()
-    if choice == "health":
-        if playerValriables.xp >= healthboostCost:
-            currentHealth += healthBoostMod
+    if choice == "health" or choice == "hlth":
+        if playerVariables.xp >= healthboostCost:
+            playerVariables.levelHealthBonus += healthBoostMod
+            currentHealth = round(healthBoostMod + currentHealth,2)
+            if currentHealth >= maxHealth:
+                currentHealth = maxHealth
             healthBoostMod = round(healthBoostMod * healthboostCostFactor,1)
-            playerValriables.xp -= healthboostCost
+            playerVariables.xp -= healthboostCost
             healthboostCost = round(healthboostCost * healthboostCostFactor)
+            apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "damage":
-        if playerValriables.xp >= damageBoostCost:
-            currentDamage += damageBoostMod
+    elif choice == "damage" or choice == "dmg":
+        if playerVariables.xp >= damageBoostCost:
+            playerVariables.levelDamageBonus += damageBoostMod
             damageBoostMod = round(damageBoostMod * damageBoostCostFactor,1)
-            playerValriables.xp -= damageBoostCost
+            playerVariables.xp -= damageBoostCost
             damageBoostCost = round(damageBoostCost * damageBoostCostFactor)
+            apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "defense":
-        if playerValriables.xp >= DefenseBoostCost:
-            currentDefense += defenseBoostMod
+    elif choice == "defense" or choice == "def":
+        if playerVariables.xp >= DefenseBoostCost:
+            playerVariables.levelDefenseBonus += defenseBoostMod
             defenseBoostMod = round(defenseBoostMod * DefenseBoostCostFactor,1)
-            playerValriables.xp -= DefenseBoostCost
+            playerVariables.xp -= DefenseBoostCost
             DefenseBoostCost = round(DefenseBoostCost * DefenseBoostCostFactor)
+            apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "dodge":
-        if playerValriables.xp >= dodgeBoostCost:
+    elif choice == "dodge" or choice == "dod":
+        if playerVariables.xp >= dodgeBoostCost:
             if escapeBoostMod >= 90:
                 print(Fore.RED+"You can't have a higher dodge chance!")
             else:
                 dodgeBoostMod += 2
-                playerValriables.xp -= dodgeBoostCost
+                dodgeBoostMod += 5
+                if dodgeBoostMod >= 90:
+                    dodgeBoostMod = 90
+                playerVariables.xp -= dodgeBoostCost
                 dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "retreat":
-        if playerValriables.xp >= escapeBoostCost:
+    elif choice == "retreat" or choice == "ret":
+        if playerVariables.xp >= escapeBoostCost:
             if escapeBoostMod >= 90:
                 print(Fore.RED+"You can't have a higher retreat chance!")
             else:
                 escapeBoostMod += 5
-                playerValriables.xp -= escapeBoostCost
+                if escapeBoostMod >= 90:
+                    escapeBoostMod = 90
+                playerVariables.xp -= escapeBoostCost
                 escapeBoostCost = round(escapeBoostCost * escapeboostCostFactor)
+        else:
+            print(Fore.RED+"You don't have enough xp for this!")
+    elif choice == "drop" or choice == "drp" or choice == "drop chance":
+        if playerVariables.xp >= dropChanceBoostCost:
+            if dropChanceBoostMod >= .25:
+                print(Fore.RED+"You can't have a higher drop chance!")
+            else:
+                dropChanceBoostMod = round(0.02 + dropChanceBoostMod,2)
+                if dropChanceBoostMod >= .25:
+                    dropChanceBoostMod = .25
+                playerVariables.xp -= dropChanceBoostCost
+                dropChanceBoostCost = round(dropChanceBoostCost * dropChanceBoostCostFactor)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == 'exit':
@@ -138,43 +306,39 @@ def levelup():
     levelup()
 
 def combat():
-    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense, healthBoostMod,dodgeBoostMod,escapeBoostMod
+    global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
+    global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
     dodged = False
     escaped = False
-    
     showCombatStats()
     # Player's actions
     choice = input().lower()
-    if choice == "attack":
+    if choice == "attack" or choice == "atk":
         print(Fore.YELLOW +"You are attacking!")
-        damage = round((currentDamage + random.uniform(0,(currentDamage*1.5))) - currentMonsterDefense,2) 
+        damage = round((currentDamage + random.uniform(0,5)) - currentMonsterDefense,2) 
         if damage <= 1:
             damage = 1
         currentMonsterHealth -= damage
         print(Fore.RED +"You dealt",damage,"to",currentMonsterFight)
         time.sleep(0.3)
-    elif choice == "dodge":
-        print(Fore.YELLOW +"You are attempting to dodge!")
-        dodgeChange = random.randrange(0,100)
-        if dodgeChange >= dodgeBoostMod:
-            print(Fore.YELLOW+"You dodged!")
-            dodged = True
-        else:
-            print(Fore.YELLOW+"You failed to dodge!")
-            dodged = False
-        time.sleep(0.3)
-    elif choice == "retreat":
+    elif choice == "retreat" or choice == "ret":
         print(Fore.YELLOW +"You are attempting to retreat!")
         retreatChance = random.randrange(0,100)
-        if retreatChance >= escapeBoostMod:
+        if retreatChance <= escapeBoostMod:
             print(Fore.YELLOW+"You escaped!")
             escaped = True
         else:
             print(Fore.YELLOW+"You failed to escape!")
             escaped = False
         time.sleep(0.3)
-    elif choice == "level":
+    elif choice == "level" or choice == "lvl":
         levelup()
+    elif choice == "inventory" or choice == "inv":
+        showInventory()
+    elif choice == "xpcheat":
+        print(Fore.RED+"This is a cheat for testing")
+        playerVariables.xp += 10000
     elif choice == "exit":
         sys.exit()
     else:
@@ -182,24 +346,35 @@ def combat():
         time.sleep(0.8)
         combat()
     time.sleep(0.5)
+    # Section that plays when you beat a monster
     if currentMonsterHealth <= 0:
         print(Fore.GREEN +"You win!")
         currentHealth = round(healthBoostMod+currentHealth,2)
+        currentFloor = round(0.01 + currentFloor,2)
+        if currentHealth >= maxHealth:
+            currentHealth = maxHealth
         print(Fore.GREEN+"Healing some health back...")
-        playerValriables.xp += round(monsterVariables.maxHealth[monsterId-1]/10)
+        try_drop_item()
+        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/10)
         resetMonster()
+        apply_inventory_boosts()
         time.sleep(0.5)
         combat()
     # Section for the monster to fight back
     else:
+        dodgeChance = random.randint(0,100)
+        
+        if dodgeChance <= dodgeBoostMod:
+            dodged = True
         if dodged == True:
+            print(Fore.YELLOW+"You dodged the attack!")
             time.sleep(0.8)
             combat()
         if escaped == True:
             resetMonster()
         else:
             print(Fore.YELLOW +currentMonsterFight,"is attacking you!")
-            damage = round(random.uniform(monsterVariables.minDamage[monsterId-1],monsterVariables.maxDamage[monsterId-1]) - currentDefense,2)
+            damage = round(random.uniform(monsterVariables.minDamage[monsterId],monsterVariables.maxDamage[monsterId]) - currentDefense,2)
             if damage <= 1:
                 damage = 1
             currentHealth = round(currentHealth - damage,2)
@@ -215,7 +390,7 @@ def combat():
     
 def main():
     print(Style.RESET_ALL)
-    os.system('cls')
+    clearScreen()
     combat()
 
 if __name__ == "__main__":
