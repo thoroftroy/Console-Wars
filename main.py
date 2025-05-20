@@ -109,7 +109,17 @@ drop_table = [
     {"name": "Nightmare Edge",     "desc": "Fears made manifest in a blade.",                            "boosts": {"damage": 42}, "weight": 0.25},
     {"name": "Runebound Shell",    "desc": "Arcane script reinforces its structure.",                    "boosts": {"defense": 33}, "weight": 0.25},
     {"name": "Oathkeeper Ring",    "desc": "Binds you to invincible resolve.",                           "boosts": {"damage": 15, "defense": 15}, "weight": 0.25},
-    {"name": "Eclipse Mantle",     "desc": "Draws shadows to protect you.",                              "boosts": {"defense": 24, "health": 70}, "weight": 0.25}
+    {"name": "Eclipse Mantle",     "desc": "Draws shadows to protect you.",                              "boosts": {"defense": 24, "health": 70}, "weight": 0.25},
+    {"name": "Heart of Infinity",  "desc": "Pumps endless life into your veins.",                        "boosts": {"health": 1000}, "weight": 0.05},
+    {"name": "Worldrender Blade",  "desc": "Sunder the world with a single swing.",                      "boosts": {"damage": 500}, "weight": 0.05},
+    {"name": "Aegis of Creation",  "desc": "The origin of all protection.",                              "boosts": {"defense": 300}, "weight": 0.05},
+    {"name": "Core of the Cosmos", "desc": "A fragment of the universe itself.",                         "boosts": {"health": 500, "damage": 200, "defense": 150}, "weight": 0.05},
+    {"name": "Eternal Warplate",   "desc": "Forged from eternity, never fails.",                         "boosts": {"defense": 500}, "weight": 0.05},
+    {"name": "Annihilation Fang",  "desc": "Each strike devours existence.",                             "boosts": {"damage": 1000}, "weight": 0.05},
+    {"name": "Veil of the End",    "desc": "Shields its bearer from death itself.",                      "boosts": {"health": 700, "defense": 200}, "weight": 0.05},
+    {"name": "Godbreaker",         "desc": "Crafted to kill the divine.",                                "boosts": {"damage": 750}, "weight": 0.05},
+    {"name": "Bloodmoon Relic",    "desc": "Hungers for endless battle.",                                "boosts": {"health": 400, "damage": 300}, "weight": 0.05},
+    {"name": "Shield of Eternity", "desc": "No force may breach its guard.",                             "boosts": {"defense": 600}, "weight": 0.05}
 ]
 
 # Current Variables
@@ -505,7 +515,7 @@ def combat():
             currentHealth = maxHealth
         print(Fore.GREEN+"Healing some health back...")
         try_drop_item()
-        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/10,1)
+        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/13,1)
         resetMonster()
         apply_inventory_boosts()
         time.sleep(0.5)
