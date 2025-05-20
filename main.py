@@ -290,7 +290,7 @@ def showCombatStats():
     print(Fore.RED +currentMonsterFight,"Health:")
     print(Fore.BLACK +"|",end='')
     for i in range(round(monsterHealthPercentage/2)): print(Fore.RED +'=',end='')
-    print("",monsterHealthPercentage,"%")
+    print(Fore.RED+"",monsterHealthPercentage,"%")
     print(Fore.BLACK +"|")
     print(Fore.BLACK +"|")
     currentHealthPercentage = round((currentHealth / maxHealth) * 100,2)
