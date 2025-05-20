@@ -92,7 +92,7 @@ dropChanceBoostCost = 10
 healthboostCostFactor = 1.15
 damageBoostCostFactor = 1.2
 DefenseBoostCostFactor = 1.3
-dodgeBoostCostFactor = 1.25
+dodgeBoostCostFactor = 1.7
 escapeboostCostFactor = 1.1
 dropChanceBoostCostFactor = 1.4
 
@@ -357,13 +357,13 @@ def levelup():
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "dodge" or choice == "dod" or choice == "dodge chance" or choice == "dodgechance":
         if playerVariables.xp >= dodgeBoostCost:
-            if escapeBoostMod >= 90:
+            if dodgeBoostMod >= 80:
                 print(Fore.RED+"You can't have a higher dodge chance!")
             else:
                 dodgeBoostMod += 2
                 dodgeBoostMod += 5
-                if dodgeBoostMod >= 90:
-                    dodgeBoostMod = 90
+                if dodgeBoostMod >= 80:
+                    dodgeBoostMod = 80
                 playerVariables.xp -= dodgeBoostCost
                 dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor,1)
         else:
