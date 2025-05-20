@@ -11,7 +11,7 @@ import json
 # Player Varibles
 class playerVariables:
     name = "Comment"
-    baseHealth = 1 #25
+    baseHealth = 25
     baseDamage = 3.5
     baseDefense = 0
     actionList = ["Attack","Retreat","Level","Inventory","Exit"]
@@ -472,9 +472,9 @@ def combat():
     if currentHealth <= 0:
         print("You died!")
         path = globalSavePath
-        print(Fore.CYAN,path," is the current path")
+        #print(Fore.CYAN,path," is the current path")
         if os.path.exists(str(path)):
-            print(Fore.RED,str(path)," is being deleted")
+            print(Fore.RED,str(currentSaveName)," is being deleted")
             os.remove(path)
         time.sleep(1)
         print(Style.RESET_ALL)
