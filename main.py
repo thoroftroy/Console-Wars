@@ -298,7 +298,7 @@ def showCombatStats():
     print(Fore.GREEN+" Health: ",end='')
     for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
     print("",currentHealthPercentage,"%")
-    print(Fore.GREEN +" Damage:",round(currentDamage), " |  Defense:",round(currentDefense)," |  Xp:",round(playerVariables.xp))
+    print(Fore.GREEN +" Damage:",round(currentDamage,1), " |  Defense:",round(currentDefense,1)," |  Xp:",round(playerVariables.xp,1))
     print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%"," |  Item Drop Chance:",round(dropChanceBoostMod*100),"%")
     print(Fore.BLACK +"|")
     print(Fore.BLUE +"Actions:",playerVariables.actionList)
@@ -311,7 +311,7 @@ def levelup():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
-    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(playerVariables.xp),")")
+    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(playerVariables.xp,1),")")
     print(Fore.GREEN+" Health Boost:",healthboostCost," |  Damage Boost:",damageBoostCost," |  Defense Boost:",DefenseBoostCost,"\n Dodge Boost:",dodgeBoostCost,"  | Retreat Boost:",escapeBoostCost, " |  Item Drop Boost:",dropChanceBoostCost)
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
@@ -335,7 +335,7 @@ def levelup():
             playerVariables.levelDamageBonus += damageBoostMod
             damageBoostMod = round(damageBoostMod * damageBoostCostFactor,1)
             playerVariables.xp -= damageBoostCost
-            damageBoostCost = round(damageBoostCost * damageBoostCostFactor)
+            damageBoostCost = round(damageBoostCost * damageBoostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
@@ -344,7 +344,7 @@ def levelup():
             playerVariables.levelDefenseBonus += defenseBoostMod
             defenseBoostMod = round(defenseBoostMod * DefenseBoostCostFactor,1)
             playerVariables.xp -= DefenseBoostCost
-            DefenseBoostCost = round(DefenseBoostCost * DefenseBoostCostFactor)
+            DefenseBoostCost = round(DefenseBoostCost * DefenseBoostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
@@ -358,7 +358,7 @@ def levelup():
                 if dodgeBoostMod >= 90:
                     dodgeBoostMod = 90
                 playerVariables.xp -= dodgeBoostCost
-                dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor)
+                dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "retreat" or choice == "ret" or choice == "escape" or choice == "esc":
@@ -370,7 +370,7 @@ def levelup():
                 if escapeBoostMod >= 90:
                     escapeBoostMod = 90
                 playerVariables.xp -= escapeBoostCost
-                escapeBoostCost = round(escapeBoostCost * escapeboostCostFactor)
+                escapeBoostCost = round(escapeBoostCost * escapeboostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "drop" or choice == "drp" or choice == "drop chance" or choice == "dropchance":
@@ -382,7 +382,7 @@ def levelup():
                 if dropChanceBoostMod >= .25:
                     dropChanceBoostMod = .25
                 playerVariables.xp -= dropChanceBoostCost
-                dropChanceBoostCost = round(dropChanceBoostCost * dropChanceBoostCostFactor)
+                dropChanceBoostCost = round(dropChanceBoostCost * dropChanceBoostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == 'exit':
@@ -444,7 +444,7 @@ def combat():
             currentHealth = maxHealth
         print(Fore.GREEN+"Healing some health back...")
         try_drop_item()
-        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/10)
+        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/10,1)
         resetMonster()
         apply_inventory_boosts()
         time.sleep(0.5)
