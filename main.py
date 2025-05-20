@@ -117,7 +117,10 @@ def saveToFile():
     globalSavePath = save_path
     
     data = {
-        "player": player.__dict__,
+        "player": {
+            **player.__dict__,
+            "inventory": playerVariables.inventory
+        },
         "currentHealth": currentHealth,
         "currentDamage": currentDamage,
         "currentDefense": currentDefense,
@@ -187,7 +190,9 @@ def loadFromFile(filename):
         currentMonsterFight = str(data.get("currentMonsterFight", currentMonsterFight))
         currentMonsterHealth = data.get("currentMonsterHealth", currentMonsterHealth)
         monsterId = data.get("monsterId", monsterId)
+        playerVariables.inventory = data["player"].get("inventory", [])
 
+        apply_inventory_boosts()
         return data
     except FileNotFoundError:
         print(Fore.RED+"File not found.")
