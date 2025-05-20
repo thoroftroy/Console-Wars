@@ -105,7 +105,7 @@ dropChanceBoostMod = 0.07
 
 # Define the current os and clear screen properly
 def clearScreen():
-    if platform.system() == 'Linux':
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
         os.system('clear')
     elif platform.system() == 'Windows':
         os.system('cls')
