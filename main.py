@@ -318,7 +318,7 @@ def levelup():
     print(Fore.BLUE+"Things you can buy:",playerVariables.buyList)
     print(Fore.BLUE+"(Type 'exit' to go back to combat)")
     choice = input().lower()
-    if choice == "health" or choice == "hlth":
+    if choice == "health" or choice == "hlth" or choice == "hp":
         if playerVariables.xp >= healthboostCost:
             playerVariables.levelHealthBonus += healthBoostMod
             currentHealth = round(healthBoostMod + currentHealth,2)
@@ -348,7 +348,7 @@ def levelup():
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "dodge" or choice == "dod":
+    elif choice == "dodge" or choice == "dod" or choice == "dodge chance" or choice == "dodgechance":
         if playerVariables.xp >= dodgeBoostCost:
             if escapeBoostMod >= 90:
                 print(Fore.RED+"You can't have a higher dodge chance!")
@@ -361,7 +361,7 @@ def levelup():
                 dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "retreat" or choice == "ret":
+    elif choice == "retreat" or choice == "ret" or choice == "escape" or choice == "esc":
         if playerVariables.xp >= escapeBoostCost:
             if escapeBoostMod >= 90:
                 print(Fore.RED+"You can't have a higher retreat chance!")
@@ -373,7 +373,7 @@ def levelup():
                 escapeBoostCost = round(escapeBoostCost * escapeboostCostFactor)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
-    elif choice == "drop" or choice == "drp" or choice == "drop chance":
+    elif choice == "drop" or choice == "drp" or choice == "drop chance" or choice == "dropchance":
         if playerVariables.xp >= dropChanceBoostCost:
             if dropChanceBoostMod >= .25:
                 print(Fore.RED+"You can't have a higher drop chance!")
