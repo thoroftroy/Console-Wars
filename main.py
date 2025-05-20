@@ -5,6 +5,7 @@ import os
 import sys
 import platform
 import math
+import json
 
 # Variables
 # Player Varibles
@@ -74,6 +75,12 @@ currentMonsterDefense = monsterVariables.Defense[monsterId]
 maxHealth = playerVariables.baseHealth
 currentFloor = 0
 
+currentSaveName = ''
+savedGames = []
+saveDirectory = "saves"
+os.makedirs(saveDirectory, exist_ok=True)
+player = playerVariables()
+
 healthboostCost = 2
 damageBoostCost = 3
 DefenseBoostCost = 4
@@ -81,7 +88,7 @@ dodgeBoostCost = 5
 escapeBoostCost = 2
 dropChanceBoostCost = 10
 
-healthboostCostFactor = 1.1
+healthboostCostFactor = 1.15
 damageBoostCostFactor = 1.2
 DefenseBoostCostFactor = 1.3
 dodgeBoostCostFactor = 1.25
@@ -93,7 +100,7 @@ damageBoostMod = 3
 defenseBoostMod = 1
 dodgeBoostMod = 10
 escapeBoostMod = 20
-dropChanceBoostMod = 0.1
+dropChanceBoostMod = 0.07 
 
 # Define the current os and clear screen properly
 def clearScreen():
@@ -103,9 +110,88 @@ def clearScreen():
         os.system('cls')
 
 # Functions
+def saveToFile():
+    global currentMonsterFight, currentMonsterHealth
+    save_path = os.path.join(saveDirectory, currentSaveName)
+    
+    data = {
+        "player": player.__dict__,
+        "currentHealth": currentHealth,
+        "currentDamage": currentDamage,
+        "currentDefense": currentDefense,
+        "maxHealth": maxHealth,
+        "currentFloor": currentFloor,
+        "dodgeBoostMod": dodgeBoostMod,
+        "escapeBoostMod": escapeBoostMod,
+        "dropChanceBoostMod": dropChanceBoostMod,
+        "healthboostCost": healthboostCost,
+        "damageBoostCost": damageBoostCost,
+        "DefenseBoostCost": DefenseBoostCost,
+        "dodgeBoostCost": dodgeBoostCost,
+        "escapeBoostCost": escapeBoostCost,
+        "dropChanceBoostCost": dropChanceBoostCost,
+        "playerXp": playerVariables.xp,
+        "currentMonsterFight": currentMonsterFight,
+        "currentMonsterHealth": currentMonsterHealth
+    }
+
+    with open(save_path, "w") as f:
+        json.dump(data, f, indent=4)
+    #print(Fore.GREEN+f"Saved to {save_path}")
+
+def listSavedFiles():
+    files = os.listdir(saveDirectory)
+    json_files = [f for f in files if f.endswith('.json')]
+    print(Fore.BLACK+"|")
+    print(Fore.GREEN+"Saved files:")
+    print(Fore.CYAN+"")
+    for f in json_files:
+        print(f)
+
+def loadFromFile(filename):
+    global currentHealth, currentDamage, currentDefense, maxHealth, currentFloor
+    global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
+    global healthboostCost, damageBoostCost, DefenseBoostCost
+    global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
+    global currentMonsterFight, currentMonsterhealth
+
+    save_path = os.path.join(saveDirectory, filename)
+    try:
+        with open(save_path, "r") as f:
+            data = json.load(f)
+        print(Fore.GREEN+f"Loaded from {save_path}")
+
+        # Restore player variables
+        for key, value in data["player"].items():
+            setattr(player, key, value)
+
+        # Restore global variables
+        currentHealth = data.get("currentHealth", currentHealth)
+        currentDamage = data.get("currentDamage", currentDamage)
+        currentDefense = data.get("currentDefense", currentDefense)
+        maxHealth = data.get("maxHealth", maxHealth)
+        currentFloor = data.get("currentFloor", currentFloor)
+        dodgeBoostMod = data.get("dodgeBoostMod", dodgeBoostMod)
+        escapeBoostMod = data.get("escapeBoostMod", escapeBoostMod)
+        dropChanceBoostMod = data.get("dropChanceBoostMod", dropChanceBoostMod)
+        healthboostCost = data.get("healthboostCost", healthboostCost)
+        damageBoostCost = data.get("damageBoostCost", damageBoostCost)
+        DefenseBoostCost = data.get("DefenseBoostCost", DefenseBoostCost)
+        dodgeBoostCost = data.get("dodgeBoostCost", dodgeBoostCost)
+        escapeBoostCost = data.get("escapeBoostCost", escapeBoostCost)
+        dropChanceBoostCost = data.get("dropChanceBoostCost", dropChanceBoostCost)
+        playerVariables.xp = data.get("playerXp",playerVariables.xp)
+        currentMonsterFight = data.get("currentMonsterFight", currentMonsterFight),
+        currentMonsterHealth = data.get("currentMonsterHealth", currentMonsterHealth)
+
+        return data
+    except FileNotFoundError:
+        print(Fore.RED+"File not found.")
+        return None
+
 def try_drop_item():
     global drop_table,dropChanceBoostMod
-    if drop_table and random.random() < dropChanceBoostMod:  # 10% drop chance
+    if drop_table and random.random() < dropChanceBoostMod: 
         item = random.choice(drop_table)
         playerVariables.inventory.append(item)
         drop_table.remove(item)
@@ -238,7 +324,7 @@ def levelup():
                 currentHealth = maxHealth
             healthBoostMod = round(healthBoostMod * healthboostCostFactor,1)
             playerVariables.xp -= healthboostCost
-            healthboostCost = round(healthboostCost * healthboostCostFactor)
+            healthboostCost = round(healthboostCost * healthboostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
@@ -312,6 +398,7 @@ def combat():
     dodged = False
     escaped = False
     showCombatStats()
+    saveToFile() # Saves the file every turn
     # Player's actions
     choice = input().lower()
     if choice == "attack" or choice == "atk":
@@ -389,8 +476,27 @@ def combat():
         combat()
     
 def main():
+    global currentSaveName, savedGames, loadedData
     print(Style.RESET_ALL)
     clearScreen()
+    print(Fore.BLUE+"What is your name? [type the name you used previously to load the file]")
+    listSavedFiles()
+    name_input = input().strip().lower()
+    
+    # Ensure the save file ends with `.json`
+    if not name_input.endswith('.json'):
+        name_input += '.json'
+    
+    currentSaveName = name_input
+    
+    savedGames = os.listdir(saveDirectory)
+    savedGames = [f for f in savedGames if f.endswith('.json')]
+    
+    if currentSaveName in savedGames:
+        loadedData = loadFromFile(currentSaveName)
+    else:
+        print(Fore.GREEN+f"New save will be created as '{currentSaveName}'.")
+
     combat()
 
 if __name__ == "__main__":
