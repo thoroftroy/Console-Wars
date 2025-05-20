@@ -60,36 +60,56 @@ drop_table = [
     {"name": "Shield of Valor",    "desc": "A legacy of ancient kings.",                                 "boosts": {"defense": 6}, "weight": 6},
     {"name": "Moonstone Charm",    "desc": "Gives subtle resilience under pressure.",                    "boosts": {"health": 22}, "weight": 8},
     {"name": "Doomhammer",         "desc": "Slow but apocalyptic.",                                      "boosts": {"damage": 16}, "weight": 2},
-    {"name": "Crown of Eternity", "desc": "Grants unmatched vitality and focus.", "boosts": {"health": 100, "defense": 5}, "weight": 1},
-    {"name": "Obsidian Crusher", "desc": "Crushes foes with devastating force.", "boosts": {"damage": 25}, "weight": 1},
-    {"name": "Celestial Shroud", "desc": "Whispers of protection from beyond.", "boosts": {"defense": 12}, "weight": 1},
-    {"name": "Ring of Titans", "desc": "Endless power flows through it.", "boosts": {"damage": 20, "health": 20}, "weight": 1},
-    {"name": "Mantle of Immortals", "desc": "Even death fears its wearer.", "boosts": {"health": 150}, "weight": 1},
-    {"name": "Abyssal Fang", "desc": "Bleeds enemies with every strike.", "boosts": {"damage": 22}, "weight": 1},
-    {"name": "Plate of Aeons", "desc": "A shield against time itself.", "boosts": {"defense": 15}, "weight": 1},
-    {"name": "Void Pendant", "desc": "Grants dark resilience and twisted strength.", "boosts": {"health": 80, "damage": 10}, "weight": 1},
-    {"name": "Sundering Greatblade", "desc": "No armor can resist it.", "boosts": {"damage": 30}, "weight": 1},
-    {"name": "Mythrilheart Armor", "desc": "Impossibly light, indestructible.", "boosts": {"defense": 18, "health": 40}, "weight": 1},
-    {"name": "Scarab Seal", "desc": "Surrounds you in an ethereal shield.", "boosts": {"defense": 10}, "weight": 1},
-    {"name": "Runed Circlet", "desc": "Glows with ancient life magic.", "boosts": {"health": 90}, "weight": 1},
-    {"name": "Storm Gauntlets", "desc": "Your blows carry thunder.", "boosts": {"damage": 18}, "weight": 1},
-    {"name": "Shield of Endings", "desc": "Nullifies even the worst blows.", "boosts": {"defense": 20}, "weight": 1},
-    {"name": "Lifeblood Gem", "desc": "Pulses in time with your heart.", "boosts": {"health": 120}, "weight": 1},
-    {"name": "Dagger of Stars", "desc": "Swift and unstoppable.", "boosts": {"damage": 15}, "weight": 1},
-    {"name": "Solar Medallion", "desc": "Bathes you in burning resilience.", "boosts": {"health": 70, "defense": 8}, "weight": 1},
-    {"name": "Hammer of Glory", "desc": "Swings with divine vengeance.", "boosts": {"damage": 26}, "weight": 1},
-    {"name": "Aegis of the Fallen", "desc": "Shields you with lost souls.", "boosts": {"defense": 17}, "weight": 1},
-    {"name": "Seraph’s Band", "desc": "Crackles with divine protection.", "boosts": {"health": 60, "defense": 6}, "weight": 1},
-    {"name": "Frostbrand Blade", "desc": "Frozen and furious.", "boosts": {"damage": 24}, "weight": 1},
-    {"name": "Warden’s Cuirass", "desc": "Unbending and eternal.", "boosts": {"defense": 14}, "weight": 1},
-    {"name": "Eclipse Ring", "desc": "You feel the universe tremble.", "boosts": {"damage": 12, "defense": 6}, "weight": 1},
-    {"name": "Godscale Vest", "desc": "Crafted from myth itself.", "boosts": {"defense": 20}, "weight": 1},
-    {"name": "Lifeveil Charm", "desc": "Stitches your wounds instantly.", "boosts": {"health": 110}, "weight": 1},
-    {"name": "Hellforge Blade", "desc": "Forged in damnation.", "boosts": {"damage": 28}, "weight": 1},
-    {"name": "Divine Anklet", "desc": "You dodge like a shadow.", "boosts": {"defense": 7}, "weight": 1},
-    {"name": "Warlock’s Fang", "desc": "Thirsts for blood.", "boosts": {"damage": 23}, "weight": 1},
-    {"name": "Tombplate", "desc": "You feel nothing. And take nothing.", "boosts": {"defense": 22}, "weight": 1},
-    {"name": "Genesis Relic", "desc": "The beginning of all things.", "boosts": {"health": 200, "damage": 10}, "weight": 1}
+    {"name": "Crown of Eternity",  "desc": "Grants unmatched vitality and focus.",                       "boosts": {"health": 100, "defense": 5}, "weight": 1},
+    {"name": "Obsidian Crusher",   "desc": "Crushes foes with devastating force.",                       "boosts": {"damage": 25}, "weight": 1},
+    {"name": "Celestial Shroud",   "desc": "Whispers of protection from beyond.",                        "boosts": {"defense": 12}, "weight": 1},
+    {"name": "Ring of Titans",     "desc": "Endless power flows through it.",                            "boosts": {"damage": 20, "health": 20}, "weight": 1},
+    {"name": "Mantle of Immortals","desc": "Even death fears its wearer.",                               "boosts": {"health": 150}, "weight": 1},
+    {"name": "Abyssal Fang",       "desc": "Bleeds enemies with every strike.",                          "boosts": {"damage": 22}, "weight": 1},
+    {"name": "Plate of Aeons",     "desc": "A shield against time itself.",                              "boosts": {"defense": 15}, "weight": 1},
+    {"name": "Void Pendant",       "desc": "Grants dark resilience and twisted strength.",               "boosts": {"health": 80, "damage": 10}, "weight": 1},
+    {"name": "Sundering Greatblade","desc": "No armor can resist it.",                                   "boosts": {"damage": 30}, "weight": 1},
+    {"name": "Mythrilheart Armor", "desc": "Impossibly light, indestructible.",                          "boosts": {"defense": 18, "health": 40}, "weight": 1},
+    {"name": "Scarab Seal",        "desc": "Surrounds you in an ethereal shield.",                       "boosts": {"defense": 10}, "weight": 1},
+    {"name": "Runed Circlet",      "desc": "Glows with ancient life magic.",                             "boosts": {"health": 90}, "weight": 1},
+    {"name": "Storm Gauntlets",    "desc": "Your blows carry thunder.",                                  "boosts": {"damage": 18}, "weight": 1},
+    {"name": "Shield of Endings",   "desc": "Nullifies even the worst blows.",                           "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeblood Gem",      "desc": "Pulses in time with your heart.",                            "boosts": {"health": 120}, "weight": 1},
+    {"name": "Dagger of Stars",    "desc": "Swift and unstoppable.",                                     "boosts": {"damage": 15}, "weight": 1},
+    {"name": "Solar Medallion",    "desc": "Bathes you in burning resilience.",                          "boosts": {"health": 70, "defense": 8}, "weight": 1},
+    {"name": "Hammer of Glory",    "desc": "Swings with divine vengeance.",                              "boosts": {"damage": 26}, "weight": 1},
+    {"name": "Aegis of the Fallen","desc": "Shields you with lost souls.",                               "boosts": {"defense": 17}, "weight": 1},
+    {"name": "Seraph’s Band",      "desc": "Crackles with divine protection.",                           "boosts": {"health": 60, "defense": 6}, "weight": 1},
+    {"name": "Frostbrand Blade",   "desc": "Frozen and furious.",                                        "boosts": {"damage": 24}, "weight": 1},
+    {"name": "Warden’s Cuirass",   "desc": "Unbending and eternal.",                                     "boosts": {"defense": 14}, "weight": 1},
+    {"name": "Eclipse Ring",       "desc": "You feel the universe tremble.",                             "boosts": {"damage": 12, "defense": 6}, "weight": 1},
+    {"name": "Godscale Vest",      "desc": "Crafted from myth itself.",                                  "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeveil Charm",     "desc": "Stitches your wounds instantly.",                            "boosts": {"health": 110}, "weight": 1},
+    {"name": "Hellforge Blade",    "desc": "Forged in damnation.",                                       "boosts": {"damage": 28}, "weight": 1},
+    {"name": "Divine Anklet",      "desc": "You dodge like a shadow.",                                   "boosts": {"defense": 7}, "weight": 1},
+    {"name": "Warlock’s Fang",     "desc": "Thirsts for blood.",                                         "boosts": {"damage": 23}, "weight": 1},
+    {"name": "Tombplate",          "desc": "You feel nothing. And take nothing.",                        "boosts": {"defense": 22}, "weight": 1},
+    {"name": "Genesis Relic",      "desc": "The beginning of all things.",                               "boosts": {"health": 200, "damage": 10}, "weight": 1},
+    {"name": "Blade of Oblivion",  "desc": "Slices through reality itself.",                             "boosts": {"damage": 40}, "weight": 0.5},
+    {"name": "Titan's Heart",      "desc": "Massive vitality from a fallen giant.",                      "boosts": {"health": 250}, "weight": 0.5},
+    {"name": "Aethercloak",        "desc": "Phase through danger unharmed.",                             "boosts": {"defense": 25}, "weight": 0.5},
+    {"name": "Crown of Stars",     "desc": "Intelligence beyond comprehension.",                         "boosts": {"health": 100, "defense": 10}, "weight": 0.5},
+    {"name": "Ruinblade",          "desc": "Every swing leaves devastation behind.",                     "boosts": {"damage": 38}, "weight": 0.5},
+    {"name": "Stoneblood Aegis",   "desc": "Even gods struggle to crack it.",                            "boosts": {"defense": 30}, "weight": 0.5},
+    {"name": "Crimson Mantle",     "desc": "Burns the weak who dare strike you.",                        "boosts": {"health": 80, "defense": 15}, "weight": 0.5},
+    {"name": "Thunder King's Rod", "desc": "Bolts crackle with each blow.",                              "boosts": {"damage": 34}, "weight": 0.5},
+    {"name": "Godsbane",           "desc": "Meant to slay immortals.",                                   "boosts": {"damage": 50}, "weight": 0.25},
+    {"name": "Soulforge Mail",     "desc": "Made from lost souls and steel.",                            "boosts": {"defense": 28, "health": 60}, "weight": 0.5},
+    {"name": "Ankh of Resurrection","desc": "Refuses to let you die easily.",                            "boosts": {"health": 300}, "weight": 0.25},
+    {"name": "Void Hammer",        "desc": "Leaves nothing where it strikes.",                           "boosts": {"damage": 45}, "weight": 0.25},
+    {"name": "Eternal Bulwark",    "desc": "Shields passed down by titans.",                             "boosts": {"defense": 35}, "weight": 0.25},
+    {"name": "Helm of the Last King","desc": "A relic of the age of giants.",                            "boosts": {"defense": 20, "health": 100}, "weight": 0.5},
+    {"name": "Flametongue Sigil",  "desc": "Burns through both body and soul.",                          "boosts": {"damage": 37}, "weight": 0.5},
+    {"name": "Gilded Halo",        "desc": "Angelic grace sustains you.",                                "boosts": {"health": 150}, "weight": 0.5},
+    {"name": "Nightmare Edge",     "desc": "Fears made manifest in a blade.",                            "boosts": {"damage": 42}, "weight": 0.25},
+    {"name": "Runebound Shell",    "desc": "Arcane script reinforces its structure.",                    "boosts": {"defense": 33}, "weight": 0.25},
+    {"name": "Oathkeeper Ring",    "desc": "Binds you to invincible resolve.",                           "boosts": {"damage": 15, "defense": 15}, "weight": 0.25},
+    {"name": "Eclipse Mantle",     "desc": "Draws shadows to protect you.",                              "boosts": {"defense": 24, "health": 70}, "weight": 0.25}
 ]
 
 # Current Variables
@@ -120,16 +140,16 @@ escapeBoostCost = 2
 dropChanceBoostCost = 10
 
 healthboostCostFactor = 1.15
-damageBoostCostFactor = 1.2
-DefenseBoostCostFactor = 1.3
+damageBoostCostFactor = 1.25
+DefenseBoostCostFactor = 1.4
 dodgeBoostCostFactor = 1.7
 escapeboostCostFactor = 1.1
 dropChanceBoostCostFactor = 1.4
 
 healthBoostMod = 5
-damageBoostMod = 3
+damageBoostMod = 2.5
 defenseBoostMod = 1
-dodgeBoostMod = 10
+dodgeBoostMod = 5
 escapeBoostMod = 20
 dropChanceBoostMod = 0.07 
 
@@ -394,13 +414,13 @@ def levelup():
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "dodge" or choice == "dod" or choice == "dodge chance" or choice == "dodgechance":
         if playerVariables.xp >= dodgeBoostCost:
-            if dodgeBoostMod >= 80:
+            if dodgeBoostMod >= 60:
                 print(Fore.RED+"You can't have a higher dodge chance!")
             else:
                 dodgeBoostMod += 2
                 dodgeBoostMod += 5
-                if dodgeBoostMod >= 80:
-                    dodgeBoostMod = 80
+                if dodgeBoostMod >= 60:
+                    dodgeBoostMod = 60
                 playerVariables.xp -= dodgeBoostCost
                 dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor,1)
         else:
@@ -469,9 +489,6 @@ def combat():
         levelup()
     elif choice == "inventory" or choice == "inv":
         showInventory()
-    elif choice == "xpcheat":
-        print(Fore.RED+"This is a cheat for testing")
-        playerVariables.xp += 10000
     elif choice == "exit":
         sys.exit()
     else:
