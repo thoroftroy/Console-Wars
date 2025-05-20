@@ -28,6 +28,17 @@ class monsterVariables:
     minDamage = [2,        2,       3,         5,       8,       11,    17,     26,   38,    58,       86,    130,      195,    292,    438,       657,       985,   1478,    2217,     3325,    4988,      7482,    11223,     16834, 25251,  37877,     56815, 85223,     127834,  191751,  287627,     431440, 647160,   970740,   1456110, 2184164,3276247,       4914370,    7371555,11057332,]
     Defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
 
+# Exnless mode
+endlessMode = False
+endlessKills = 0
+demonLordBaseStats = {
+    "health": monsterVariables.maxHealth[-1],
+    "minDamage": monsterVariables.minDamage[-1],
+    "maxDamage": monsterVariables.maxDamage[-1],
+    "defense": monsterVariables.Defense[-1]
+}
+
+
 # Drop Table
 drop_table = [
     {"name": "Iron Sword",         "desc": "A basic blade. Reliable and sharp.",                         "boosts": {"damage": 5},  "weight": 12},
@@ -173,7 +184,7 @@ def clearScreen():
 
 # Functions
 def saveToFile():
-    global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId
+    global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId, endlessMode, endlessKills
     save_path = os.path.join(saveDirectory, currentSaveName)
     globalSavePath = save_path
 
@@ -224,7 +235,7 @@ def loadFromFile(filename):
     global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
-    global currentMonsterFight, currentMonsterHealth, monsterId, firstLaunch
+    global currentMonsterFight, currentMonsterHealth, monsterId, firstLaunch, endlessMode, endlessKills
 
     save_path = os.path.join(saveDirectory, filename)
     try:
@@ -288,7 +299,7 @@ def try_drop_item():
         time.sleep(0.5)
 
 def apply_inventory_boosts():
-    global currentHealth, maxHealth, currentDamage, currentDefense
+    global currentHealth, maxHealth, currentDamage, currentDefense, endlessMode, endlessKills
 
     # Use instance values from player
     maxHealth = player.baseHealth + player.levelHealthBonus
@@ -327,7 +338,7 @@ def get_dynamic_weights(currentFloor, total_monsters):
 def showInventory():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
     global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
-    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor, endlessMode, endlessKills
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
@@ -351,27 +362,41 @@ def showInventory():
 def resetMonster():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
     global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
-    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
-    #monsterId = random.randint(0,len(monsterVariables.names)-1)
-    weights = get_dynamic_weights(currentFloor, len(monsterVariables.names))
-    monsterId = random.choices(range(len(monsterVariables.names)), weights=weights, k=1)[0]
-    currentMonsterFight = monsterVariables.names[monsterId]
-    currentMonsterHealth = monsterVariables.maxHealth[monsterId]
-    currentMonsterDefense = monsterVariables.Defense[monsterId]
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor, endlessMode, endlessKills
+    global monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
+    if endlessMode:
+        monsterId = len(monsterVariables.names) - 1  # Demon Lord index
+        currentMonsterFight = "Demon Lord"
+        scale = 2 ** endlessKills
+        currentMonsterHealth = demonLordBaseStats["health"] * scale
+        currentMonsterDefense = demonLordBaseStats["defense"] * scale
+    else:
+        weights = get_dynamic_weights(currentFloor, len(monsterVariables.names))
+        monsterId = random.choices(range(len(monsterVariables.names)), weights=weights, k=1)[0]
+        currentMonsterFight = monsterVariables.names[monsterId]
+        currentMonsterHealth = monsterVariables.maxHealth[monsterId]
+        currentMonsterDefense = monsterVariables.Defense[monsterId]
 
 def showCombatStats():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
     global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
-    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor, endlessMode, endlessKills
     clearScreen()
     print(Style.RESET_ALL)
     monsterHealthPercentage = round((currentMonsterHealth / monsterVariables.maxHealth[monsterId]) * 100,2)
     print(Fore.WHITE +"You are currently fighting a",currentMonsterFight," ( Difficulty:",round(currentFloor*100),")")
     print(Fore.BLACK +"|")
     print(Fore.RED+currentMonsterFight,"Health:")
-    print(Fore.BLACK +"|",end='')
-    for i in range(round(monsterHealthPercentage/2)): print(Fore.RED +'=',end='')
-    print(Fore.RED+"",monsterHealthPercentage,"%")
+    
+    print(Fore.BLACK + "|", end='')
+    # Cap health bar
+    bar_length = min(round(monsterHealthPercentage / 2), 1000)
+    print(Fore.RED + '=' * bar_length, end='')
+    if monsterHealthPercentage > 2000:
+        print(Fore.RED + " (HP: " + str(int(currentMonsterHealth)) + ")")
+    else:
+        print(Fore.RED + f" {monsterHealthPercentage}%")
+    
     print(Fore.BLACK +"|")
     print(Fore.BLACK +"|")
     currentHealthPercentage = round((currentHealth / maxHealth) * 100,2)
@@ -388,7 +413,7 @@ def showCombatStats():
 def levelup():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
     global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
-    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor, endlessMode, endlessKills
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
@@ -476,7 +501,7 @@ def levelup():
 def combat():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
     global damageBoostCost,DefenseBoostCost, healthBoostMod, damageBoostMod, defenseBoostMod, dodgeBoostMod, escapeBoostMod, dodgeBoostCost, dodgeBoostCostFactor
-    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor
+    global escapeBoostCost, escapeboostCostFactor, maxHealth, currentFloor, dropChanceBoostMod, dropChanceBoostCost, dropChanceBoostCostFactor, endlessMode, endlessKills
     dodged = False
     escaped = False
     showCombatStats()
@@ -512,20 +537,41 @@ def combat():
         time.sleep(0.8)
         combat()
     time.sleep(0.5)
-    # Section that plays when you beat a monster
+# Section that plays when you beat a monster
     if currentMonsterHealth <= 0:
-        print(Fore.GREEN +"You win!")
-        currentHealth = round(healthBoostMod+currentHealth,2)
-        currentFloor = round(0.01 + currentFloor,2)
-        if currentHealth >= maxHealth:
-            currentHealth = maxHealth
-        print(Fore.GREEN+"Healing some health back...")
-        try_drop_item()
-        player.xp += round(monsterVariables.maxHealth[monsterId]/12,1)
-        resetMonster()
-        apply_inventory_boosts()
-        time.sleep(0.5)
-        combat()
+        if endlessMode:
+            endlessKills += 1
+            print(Fore.MAGENTA + f"Demon Lord defeated! Total defeated: {endlessKills}")
+            xpGain = round(currentMonsterHealth / 12, 1)
+            if xpGain <= 1000000:
+                xpGain = 1000000
+            player.xp += xpGain
+            resetMonster()
+            apply_inventory_boosts()
+            time.sleep(0.5)
+            combat()
+        elif currentMonsterFight == "Demon Lord":
+            print(Fore.GREEN + "You have defeated the Demon Lord!")
+            time.sleep(1)
+            print(Fore.RED + "But something stirs... You hear his laughter echoing endlessly...")
+            time.sleep(1)
+            endlessKills = 1
+            endlessMode = True
+            resetMonster()
+            combat()
+        else:
+            # regular monster win
+            print(Fore.GREEN + "You win!")
+            currentHealth = round(currentHealth + healthBoostMod, 2)
+            currentFloor = round(currentFloor + 0.01, 2)
+            if currentHealth > maxHealth:
+                currentHealth = maxHealth
+            try_drop_item()
+            player.xp += round(monsterVariables.maxHealth[monsterId] / 12, 1)
+            resetMonster()
+            apply_inventory_boosts()
+            time.sleep(0.5)
+            combat()
     # Section for the monster to fight back
     else:
         dodgeChance = random.randint(0,100)
@@ -540,7 +586,13 @@ def combat():
             resetMonster()
         else:
             print(Fore.YELLOW +currentMonsterFight,"is attacking you!")
-            damage = round(random.uniform(monsterVariables.minDamage[monsterId],monsterVariables.maxDamage[monsterId]) - currentDefense,2)
+        if endlessMode:
+            base_min = demonLordBaseStats["minDamage"]
+            base_max = demonLordBaseStats["maxDamage"]
+            scale = 4 ** endlessKills
+            damage = round(random.uniform(base_min, base_max) * scale - currentDefense, 2)
+        else:
+            damage = round(random.uniform(monsterVariables.minDamage[monsterId], monsterVariables.maxDamage[monsterId]) - currentDefense, 2)
             if damage <= 1:
                 damage = 1
             currentHealth = round(currentHealth - damage,2)
@@ -548,6 +600,8 @@ def combat():
     # What happens when you die
     if currentHealth <= 0:
         print("You died!")
+        if endlessMode:
+            print(Fore.YELLOW + f"You defeated {endlessKills} Demon Lords in endless mode!")
         path = globalSavePath
         #print(Fore.CYAN,path," is the current path")
         if os.path.exists(str(path)):
