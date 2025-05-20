@@ -30,36 +30,66 @@ class monsterVariables:
 
 # Drop Table
 drop_table = [
-    {"name": "Iron Sword",         "desc": "A basic blade. Reliable and sharp.",                         "boosts": {"damage": 5}},
-    {"name": "Leather Armor",      "desc": "Worn leather armor that offers minor protection.",           "boosts": {"defense": 2}},
-    {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}},
-    {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3}},
-    {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}},
-    {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7}},
-    {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}},
-    {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}},
-    {"name": "War Axe",            "desc": "Brutal and unforgiving.",                                    "boosts": {"damage": 9}},
-    {"name": "Plated Boots",       "desc": "These boots make you stand strong.",                         "boosts": {"defense": 3}},
-    {"name": "Gold Locket",        "desc": "Gives you a sense of strength from within.",                 "boosts": {"health": 15}},
-    {"name": "Enchanted Blade",    "desc": "Magical edge hums with power.",                              "boosts": {"damage": 10}},
-    {"name": "Guardian Cloak",     "desc": "It deflects incoming strikes slightly.",                     "boosts": {"defense": 6}},
-    {"name": "Heartstone",         "desc": "A gem filled with life essence.",                            "boosts": {"health": 25}},
-    {"name": "Spiked Mace",        "desc": "Devastating on impact.",                                     "boosts": {"damage": 11}},
-    {"name": "Reinforced Helmet",  "desc": "Takes the edge off headshots.",                              "boosts": {"defense": 4}},
-    {"name": "Elixir Band",        "desc": "Increases vitality just by wearing it.",                     "boosts": {"health": 30}},
-    {"name": "Battle Spear",       "desc": "Longer reach and deadly force.",                             "boosts": {"damage": 12}},
-    {"name": "Dragonhide Vest",    "desc": "Tough as ancient scales.",                                   "boosts": {"defense": 7}},
-    {"name": "Phoenix Feather",    "desc": "Emits a life-giving aura.",                                  "boosts": {"health": 35}},
-    {"name": "Silver Rapier",      "desc": "Elegant and efficient.",                                     "boosts": {"damage": 8}},
-    {"name": "Knight’s Gauntlets", "desc": "Enhances arm protection and grip.",                          "boosts": {"defense": 5}},
-    {"name": "Talisman of Grace",  "desc": "Blessed with ancient healing runes.",                        "boosts": {"health": 40}},
-    {"name": "Greatsword",         "desc": "Two hands. One purpose.",                                    "boosts": {"damage": 14}},
-    {"name": "Stoneplate Armor",   "desc": "Like wearing a wall.",                                       "boosts": {"defense": 8}},
-    {"name": "Blood Orb",          "desc": "Pulses with crimson power.",                                 "boosts": {"health": 50}},
-    {"name": "Venom Blade",        "desc": "Lightweight, but extremely deadly.",                         "boosts": {"damage": 13}},
-    {"name": "Shield of Valor",    "desc": "A legacy of ancient kings.",                                 "boosts": {"defense": 6}},
-    {"name": "Moonstone Charm",    "desc": "Gives subtle resilience under pressure.",                    "boosts": {"health": 22}},
-    {"name": "Doomhammer",         "desc": "Slow but apocalyptic.",                                      "boosts": {"damage": 16}}
+    {"name": "Iron Sword",         "desc": "A basic blade. Reliable and sharp.",                         "boosts": {"damage": 5},  "weight": 12},
+    {"name": "Leather Armor",      "desc": "Worn leather armor that offers minor protection.",           "boosts": {"defense": 2}, "weight": 14},
+    {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}, "weight": 12},
+    {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3},  "weight": 13},
+    {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}, "weight": 10},
+    {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7},  "weight": 8},
+    {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}, "weight": 9},
+    {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}, "weight": 8},
+    {"name": "War Axe",            "desc": "Brutal and unforgiving.",                                    "boosts": {"damage": 9},  "weight": 6},
+    {"name": "Plated Boots",       "desc": "These boots make you stand strong.",                         "boosts": {"defense": 3}, "weight": 11},
+    {"name": "Gold Locket",        "desc": "Gives you a sense of strength from within.",                 "boosts": {"health": 15}, "weight": 9},
+    {"name": "Enchanted Blade",    "desc": "Magical edge hums with power.",                              "boosts": {"damage": 10}, "weight": 5},
+    {"name": "Guardian Cloak",     "desc": "It deflects incoming strikes slightly.",                     "boosts": {"defense": 6}, "weight": 6},
+    {"name": "Heartstone",         "desc": "A gem filled with life essence.",                            "boosts": {"health": 25}, "weight": 6},
+    {"name": "Spiked Mace",        "desc": "Devastating on impact.",                                     "boosts": {"damage": 11}, "weight": 4},
+    {"name": "Reinforced Helmet",  "desc": "Takes the edge off headshots.",                              "boosts": {"defense": 4}, "weight": 10},
+    {"name": "Elixir Band",        "desc": "Increases vitality just by wearing it.",                     "boosts": {"health": 30}, "weight": 5},
+    {"name": "Battle Spear",       "desc": "Longer reach and deadly force.",                             "boosts": {"damage": 12}, "weight": 4},
+    {"name": "Dragonhide Vest",    "desc": "Tough as ancient scales.",                                   "boosts": {"defense": 7}, "weight": 5},
+    {"name": "Phoenix Feather",    "desc": "Emits a life-giving aura.",                                  "boosts": {"health": 35}, "weight": 4},
+    {"name": "Silver Rapier",      "desc": "Elegant and efficient.",                                     "boosts": {"damage": 8},  "weight": 7},
+    {"name": "Knight’s Gauntlets", "desc": "Enhances arm protection and grip.",                          "boosts": {"defense": 5}, "weight": 7},
+    {"name": "Talisman of Grace",  "desc": "Blessed with ancient healing runes.",                        "boosts": {"health": 40}, "weight": 3},
+    {"name": "Greatsword",         "desc": "Two hands. One purpose.",                                    "boosts": {"damage": 14}, "weight": 3},
+    {"name": "Stoneplate Armor",   "desc": "Like wearing a wall.",                                       "boosts": {"defense": 8}, "weight": 3},
+    {"name": "Blood Orb",          "desc": "Pulses with crimson power.",                                 "boosts": {"health": 50}, "weight": 2},
+    {"name": "Venom Blade",        "desc": "Lightweight, but extremely deadly.",                         "boosts": {"damage": 13}, "weight": 3},
+    {"name": "Shield of Valor",    "desc": "A legacy of ancient kings.",                                 "boosts": {"defense": 6}, "weight": 6},
+    {"name": "Moonstone Charm",    "desc": "Gives subtle resilience under pressure.",                    "boosts": {"health": 22}, "weight": 8},
+    {"name": "Doomhammer",         "desc": "Slow but apocalyptic.",                                      "boosts": {"damage": 16}, "weight": 2},
+    {"name": "Crown of Eternity", "desc": "Grants unmatched vitality and focus.", "boosts": {"health": 100, "defense": 5}, "weight": 1},
+    {"name": "Obsidian Crusher", "desc": "Crushes foes with devastating force.", "boosts": {"damage": 25}, "weight": 1},
+    {"name": "Celestial Shroud", "desc": "Whispers of protection from beyond.", "boosts": {"defense": 12}, "weight": 1},
+    {"name": "Ring of Titans", "desc": "Endless power flows through it.", "boosts": {"damage": 20, "health": 20}, "weight": 1},
+    {"name": "Mantle of Immortals", "desc": "Even death fears its wearer.", "boosts": {"health": 150}, "weight": 1},
+    {"name": "Abyssal Fang", "desc": "Bleeds enemies with every strike.", "boosts": {"damage": 22}, "weight": 1},
+    {"name": "Plate of Aeons", "desc": "A shield against time itself.", "boosts": {"defense": 15}, "weight": 1},
+    {"name": "Void Pendant", "desc": "Grants dark resilience and twisted strength.", "boosts": {"health": 80, "damage": 10}, "weight": 1},
+    {"name": "Sundering Greatblade", "desc": "No armor can resist it.", "boosts": {"damage": 30}, "weight": 1},
+    {"name": "Mythrilheart Armor", "desc": "Impossibly light, indestructible.", "boosts": {"defense": 18, "health": 40}, "weight": 1},
+    {"name": "Scarab Seal", "desc": "Surrounds you in an ethereal shield.", "boosts": {"defense": 10}, "weight": 1},
+    {"name": "Runed Circlet", "desc": "Glows with ancient life magic.", "boosts": {"health": 90}, "weight": 1},
+    {"name": "Storm Gauntlets", "desc": "Your blows carry thunder.", "boosts": {"damage": 18}, "weight": 1},
+    {"name": "Shield of Endings", "desc": "Nullifies even the worst blows.", "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeblood Gem", "desc": "Pulses in time with your heart.", "boosts": {"health": 120}, "weight": 1},
+    {"name": "Dagger of Stars", "desc": "Swift and unstoppable.", "boosts": {"damage": 15}, "weight": 1},
+    {"name": "Solar Medallion", "desc": "Bathes you in burning resilience.", "boosts": {"health": 70, "defense": 8}, "weight": 1},
+    {"name": "Hammer of Glory", "desc": "Swings with divine vengeance.", "boosts": {"damage": 26}, "weight": 1},
+    {"name": "Aegis of the Fallen", "desc": "Shields you with lost souls.", "boosts": {"defense": 17}, "weight": 1},
+    {"name": "Seraph’s Band", "desc": "Crackles with divine protection.", "boosts": {"health": 60, "defense": 6}, "weight": 1},
+    {"name": "Frostbrand Blade", "desc": "Frozen and furious.", "boosts": {"damage": 24}, "weight": 1},
+    {"name": "Warden’s Cuirass", "desc": "Unbending and eternal.", "boosts": {"defense": 14}, "weight": 1},
+    {"name": "Eclipse Ring", "desc": "You feel the universe tremble.", "boosts": {"damage": 12, "defense": 6}, "weight": 1},
+    {"name": "Godscale Vest", "desc": "Crafted from myth itself.", "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeveil Charm", "desc": "Stitches your wounds instantly.", "boosts": {"health": 110}, "weight": 1},
+    {"name": "Hellforge Blade", "desc": "Forged in damnation.", "boosts": {"damage": 28}, "weight": 1},
+    {"name": "Divine Anklet", "desc": "You dodge like a shadow.", "boosts": {"defense": 7}, "weight": 1},
+    {"name": "Warlock’s Fang", "desc": "Thirsts for blood.", "boosts": {"damage": 23}, "weight": 1},
+    {"name": "Tombplate", "desc": "You feel nothing. And take nothing.", "boosts": {"defense": 22}, "weight": 1},
+    {"name": "Genesis Relic", "desc": "The beginning of all things.", "boosts": {"health": 200, "damage": 10}, "weight": 1}
 ]
 
 # Current Variables
@@ -199,11 +229,18 @@ def loadFromFile(filename):
         return None
 
 def try_drop_item():
-    global drop_table,dropChanceBoostMod
-    if drop_table and random.random() < dropChanceBoostMod: 
-        item = random.choice(drop_table)
+    global drop_table, dropChanceBoostMod
+
+    if drop_table and random.random() < dropChanceBoostMod:
+        # Get weights for current drop table
+        weights = [item.get("weight", 1) for item in drop_table]
+
+        # Randomly pick based on weights
+        item = random.choices(drop_table, weights=weights, k=1)[0]
+
         playerVariables.inventory.append(item)
         drop_table.remove(item)
+
         print(Fore.BLACK+"|")
         print(Fore.MAGENTA + f"You found: {item['name']}!")
         print(Fore.YELLOW + item['desc'])
