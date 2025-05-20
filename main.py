@@ -4,7 +4,6 @@ from colorama import Fore, Back, Style
 import os
 import sys
 import platform
-import math
 import json
 
 # Variables
@@ -135,6 +134,7 @@ currentMonsterDefense = monsterVariables.Defense[monsterId]
 
 maxHealth = playerVariables.baseHealth
 currentFloor = 0
+firstLaunch = True
 
 currentSaveName = ''
 savedGames = []
@@ -203,7 +203,8 @@ def saveToFile():
         "dropChanceBoostCost": dropChanceBoostCost,
         "currentMonsterFight": currentMonsterFight,
         "currentMonsterHealth": currentMonsterHealth,
-        "monsterId": monsterId
+        "monsterId": monsterId,
+        "firstLaunch": firstLaunch
     }
 
     with open(save_path, "w") as f:
@@ -223,7 +224,7 @@ def loadFromFile(filename):
     global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
-    global currentMonsterFight, currentMonsterHealth, monsterId
+    global currentMonsterFight, currentMonsterHealth, monsterId, firstLaunch
 
     save_path = os.path.join(saveDirectory, filename)
     try:
@@ -258,6 +259,7 @@ def loadFromFile(filename):
         currentMonsterFight = data.get("currentMonsterFight", currentMonsterFight)
         currentMonsterHealth = data.get("currentMonsterHealth", currentMonsterHealth)
         monsterId = data.get("monsterId", monsterId)
+        firstLaunch = data.get("firstLaunch",firstLaunch)
 
         apply_inventory_boosts()
         return data
@@ -559,7 +561,7 @@ def combat():
         combat()
     
 def main():
-    global currentSaveName, savedGames, loadedData
+    global currentSaveName, savedGames, loadedData, firstLaunch
     print(Style.RESET_ALL)
     clearScreen()
     print(Fore.BLUE+"What is your name? [type the name you used previously to load the file]")
@@ -580,6 +582,18 @@ def main():
     else:
         print(Fore.GREEN+f"New save will be created as '{currentSaveName}'.")
 
+    if firstLaunch == True:
+        print(Fore.YELLOW+"Chooce difficulty: (Easy or Hard)")
+        print(Fore.CYAN+"          (Easy justs boosts your starting xp)")
+        choice = input().lower()
+        if choice == "easy":
+            print(Fore.GREEN+"Granting extra xp!")
+            player.xp += 10
+        else:
+            pass
+    else:
+        pass
+    firstLaunch = False
     combat()
 
 if __name__ == "__main__":
