@@ -378,7 +378,7 @@ def showCombatStats():
     print(Fore.GREEN+"Player Stats:")
     print(Fore.GREEN+" Health: ",end='')
     for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
-    print("",currentHealthPercentage,"%")
+    print("",currentHealthPercentage,"%  (",currentHealth,")")
     print(Fore.GREEN +" Damage:",round(currentDamage,1), " |  Defense:",round(currentDefense,1)," |  Xp:",round(player.xp,1))
     print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%"," |  Item Drop Chance:",round(dropChanceBoostMod*100),"%")
     print(Fore.BLACK +"|")
