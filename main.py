@@ -21,6 +21,7 @@ class playerVariables:
     levelDamageBonus = 0
     levelDefenseBonus = 0
     inventory = []
+
 class monsterVariables:
     names =     ["Slime","Goblin","Skeleton","Zombie","Vampire","Orc","Giant","Ent","Warg","Banshee","Ghoul","Bandit","Troll","Shade","Basilisk","Minotaur","Witch","Drake","Warlock","Knight","Behemoth","Chimera","Specter","Ogre","Harpy","Revenant","Lich","Manticore","Wyvern","Wyrm","Juggernaut","Hydra","Phantom","Colossus","Ifrit","Kraken","Dreadnought","Leviathan","Titan","Demon Lord"]
     maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
@@ -175,15 +176,20 @@ def saveToFile():
     global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId
     save_path = os.path.join(saveDirectory, currentSaveName)
     globalSavePath = save_path
-    
+
     data = {
         "player": {
-            **player.__dict__,
-            "inventory": playerVariables.inventory
+            "name": player.name,
+            "baseHealth": player.baseHealth,
+            "baseDamage": player.baseDamage,
+            "baseDefense": player.baseDefense,
+            "levelHealthBonus": player.levelHealthBonus,
+            "levelDamageBonus": player.levelDamageBonus,
+            "levelDefenseBonus": player.levelDefenseBonus,
+            "xp": player.xp,
+            "inventory": player.inventory
         },
         "currentHealth": currentHealth,
-        "currentDamage": currentDamage,
-        "currentDefense": currentDefense,
         "maxHealth": maxHealth,
         "currentFloor": currentFloor,
         "dodgeBoostMod": dodgeBoostMod,
@@ -195,7 +201,6 @@ def saveToFile():
         "dodgeBoostCost": dodgeBoostCost,
         "escapeBoostCost": escapeBoostCost,
         "dropChanceBoostCost": dropChanceBoostCost,
-        "playerXp": playerVariables.xp,
         "currentMonsterFight": currentMonsterFight,
         "currentMonsterHealth": currentMonsterHealth,
         "monsterId": monsterId
@@ -203,7 +208,6 @@ def saveToFile():
 
     with open(save_path, "w") as f:
         json.dump(data, f, indent=4)
-    #print(Fore.GREEN+f"Saved to {save_path}")
 
 def listSavedFiles():
     files = os.listdir(saveDirectory)
@@ -215,7 +219,7 @@ def listSavedFiles():
         print(f)
 
 def loadFromFile(filename):
-    global currentHealth, currentDamage, currentDefense, maxHealth, currentFloor
+    global currentHealth, maxHealth, currentFloor
     global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
@@ -225,16 +229,21 @@ def loadFromFile(filename):
     try:
         with open(save_path, "r") as f:
             data = json.load(f)
-        print(Fore.GREEN+f"Loaded from {save_path}")
+        print(Fore.GREEN + f"Loaded from {save_path}")
 
         # Restore player variables
-        for key, value in data["player"].items():
-            setattr(player, key, value)
+        player.name = data["player"].get("name", player.name)
+        player.baseHealth = data["player"].get("baseHealth", player.baseHealth)
+        player.baseDamage = data["player"].get("baseDamage", player.baseDamage)
+        player.baseDefense = data["player"].get("baseDefense", player.baseDefense)
+        player.levelHealthBonus = data["player"].get("levelHealthBonus", player.levelHealthBonus)
+        player.levelDamageBonus = data["player"].get("levelDamageBonus", player.levelDamageBonus)
+        player.levelDefenseBonus = data["player"].get("levelDefenseBonus", player.levelDefenseBonus)
+        player.xp = data["player"].get("xp", player.xp)
+        player.inventory = data["player"].get("inventory", [])
 
         # Restore global variables
         currentHealth = data.get("currentHealth", currentHealth)
-        currentDamage = data.get("currentDamage", currentDamage)
-        currentDefense = data.get("currentDefense", currentDefense)
         maxHealth = data.get("maxHealth", maxHealth)
         currentFloor = data.get("currentFloor", currentFloor)
         dodgeBoostMod = data.get("dodgeBoostMod", dodgeBoostMod)
@@ -246,16 +255,14 @@ def loadFromFile(filename):
         dodgeBoostCost = data.get("dodgeBoostCost", dodgeBoostCost)
         escapeBoostCost = data.get("escapeBoostCost", escapeBoostCost)
         dropChanceBoostCost = data.get("dropChanceBoostCost", dropChanceBoostCost)
-        playerVariables.xp = data.get("playerXp",playerVariables.xp)
-        currentMonsterFight = str(data.get("currentMonsterFight", currentMonsterFight))
+        currentMonsterFight = data.get("currentMonsterFight", currentMonsterFight)
         currentMonsterHealth = data.get("currentMonsterHealth", currentMonsterHealth)
         monsterId = data.get("monsterId", monsterId)
-        playerVariables.inventory = data["player"].get("inventory", [])
 
         apply_inventory_boosts()
         return data
     except FileNotFoundError:
-        print(Fore.RED+"File not found.")
+        print(Fore.RED + "File not found.")
         return None
 
 def try_drop_item():
@@ -268,8 +275,8 @@ def try_drop_item():
         # Randomly pick based on weights
         item = random.choices(drop_table, weights=weights, k=1)[0]
 
-        playerVariables.inventory.append(item)
-        drop_table.remove(item)
+        player.inventory.append(item)
+        #drop_table.remove(item)
 
         print(Fore.BLACK+"|")
         print(Fore.MAGENTA + f"You found: {item['name']}!")
@@ -281,19 +288,17 @@ def try_drop_item():
 def apply_inventory_boosts():
     global currentHealth, maxHealth, currentDamage, currentDefense
 
-    # Start with base + level-up
-    maxHealth = playerVariables.baseHealth + playerVariables.levelHealthBonus
-    currentDamage = playerVariables.baseDamage + playerVariables.levelDamageBonus
-    currentDefense = playerVariables.baseDefense + playerVariables.levelDefenseBonus
+    # Use instance values from player
+    maxHealth = player.baseHealth + player.levelHealthBonus
+    currentDamage = player.baseDamage + player.levelDamageBonus
+    currentDefense = player.baseDefense + player.levelDefenseBonus
 
-    # Apply item boosts
-    for item in playerVariables.inventory:
+    for item in player.inventory:
         boosts = item.get("boosts", {})
         maxHealth += boosts.get("health", 0)
         currentDamage += boosts.get("damage", 0)
         currentDefense += boosts.get("defense", 0)
 
-    # Cap health
     if currentHealth > maxHealth:
         currentHealth = maxHealth
 
@@ -326,19 +331,19 @@ def showInventory():
     print(Fore.BLACK+"|")
     print(Fore.BLUE+"Inventory:")
     print(Fore.BLACK+"|")
-    if len(playerVariables.inventory) == 0:
+    if len(player.inventory) == 0:
         print(Fore.RED+"Your inventory is empty!")
         print(Fore.BLUE+"When you kill monsters you have a rare chance to collect an artifact")
         print(Fore.BLUE+"These artifacts grant perminent passive boosts")
     else:
-        for item in playerVariables.inventory:
+        for item in player.inventory:
             print(Fore.CYAN,item["name"])
             print(Fore.YELLOW,item["desc"])
             print(Fore.MAGENTA,item["boosts"])
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
     print(Fore.BLUE+"Hit 'enter' to leave this screen")
-    choice = input().lower
+    choice = input().lower()
     combat()
 
 def resetMonster():
@@ -372,10 +377,10 @@ def showCombatStats():
     print(Fore.GREEN+" Health: ",end='')
     for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
     print("",currentHealthPercentage,"%")
-    print(Fore.GREEN +" Damage:",round(currentDamage,1), " |  Defense:",round(currentDefense,1)," |  Xp:",round(playerVariables.xp,1))
+    print(Fore.GREEN +" Damage:",round(currentDamage,1), " |  Defense:",round(currentDefense,1)," |  Xp:",round(player.xp,1))
     print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%"," |  Item Drop Chance:",round(dropChanceBoostMod*100),"%")
     print(Fore.BLACK +"|")
-    print(Fore.BLUE +"Actions:",playerVariables.actionList)
+    print(Fore.BLUE +"Actions:",player.actionList)
     print(Style.RESET_ALL)
     
 def levelup():
@@ -385,77 +390,76 @@ def levelup():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
-    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(playerVariables.xp,1),")")
+    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(player.xp,1),")")
     print(Fore.GREEN+" Health Boost:",healthboostCost," |  Damage Boost:",damageBoostCost," |  Defense Boost:",DefenseBoostCost,"\n Dodge Boost:",dodgeBoostCost,"  | Retreat Boost:",escapeBoostCost, " |  Item Drop Boost:",dropChanceBoostCost)
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
-    print(Fore.BLUE+"Things you can buy:",playerVariables.buyList)
+    print(Fore.BLUE+"Things you can buy:",player.buyList)
     print(Fore.BLUE+"(Type 'exit' to go back to combat)")
     choice = input().lower()
     if choice == "health" or choice == "hlth" or choice == "hp":
-        if playerVariables.xp >= healthboostCost:
-            playerVariables.levelHealthBonus += healthBoostMod
+        if player.xp >= healthboostCost:
+            player.levelHealthBonus += healthBoostMod
             currentHealth = round(healthBoostMod + currentHealth,2)
             if currentHealth >= maxHealth:
                 currentHealth = maxHealth
             healthBoostMod = round(healthBoostMod * healthboostCostFactor,1)
-            playerVariables.xp -= healthboostCost
+            player.xp -= healthboostCost
             healthboostCost = round(healthboostCost * healthboostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "damage" or choice == "dmg":
-        if playerVariables.xp >= damageBoostCost:
-            playerVariables.levelDamageBonus += damageBoostMod
+        if player.xp >= damageBoostCost:
+            player.levelDamageBonus += damageBoostMod
             damageBoostMod = round(damageBoostMod * damageBoostCostFactor,1)
-            playerVariables.xp -= damageBoostCost
+            player.xp -= damageBoostCost
             damageBoostCost = round(damageBoostCost * damageBoostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "defense" or choice == "def":
-        if playerVariables.xp >= DefenseBoostCost:
-            playerVariables.levelDefenseBonus += defenseBoostMod
+        if player.xp >= DefenseBoostCost:
+            player.levelDefenseBonus += defenseBoostMod
             defenseBoostMod = round(defenseBoostMod * DefenseBoostCostFactor,1)
-            playerVariables.xp -= DefenseBoostCost
+            player.xp -= DefenseBoostCost
             DefenseBoostCost = round(DefenseBoostCost * DefenseBoostCostFactor,1)
             apply_inventory_boosts()
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "dodge" or choice == "dod" or choice == "dodge chance" or choice == "dodgechance":
-        if playerVariables.xp >= dodgeBoostCost:
+        if player.xp >= dodgeBoostCost:
             if dodgeBoostMod >= 60:
                 print(Fore.RED+"You can't have a higher dodge chance!")
             else:
                 dodgeBoostMod += 2
-                dodgeBoostMod += 5
                 if dodgeBoostMod >= 60:
                     dodgeBoostMod = 60
-                playerVariables.xp -= dodgeBoostCost
+                player.xp -= dodgeBoostCost
                 dodgeBoostCost = round(dodgeBoostCost * dodgeBoostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "retreat" or choice == "ret" or choice == "escape" or choice == "esc":
-        if playerVariables.xp >= escapeBoostCost:
+        if player.xp >= escapeBoostCost:
             if escapeBoostMod >= 90:
                 print(Fore.RED+"You can't have a higher retreat chance!")
             else:
                 escapeBoostMod += 5
                 if escapeBoostMod >= 90:
                     escapeBoostMod = 90
-                playerVariables.xp -= escapeBoostCost
+                player.xp -= escapeBoostCost
                 escapeBoostCost = round(escapeBoostCost * escapeboostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
     elif choice == "drop" or choice == "drp" or choice == "drop chance" or choice == "dropchance":
-        if playerVariables.xp >= dropChanceBoostCost:
+        if player.xp >= dropChanceBoostCost:
             if dropChanceBoostMod >= .25:
                 print(Fore.RED+"You can't have a higher drop chance!")
             else:
                 dropChanceBoostMod = round(0.02 + dropChanceBoostMod,2)
                 if dropChanceBoostMod >= .25:
                     dropChanceBoostMod = .25
-                playerVariables.xp -= dropChanceBoostCost
+                player.xp -= dropChanceBoostCost
                 dropChanceBoostCost = round(dropChanceBoostCost * dropChanceBoostCostFactor,1)
         else:
             print(Fore.RED+"You don't have enough xp for this!")
@@ -515,7 +519,7 @@ def combat():
             currentHealth = maxHealth
         print(Fore.GREEN+"Healing some health back...")
         try_drop_item()
-        playerVariables.xp += round(monsterVariables.maxHealth[monsterId]/13,1)
+        player.xp += round(monsterVariables.maxHealth[monsterId]/13,1)
         resetMonster()
         apply_inventory_boosts()
         time.sleep(0.5)
