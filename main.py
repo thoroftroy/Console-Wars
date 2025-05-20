@@ -588,7 +588,7 @@ def main():
         choice = input().lower()
         if choice == "easy":
             print(Fore.GREEN+"Granting extra xp!")
-            player.xp += 10
+            player.xp += 17
         else:
             pass
     else:
