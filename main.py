@@ -112,7 +112,7 @@ def clearScreen():
 
 # Functions
 def saveToFile():
-    global currentMonsterFight, currentMonsterHealth, globalSavePath
+    global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId
     save_path = os.path.join(saveDirectory, currentSaveName)
     globalSavePath = save_path
     
@@ -134,7 +134,8 @@ def saveToFile():
         "dropChanceBoostCost": dropChanceBoostCost,
         "playerXp": playerVariables.xp,
         "currentMonsterFight": currentMonsterFight,
-        "currentMonsterHealth": currentMonsterHealth
+        "currentMonsterHealth": currentMonsterHealth,
+        "monsterId": monsterId
     }
 
     with open(save_path, "w") as f:
@@ -155,7 +156,7 @@ def loadFromFile(filename):
     global dodgeBoostMod, escapeBoostMod, dropChanceBoostMod
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
-    global currentMonsterFight, currentMonsterHealth
+    global currentMonsterFight, currentMonsterHealth, monsterId
 
     save_path = os.path.join(saveDirectory, filename)
     try:
@@ -183,8 +184,9 @@ def loadFromFile(filename):
         escapeBoostCost = data.get("escapeBoostCost", escapeBoostCost)
         dropChanceBoostCost = data.get("dropChanceBoostCost", dropChanceBoostCost)
         playerVariables.xp = data.get("playerXp",playerVariables.xp)
-        currentMonsterFight = data.get("currentMonsterFight", currentMonsterFight),
+        currentMonsterFight = str(data.get("currentMonsterFight", currentMonsterFight))
         currentMonsterHealth = data.get("currentMonsterHealth", currentMonsterHealth)
+        monsterId = data.get("monsterId", monsterId)
 
         return data
     except FileNotFoundError:
@@ -287,7 +289,7 @@ def showCombatStats():
     monsterHealthPercentage = round((currentMonsterHealth / monsterVariables.maxHealth[monsterId]) * 100,2)
     print(Fore.WHITE +"You are currently fighting a",currentMonsterFight," ( Difficulty:",round(currentFloor*100),")")
     print(Fore.BLACK +"|")
-    print(Fore.RED +currentMonsterFight,"Health:")
+    print(Fore.RED+currentMonsterFight,"Health:")
     print(Fore.BLACK +"|",end='')
     for i in range(round(monsterHealthPercentage/2)): print(Fore.RED +'=',end='')
     print(Fore.RED+"",monsterHealthPercentage,"%")
@@ -467,7 +469,7 @@ def combat():
             if damage <= 1:
                 damage = 1
             currentHealth = round(currentHealth - damage,2)
-            print(Fore.RED +currentMonsterFight,"deals",damage,"damage!")
+            print(Fore.RED+currentMonsterFight,"deals",damage,"damage!")
     # What happens when you die
     if currentHealth <= 0:
         print("You died!")
