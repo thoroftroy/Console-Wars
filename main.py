@@ -432,6 +432,7 @@ def levelup():
                 currentHealth = maxHealth
             healthBoostMod = round(healthBoostMod * healthboostCostFactor,1)
             player.xp -= healthboostCost
+            currentHealth += round(maxHealth / 2,1)
             healthboostCost = round(healthboostCost * healthboostCostFactor,1)
             apply_inventory_boosts()
         else:
@@ -575,7 +576,6 @@ def combat():
     # Section for the monster to fight back
     else:
         dodgeChance = random.randint(0,100)
-        
         if dodgeChance <= dodgeBoostMod:
             dodged = True
         if dodged == True:
