@@ -46,6 +46,7 @@ drop_table = [
     {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}, "weight": 12},
     {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3},  "weight": 13},
     {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}, "weight": 10},
+    {"name": "Lucky Ring",         "desc": "Makes you more likley to dodge!",                            "boosts": {"dodge": 5}, "weight": 10},
     {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7},  "weight": 8},
     {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}, "weight": 9},
     {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}, "weight": 8},
@@ -146,6 +147,7 @@ currentMonsterDefense = monsterVariables.Defense[monsterId]
 maxHealth = playerVariables.baseHealth
 currentFloor = 0
 firstLaunch = True
+baseDodgeBoostMod = 5
 
 currentSaveName = ''
 savedGames = []
@@ -299,18 +301,27 @@ def try_drop_item():
         time.sleep(0.5)
 
 def apply_inventory_boosts():
-    global currentHealth, maxHealth, currentDamage, currentDefense, endlessMode, endlessKills
+    global currentHealth, maxHealth, currentDamage, currentDefense, dodgeBoostMod
+    global baseDodgeBoostMod
 
-    # Use instance values from player
     maxHealth = player.baseHealth + player.levelHealthBonus
     currentDamage = player.baseDamage + player.levelDamageBonus
     currentDefense = player.baseDefense + player.levelDefenseBonus
 
+    dodgeBoostMod = baseDodgeBoostMod  # from shop
+
+    item_dodge_total = 0
     for item in player.inventory:
         boosts = item.get("boosts", {})
         maxHealth += boosts.get("health", 0)
         currentDamage += boosts.get("damage", 0)
         currentDefense += boosts.get("defense", 0)
+        item_dodge_total += boosts.get("dodge", 0)
+
+    # Clamp item-based dodge bonus to max of 20
+    item_dodge_total = min(item_dodge_total, 20)
+
+    dodgeBoostMod += item_dodge_total
 
     if currentHealth > maxHealth:
         currentHealth = maxHealth
@@ -403,7 +414,7 @@ def showCombatStats():
     print(Fore.GREEN+"Player Stats:")
     print(Fore.GREEN+" Health: ",end='')
     for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
-    print("",currentHealthPercentage,"%  (",currentHealth,")")
+    print("",currentHealthPercentage,"%  (",round(currentHealth,1),")")
     print(Fore.GREEN +" Damage:",round(currentDamage,1), " |  Defense:",round(currentDefense,1)," |  Xp:",round(player.xp,1))
     print(Fore.GREEN +" Dodge Chance:",dodgeBoostMod,"% |  Retreat Chance:",escapeBoostMod,"%"," |  Item Drop Chance:",round(dropChanceBoostMod*100),"%")
     print(Fore.BLACK +"|")
