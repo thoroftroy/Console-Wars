@@ -15,7 +15,7 @@ class playerVariables:
     baseDefense = 0
     actionList = ["Attack","Retreat","Level","Inventory","Exit"]
     buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop Chance"]
-    xp = 3
+    xp = 5
     levelHealthBonus = 0
     levelDamageBonus = 0
     levelDefenseBonus = 0
@@ -521,7 +521,7 @@ def combat():
             currentHealth = maxHealth
         print(Fore.GREEN+"Healing some health back...")
         try_drop_item()
-        player.xp += round(monsterVariables.maxHealth[monsterId]/13,1)
+        player.xp += round(monsterVariables.maxHealth[monsterId]/12,1)
         resetMonster()
         apply_inventory_boosts()
         time.sleep(0.5)
@@ -588,7 +588,7 @@ def main():
         choice = input().lower()
         if choice == "easy":
             print(Fore.GREEN+"Granting extra xp!")
-            player.xp += 17
+            player.xp += 15
         else:
             pass
     else:
