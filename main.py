@@ -156,7 +156,7 @@ dodgeBoostCostFactor = 1.7
 escapeboostCostFactor = 1.1
 dropChanceBoostCostFactor = 1.4
 
-healthBoostMod = 5
+healthBoostMod = 3
 damageBoostMod = 2.5
 defenseBoostMod = 1
 dodgeBoostMod = 5
