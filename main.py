@@ -11,7 +11,7 @@ import threading
 # Variables
 # Player Varibles
 class playerVariables:
-    name = "Comment"
+    name = "placeHolderName"
     baseHealth = 25
     baseDamage = 3.5
     baseDefense = 0
@@ -584,6 +584,8 @@ def saveToFile():
     save_path = os.path.join(saveDirectory, currentSaveName)
     globalSavePath = save_path
 
+    player.name = os.path.splitext(currentSaveName)[0]
+    
     data = {
         "player": {
             "name": player.name,
