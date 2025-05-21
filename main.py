@@ -249,9 +249,9 @@ def show_stats_screen():
 
     print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}")
     print(Fore.CYAN + f"{'Final' if is_dead else 'Current'} Floor: {data.get('currentFloor', currentFloor) * 100:.0f}")
-    print(f"XP: {player_data.get('xp', player.xp)}  |  Coins: {player_data.get('coins', player.coins)}")
-    print(f"Health: {data.get('maxHealth', maxHealth)}  |  Damage: {player_data.get('baseDamage', 0) + player_data.get('levelDamageBonus', 0)}  |  Defense: {player_data.get('baseDefense', 0) + player_data.get('levelDefenseBonus', 0)}")
-    print(f"Dodge: {data.get('dodgeBoostMod', dodgeBoostMod)}%  |  Drop Chance: {data.get('dropChanceBoostMod', dropChanceBoostMod) * 100:.1f}%")
+    print(f"XP: {round(player_data.get('xp', player.xp), 1)}  |  Coins: {round(player_data.get('coins', player.coins), 1)}")
+    print(f"Health: {round(data.get('maxHealth', maxHealth), 1)}  |  Damage: {round(player_data.get('baseDamage', 0) + player_data.get('levelDamageBonus', 0), 1)}  |  Defense: {round(player_data.get('baseDefense', 0) + player_data.get('levelDefenseBonus', 0), 1)}")
+    print(f"Dodge: {round(data.get('dodgeBoostMod', dodgeBoostMod), 1)}%  |  Drop Chance: {round(data.get('dropChanceBoostMod', dropChanceBoostMod) * 100, 1)}%")
 
     print(Fore.MAGENTA + "\n--- Persistent Stats ---")
     print(f"Monsters Killed: {stats.get('monstersKilled', 0)}")
@@ -322,7 +322,7 @@ def gambling():
     print(Fore.GREEN + "\nOptions:")
     print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
-    print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
+    print(Fore.GREEN + " [convert] → Convert 5 coins into 1 XP")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
 
     choice = input(Fore.CYAN + "\nYour choice: ").lower().strip()
@@ -366,7 +366,7 @@ def gambling():
             if amount <= 0 or amount > player.coins:
                 print(Fore.RED + "Invalid amount.")
             else:
-                floor_scale = 1 + (currentFloor * 0.5)
+                floor_scale = 1 + (currentFloor * 5)
                 multipliers = [0, 0.25, 0.5, 0.75, 1.0, 1.5, 2, 3, 5, 10]
                 weights = [15, 20, 18, 15, 10, 8, 6, 5, 2, 1]
 
@@ -456,17 +456,25 @@ def tamagatchi():
     print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 10")
     print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 20")
     print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
-    print(Fore.YELLOW + "\nFeed it 5 XP? (y/n): ", end='')
 
+    if tamagatchi_data["hunger"] <= 5:
+        print(Fore.YELLOW + "Your Tamagatchi isn't hungry enough to be fed.")
+        time.sleep(2)
+        combat()
+        return
+
+    cost = tamagatchi_data["hunger"] * 2 * (persistentStats["tamagatchiFeeds"] + 1)
+    print(Fore.YELLOW + f"\nFeeding cost: {cost} XP. Proceed? (y/n): ", end='')
     choice = input().strip().lower()
-    if choice == "y" and player.xp >= 5:
+
+    if choice == "y" and player.xp >= cost:
         tamagatchi_data["hunger"] = max(tamagatchi_data["hunger"] - 4, 0)
         tamagatchi_data["bond"] = min(tamagatchi_data["bond"] + 1, 20)
-        player.xp -= 5
-        print(Fore.GREEN + "You feed your companion! It looks happier.")
+        player.xp -= cost
         persistentStats["tamagatchiFeeds"] += 1
+        print(Fore.GREEN + "You feed your companion! It looks happier.")
     elif choice == "y":
-        print(Fore.RED + "Not enough XP to feed it.")
+        print(Fore.RED + "Not enough XP.")
     else:
         print(Fore.YELLOW + "You chose not to feed it.")
 
@@ -477,24 +485,31 @@ def tamagatchi():
 def update_tamagatchi():
     if not tamagatchi_data["active"] or tamagatchi_data["last_update"] is None:
         return
+
     last_time = datetime.fromisoformat(tamagatchi_data["last_update"])
     now = datetime.now()
-    delta_minutes = (now - last_time).total_seconds() / 60
-    tamagatchi_data["last_update"] = now.isoformat()
-    tamagatchi_data["hunger"] += int(delta_minutes // 3)
+    elapsed = (now - last_time).total_seconds()
+
+    # Hunger increases every 3–10 seconds
+    hunger_increase = int(elapsed // random.randint(3, 10))
+    if hunger_increase > 0:
+        tamagatchi_data["hunger"] += hunger_increase
+        tamagatchi_data["last_update"] = now.isoformat()
 
     if tamagatchi_data["hunger"] > 10:
         tamagatchi_data["bond"] = max(0, tamagatchi_data["bond"] - 1)
+        tamagatchi_data["hunger"] = 10
     elif tamagatchi_data["hunger"] < 5:
         tamagatchi_data["bond"] += 1
 
     tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 20)
 
-    scale = max(1, currentFloor ** 0.5)
+    # Boosts scale stronger now
     bond = tamagatchi_data["bond"]
-    tamagatchi_data["boosts"]["health"] = int(bond * 1.5 * scale)
-    tamagatchi_data["boosts"]["damage"] = round(bond * 0.3 * scale, 1)
-    tamagatchi_data["boosts"]["defense"] = int((bond // 5) * scale)
+    scale = max(1, currentFloor * 10)
+    tamagatchi_data["boosts"]["health"] = int(bond * 4 * scale)
+    tamagatchi_data["boosts"]["damage"] = int(bond * 2 * scale)
+    tamagatchi_data["boosts"]["defense"] = int((bond * 1.1) * scale)
 
 # Fishing stuff
 def fishing():
@@ -509,7 +524,7 @@ def fishing():
     def fishing_loop():
         global fishing_active
         while fishing_active:
-            wait_time = random.uniform(3, 10)
+            wait_time = random.uniform(2, 7)
             print(Fore.BLUE + f"Waiting for a bite...")
             time.sleep(wait_time)
             if not fishing_active:
@@ -527,7 +542,7 @@ def fishing():
 
             roll = random.random()
             if roll < 0.6:
-                scale = 1 + currentFloor
+                scale = 1 + (currentFloor*7.5)
                 base_xp = random.uniform(0.5, 5.0)
                 xp_gain = round(base_xp * scale, 1)
                 player.xp += xp_gain
@@ -556,7 +571,7 @@ def fishing():
 
     while fishing_active:
         cmd = input()
-        if cmd.strip().lower() == "leave":
+        if cmd.strip().lower() == "leave" or cmd.strip().lower() == "exit":
             fishing_active = False
             print(Fore.GREEN + "You reel in your line and return to camp...")
             time.sleep(1)
