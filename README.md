@@ -36,14 +36,13 @@
 ---
 
 ## File Structure
+```
 project_root/
 │
 ├── saves/ # Save files
 ├── main.py # The full game script
 └── README.md # This file
-
----
-
+```
 ## Requirements
 
 - Python 3.6+
@@ -52,6 +51,9 @@ project_root/
 Install with:
 ```bash
 pip install colorama
+```
 
 ## Launching The Game
+```
 python main.py
+```
