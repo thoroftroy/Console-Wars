@@ -54,6 +54,19 @@ pip install colorama
 ```
 
 ## Launching The Game
+This game should work on Linux, Windows, or MacOs. Choose the command that works with your system and the way you installed python. You can check which one will work by typing:
+```
+python --version
+python3 --version
+py --version
+```
+At least one of those should work, use the command that works on your system. 
 ```
 python main.py
+```
+```
+python3 main.py
+```
+```
+py main.py
 ```
