@@ -503,20 +503,32 @@ def fishing():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.CYAN + "You sit quietly by the water and begin fishing...")
+    print(Fore.YELLOW + "When a fish goes on the line hit enter 2-3 times to catch it!")
     print(Fore.YELLOW + "Type 'leave' to stop fishing at any time.\n")
 
     def fishing_loop():
         global fishing_active
         while fishing_active:
-            wait_time = random.uniform(5, 20)
+            wait_time = random.uniform(3, 10)
             print(Fore.BLUE + f"Waiting for a bite...")
             time.sleep(wait_time)
             if not fishing_active:
                 break
+
+            print(Fore.YELLOW + "\nA fish is on the line! Press Enter within 1 second to catch it!")
+
+            start = time.time()
+            response = input()
+            reaction = time.time() - start
+
+            if reaction > 1.0:
+                print(Fore.RED + "Too slow! The fish got away.")
+                continue
+
             roll = random.random()
             if roll < 0.6:
                 scale = 1 + currentFloor
-                base_xp = random.uniform(0.5, 3.0)
+                base_xp = random.uniform(0.5, 5.0)
                 xp_gain = round(base_xp * scale, 1)
                 player.xp += xp_gain
                 print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
