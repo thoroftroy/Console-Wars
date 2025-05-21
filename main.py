@@ -524,10 +524,19 @@ def fishing():
             else:
                 weights = [item.get("weight", 1) for item in drop_table]
                 item = random.choices(drop_table, weights=weights, k=1)[0]
-                player.inventory.append(item)
-                print(Fore.MAGENTA + f"You fished up a rare item: {item['name']}!")
+                item_names = [i["name"] for i in player.inventory]
+                if item["name"] in item_names:
+                    value = get_item_coin_value(item)
+                    player.coins += value
+                    print(Fore.MAGENTA + f"You fished up {item['name']} again, but you already own it.")
+                    print(Fore.YELLOW + f"It was automatically sold for {value} coins.")
+                    persistentStats["itemsSold"] += 1
+                    persistentStats["coinsFromSelling"] += value
+                else:
+                    player.inventory.append(item)
+                    print(Fore.MAGENTA + f"You fished up a rare item: {item['name']}!")
+                    print(Fore.YELLOW + item['desc'])
                 persistentStats["itemsFished"] += 1
-                print(Fore.YELLOW + item['desc'])
                 apply_inventory_boosts()
 
     thread = threading.Thread(target=fishing_loop, daemon=True)
