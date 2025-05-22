@@ -637,7 +637,7 @@ def gambling():
                 elif result < 1:
                     print(Fore.YELLOW + f"You lost some coins. You only got {change} back.")
                 elif result == 1 * floor_scale:
-                    print(Fore.GREEN + "You broke even.")
+                    print(Fore.GREEN + "You gained lots of coins!")
                 else:
                     print(Fore.GREEN + f"You won! Your coins grew to {change} from your bet.")
         except ValueError:
