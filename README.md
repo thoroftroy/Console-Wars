@@ -51,17 +51,17 @@ project_root/
 Install with:
 ```bash
 pip install colorama
-```
 
 ## Launching The Game
-**YOU MUST RUN THE GAME FROM THE TERMINAL FOR IT TO WORK**
-This game should work on Linux, Windows, or MacOs. Choose the command that works with your system and the way you installed python. You can check which one will work by typing:
+
+YOU MUST RUN THE GAME FROM THE TERMINAL FOR IT TO WORK
+
+This game should work on Linux, Windows, or macOS. Choose the command that works with your system and the way you installed Python. You can check which one will work by typing:
 ```
 python --version
 python3 --version
 py --version
 ```
-At least one of those should work, use the command that works on your system. 
 ```
 python main.py
 ```
@@ -71,3 +71,18 @@ python3 main.py
 ```
 py main.py
 ```
+## How to Play
+1. Combat
+    Face various monsters as you climb through levels, battling them with your stats and inventory items.
+    Use your health, damage, defense, and dodge to survive and defeat enemies.
+    Items found during battles can be sold, used for stat boosts, or used to heal.
+
+2. Minigames
+    Tamagatchi: Adopt a pet and feed it to increase stats.
+    Fishing: Catch fish or rare items for XP and bonuses.
+    Gambling: Place bets with your coins for the chance of big rewards.
+3. Wishing Well
+    Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
+4. Reborn
+    When you reach a certain level, you can choose to reset your progress for better rewards.
+
