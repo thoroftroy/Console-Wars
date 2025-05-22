@@ -824,7 +824,7 @@ def fishing():
                 time.sleep(0.5)
                 continue
 
-            wait_time = random.uniform(2, 7)
+            wait_time = random.uniform(4, 9)
             print(Fore.BLUE + "Waiting for a bite...")
             time.sleep(wait_time)
             if not fishing_active:
@@ -848,13 +848,13 @@ def fishing():
                 print(Fore.RED + "You reacted in time, but you were penalized for spamming. No rewards given.")
             elif fishing_active:
                 roll = random.random()
-                if roll < 0.6:
+                if roll < 0.8:
                     if currentFloor >= 50:
                         mult = 10 * int(currentFloor * 1000)
                     else:
                         mult = 1
-                    scale = 1 + (currentFloor * 30)
-                    base_xp = random.uniform(0.5, 20.0)
+                    scale = 1 + (currentFloor * 10)
+                    base_xp = random.uniform(0.5, 5.0)
                     xp_gain = round((base_xp * scale) * mult, 1)
                     player.xp += xp_gain
                     print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
