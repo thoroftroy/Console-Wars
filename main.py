@@ -462,8 +462,8 @@ def tamagatchi():
 
     update_tamagatchi()
     print(Fore.CYAN + "\n--- Tamagatchi Status ---")
-    print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 10")
-    print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 20")
+    print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 20")
+    print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 50")
     print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
 
     if tamagatchi_data["hunger"] <= 5:
@@ -472,7 +472,7 @@ def tamagatchi():
         combat()
         return
 
-    cost = tamagatchi_data["hunger"] * 2 * (persistentStats["tamagatchiFeeds"] + 1)
+    cost = tamagatchi_data["hunger"] * 1.4 * (persistentStats["tamagatchiFeeds"] + 1)
     print(Fore.YELLOW + f"\nFeeding cost: {cost} XP. Proceed? (y/n): ", end='')
     choice = get_clean_input().strip().lower()
 
@@ -499,19 +499,19 @@ def update_tamagatchi():
     now = datetime.now()
     elapsed = (now - last_time).total_seconds()
 
-    # Hunger increases every 3–10 seconds
-    hunger_increase = int(elapsed // random.randint(3, 10))
+    # Hunger increases every 10-120 seconds
+    hunger_increase = int(elapsed // random.randint(10, 120))
     if hunger_increase > 0:
         tamagatchi_data["hunger"] += hunger_increase
         tamagatchi_data["last_update"] = now.isoformat()
 
     if tamagatchi_data["hunger"] > 10:
         tamagatchi_data["bond"] = max(0, tamagatchi_data["bond"] - 1)
-        tamagatchi_data["hunger"] = 10
+        tamagatchi_data["hunger"] = 20
     elif tamagatchi_data["hunger"] < 5:
         tamagatchi_data["bond"] += 1
 
-    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 20)
+    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 50)
 
     # Boosts scale stronger now
     bond = tamagatchi_data["bond"]
