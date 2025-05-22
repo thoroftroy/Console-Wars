@@ -49,7 +49,7 @@ drop_table = [
     {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}, "weight": 12},
     {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3},  "weight": 13},
     {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}, "weight": 10},
-    {"name": "Lucky Ring",         "desc": "Makes you more likley to dodge!",                            "boosts": {"dodge": 5}, "weight": 10},
+    {"name": "Lucky Ring",         "desc": "Makes you more likely to dodge!",                            "boosts": {"dodge": 5}, "weight": 10},
     {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7},  "weight": 8},
     {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}, "weight": 9},
     {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}, "weight": 8},
@@ -393,6 +393,7 @@ def reborn():
     print(Fore.YELLOW + "--- Reborn ---")
     print(Fore.CYAN + "This resets you to Floor 0 with all boosts kept.")
     print(Fore.CYAN+"This will reset the price of items in the shop, but not how much they boost your character.")
+    print(Fore.CYAN+"Tamagatchi will be buffed!")
     print(Fore.CYAN + "You gain 100,000 coins. It costs 1,000 XP to use.")
     print(Fore.CYAN + "You can only do this after reaching Floor 170")
     print(Fore.YELLOW + "\nDo you want to Reborn? (yes/no)")
@@ -428,7 +429,7 @@ def reborn():
 # Help me god oh please help me
 def wishing_well():
     global player, wishing_well_cost
-
+    
     clearScreen()
     if persistentStats["monstersKilled"] < 100:
         print(Fore.RED + "You must defeat 100 monsters to unlock the Wishing Well.")
@@ -617,7 +618,7 @@ def gambling():
             if amount <= 0 or amount > player.coins:
                 print(Fore.RED + "Invalid amount.")
             else:
-                floor_scale = 1 + (currentFloor * 1.5)
+                floor_scale = 1 + (currentFloor * 3)
                 multipliers = [0, 0.1, 0.2, 0.4, 1.0, 1.2, 1.4, 1.8, 2, 2.5]
                 weights =     [30,40,   30,   30,  50,   5, 2.5, 2, 1.5, 0.1]
 
@@ -707,7 +708,8 @@ def start_tamagatchi_thread():
     thread.start()
 
 def tamagatchi():
-    global player
+    global player, persistentStats
+    maxBond = 20 * (persistentStats["rebornsUsed"] + 1)
     clearScreen()
     print(Style.RESET_ALL)
 
@@ -733,7 +735,7 @@ def tamagatchi():
         update_tamagatchi()
         print(Fore.CYAN + "\n--- Tamagatchi Status ---")
         print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 100")
-        print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 20")
+        print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / "+str(maxBond))
         print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
         print(Fore.YELLOW + f"XP: {round(player.xp,1)}")
 
@@ -770,6 +772,8 @@ def tamagatchi():
         apply_inventory_boosts()
 
 def update_tamagatchi():
+    global persistentStats
+    maxBond = 20 * (persistentStats["rebornsUsed"] + 1)
     if not tamagatchi_data["active"] or tamagatchi_data["last_update"] is None:
         return
 
@@ -789,14 +793,19 @@ def update_tamagatchi():
     elif tamagatchi_data["hunger"] < 5:
         tamagatchi_data["bond"] += 1
 
-    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 20)
+    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], maxBond)
 
     # Boosts scale stronger now
     bond = tamagatchi_data["bond"]
     scale = max(1, currentFloor * 10)
-    tamagatchi_data["boosts"]["health"] = int(bond * 1.3 * scale)
-    tamagatchi_data["boosts"]["damage"] = int(bond * 0.3 * scale)
-    tamagatchi_data["boosts"]["defense"] = int((bond * 0.1) * scale)
+    if bond <= 20:
+        tamagatchi_data["boosts"]["health"] = int(bond * 1.3 * scale)
+        tamagatchi_data["boosts"]["damage"] = int(bond * 0.3 * scale)
+        tamagatchi_data["boosts"]["defense"] = int((bond * 0.1) * scale)
+    elif bond >= 21:
+        tamagatchi_data["boosts"]["health"] = int(bond * 2.3 * scale)
+        tamagatchi_data["boosts"]["damage"] = int(bond * 1.3 * scale)
+        tamagatchi_data["boosts"]["defense"] = int((bond * 1.1) * scale)
 
 # Fishing stuff
 def fishing():
@@ -1244,7 +1253,7 @@ def levelup():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
-    print(Fore.GREEN+"Ugrade Costs (Current Xp:",round(player.xp,1),")")
+    print(Fore.GREEN+"Upgrade Costs (Current Xp:",round(player.xp,1),")")
     print(Fore.GREEN+" Health Boost:",healthboostCost," |  Damage Boost:",damageBoostCost," |  Defense Boost:",DefenseBoostCost,"\n Dodge Boost:",dodgeBoostCost,"  | Retreat Boost:",escapeBoostCost, " |  Item Drop Boost:",dropChanceBoostCost)
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
