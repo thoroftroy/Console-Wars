@@ -17,7 +17,7 @@ class playerVariables:
     baseDefense = 0
     actionList = ["Attack","Retreat","Level","Inventory","Minigames","Stats","Exit"]
     buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop"]
-    gameList = ["Tamagachi","Gambling","Fishing"]
+    gameList = ["Tamagachi","Gambling","Fishing","Wishing Well","Reborn"]
     xp = 5
     coins = 0
     levelHealthBonus = 0
@@ -137,6 +137,65 @@ drop_table = [
     {"name": "Shield of Eternity", "desc": "No force may breach its guard.",                             "boosts": {"defense": 600}, "weight": 0.05}
 ]
 
+# Wishing well
+blessings = [
+    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 50)},
+    {"name": "Blessing of Power", "desc": "Greatly increases your damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 20)},
+    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 20)},
+    {"name": "Powerful Blessing of Vitality", "desc": "Greatly increases your max health.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 500)},
+    {"name": "PowerfulBlessing of Power", "desc": "Greatly increases your damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 200)},
+    {"name": "Powerful Blessing of Fortitude", "desc": "Greatly increases your defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 200)},
+    {"name": "Divine Spark", "desc": "Doubles XP gained from next 5 fights.", "effect": lambda p: persistentStats.update({"divineSpark": persistentStats.get("divineSpark", 0) + 5})},
+    {"name": "Gift of Giants", "desc": "Boosts your health by 200.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 200)},
+    {"name": "Fury Unleashed", "desc": "Gain +100 damage instantly.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 100)},
+    {"name": "Iron Will", "desc": "Gain +80 defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 80)},
+    {"name": "Echo of Titans", "desc": "Grants +300 health.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 300)},
+    {"name": "Blazing Strength", "desc": "You feel unstoppable. +250 damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 250)},
+    {"name": "Wall of Ages", "desc": "Ancient defense awakens. +200 defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 200)},
+    {"name": "Vital Infusion", "desc": "Permanently enhances your life force by 1000.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 1000)},
+    {"name": "Warrior’s Flame", "desc": "You burn with battle energy. +400 damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 400)},
+    {"name": "Unbreakable Shell", "desc": "Gain +350 defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 350)},
+    {"name": "Starlight Boon", "desc": "XP gained is doubled for 10 fights.", "effect": lambda p: persistentStats.update({"divineSpark": persistentStats.get("divineSpark", 0) + 10})},
+    {"name": "Overflowing Vitality", "desc": "Gain +2000 health.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 2000)},
+    {"name": "Executioner’s Edge", "desc": "You thirst for combat. +600 damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 600)},
+    {"name": "Impenetrable Core", "desc": "Gain +500 defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 500)},
+    {"name": "Fortune’s Favor", "desc": "Boosts drop chance by 5%.", "effect": lambda p: globals().__setitem__('dropChanceBoostMod', min(0.5, dropChanceBoostMod + 0.05))},
+    {"name": "Dodge Mastery", "desc": "Gain +10% dodge chance.", "effect": lambda p: globals().__setitem__('dodgeBoostMod', min(100, dodgeBoostMod + 10))},
+    {"name": "Escape Artist", "desc": "Retreat chance +15%.", "effect": lambda p: globals().__setitem__('escapeBoostMod', min(100, escapeBoostMod + 15))},
+    {"name": "XP Infusion", "desc": "Gain 1000 XP instantly.", "effect": lambda p: setattr(p, 'xp', p.xp + 1000)},
+    {"name": "Coin Cascade", "desc": "Gain 5000 coins.", "effect": lambda p: setattr(p, 'coins', p.coins + 5000)},
+    {"name": "Jackpot", "desc": "Gain 50,000 coins.", "effect": lambda p: setattr(p, 'coins', p.coins + 50000)},
+    {"name": "Hyper Health", "desc": "Gain +5000 health.", "effect": lambda p: setattr(p, 'levelHealthBonus', p.levelHealthBonus + 5000)},
+    {"name": "Overclocked Power", "desc": "+1000 damage instantly.", "effect": lambda p: setattr(p, 'levelDamageBonus', p.levelDamageBonus + 1000)},
+    {"name": "Ancient Plate", "desc": "Gain +1000 defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 1000)},
+    {"name": "Sacred Surge", "desc": "Gain +1500 health and +300 defense.", "effect": lambda p: [setattr(p, 'levelHealthBonus', p.levelHealthBonus + 1500), setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 300)]},
+    {"name": "Storm Rage", "desc": "Gain +1200 damage and +10% dodge.", "effect": lambda p: [setattr(p, 'levelDamageBonus', p.levelDamageBonus + 1200), globals().__setitem__('dodgeBoostMod', min(100, dodgeBoostMod + 10))]},
+    {"name": "Radiant Core", "desc": "Full heal to max HP.", "effect": lambda p: globals().__setitem__('currentHealth', maxHealth)},
+    {"name": "Essence of Time", "desc": "XP gain is doubled forever.", "effect": lambda p: persistentStats.update({"divineSpark": 99999})},
+    {"name": "Bloodlust", "desc": "Gain +1500 damage, but lose 1000 health.", "effect": lambda p: [setattr(p, 'levelDamageBonus', p.levelDamageBonus + 1500), setattr(p, 'levelHealthBonus', max(0, p.levelHealthBonus - 1000))]},
+    {"name": "Armor of Fate", "desc": "Gain +1500 defense and 1000 health.", "effect": lambda p: [setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 1500), setattr(p, 'levelHealthBonus', p.levelHealthBonus + 1000)]},
+    {"name": "Wish of Kings", "desc": "Gain 500 XP and 5000 coins.", "effect": lambda p: [setattr(p, 'xp', p.xp + 500), setattr(p, 'coins', p.coins + 5000)]},
+    {"name": "Ultimate Form", "desc": "+2000 in most stats.", "effect": lambda p: [setattr(p, 'levelHealthBonus', p.levelHealthBonus + 2000), setattr(p, 'levelDamageBonus', p.levelDamageBonus + 2000), setattr(p, 'levelDefenseBonus', p.levelDefenseBonus + 200)]},
+]
+
+curses = [
+    {"name": "Curse of Weakness", "desc": "Reduces your damage.", "effect": lambda p: setattr(p, 'levelDamageBonus', max(0, p.levelDamageBonus - 10))},
+    {"name": "Curse of Fragility", "desc": "Reduces your health.", "effect": lambda p: setattr(p, 'levelHealthBonus', max(0, p.levelHealthBonus - 30))},
+    {"name": "Curse of Vulnerability", "desc": "Reduces your defense.", "effect": lambda p: setattr(p, 'levelDefenseBonus', max(0, p.levelDefenseBonus - 10))},
+    {"name": "Hex of Misfortune", "desc": "Drop chance reduced.", "effect": lambda p: globals().__setitem__('dropChanceBoostMod', max(0.01, dropChanceBoostMod - 0.05))},
+    {"name": "Curse of Confusion", "desc": "Lose 25% of your XP.", "effect": lambda p: setattr(p, 'xp', max(0, p.xp * 0.75))},
+    {"name": "Curse of Loss", "desc": "Lose 50% of your coins.", "effect": lambda p: setattr(p, 'coins', int(p.coins * 0.5))},
+    {"name": "Crippling Wound", "desc": "Lose 200 health permanently.", "effect": lambda p: setattr(p, 'levelHealthBonus', max(0, p.levelHealthBonus - 200))},
+    {"name": "Crack in Armor", "desc": "Lose 100 defense permanently.", "effect": lambda p: setattr(p, 'levelDefenseBonus', max(0, p.levelDefenseBonus - 100))},
+    {"name": "Broken Blade", "desc": "Lose 150 damage permanently.", "effect": lambda p: setattr(p, 'levelDamageBonus', max(0, p.levelDamageBonus - 150))},
+    {"name": "Hex of Exhaustion", "desc": "Next 3 XP gains are halved.", "effect": lambda p: persistentStats.update({"divineSpark": -3})},
+    {"name": "Weakening Fog", "desc": "Lose 10% health and defense.", "effect": lambda p: [setattr(p, 'levelHealthBonus', max(0, int(p.levelHealthBonus * 0.9))), setattr(p, 'levelDefenseBonus', max(0, int(p.levelDefenseBonus * 0.9)))]},
+    {"name": "Sluggish Blood", "desc": "Lose 1000 health instantly.", "effect": lambda p: globals().__setitem__('currentHealth', max(0, currentHealth - 1000))},
+    {"name": "Shattered Luck", "desc": "Drop chance reduced by 10%.", "effect": lambda p: globals().__setitem__('dropChanceBoostMod', max(0.01, dropChanceBoostMod - 0.10))},
+    {"name": "Doom’s Brand", "desc": "All gains halved for 5 fights.", "effect": lambda p: persistentStats.update({"divineSpark": -5})},
+]
+
+
 # Tamagatchi stuff (why)
 tamagatchi_data = {
     "active": False,
@@ -158,7 +217,14 @@ persistentStats = {
     "itemsSold": 0,
     "coinsFromSelling": 0,
     "coinsConvertedToXP": 0,
-    "tamagatchiFeeds": 0
+    "tamagatchiFeeds": 0,
+    "wishingCoinsUsed": 0,
+    "blessingsReceived": 0,
+    "cursesReceived": 0,
+    "divineSpark": 0,
+    "obtainedBlessings": [],
+    "obtainedCurses": [],
+    "rebornsUsed": 0,
 }
 
 
@@ -185,6 +251,7 @@ os.makedirs(saveDirectory, exist_ok=True)
 player = playerVariables()
 fishing_active = False
 is_dead = False
+wishing_well_cost = 1000 
 
 healthboostCost = 2
 damageBoostCost = 3
@@ -262,6 +329,8 @@ def show_stats_screen():
     print(f"Health: {round(data.get('maxHealth', maxHealth), 1)}  |  Damage: {round(player_data.get('baseDamage', 0) + player_data.get('levelDamageBonus', 0), 1)}  |  Defense: {round(player_data.get('baseDefense', 0) + player_data.get('levelDefenseBonus', 0), 1)}")
     print(f"Dodge: {round(data.get('dodgeBoostMod', dodgeBoostMod), 1)}%  |  Drop Chance: {round(data.get('dropChanceBoostMod', dropChanceBoostMod) * 100, 1)}%")
 
+    print(f"Reborns Used: {stats.get('rebornsUsed', 0)}")
+
     print(Fore.MAGENTA + "\n--- Persistent Stats ---")
     print(f"Monsters Killed: {stats.get('monstersKilled', 0)}")
     print(f"Demon Lords Defeated: {stats.get('demonLordsDefeated', 0)}")
@@ -272,6 +341,12 @@ def show_stats_screen():
     print(f"Items Sold: {stats.get('itemsSold', 0)}  |  Coins from Selling: {stats.get('coinsFromSelling', 0)}")
     print(f"Coins → XP: {stats.get('coinsConvertedToXP', 0)}")
     print(f"Tamagatchi Feeds: {stats.get('tamagatchiFeeds', 0)}")
+    
+    print(Fore.CYAN + "\n--- Wishing Well ---")
+    print(f"Wishes Made: {stats.get('wishingCoinsUsed', 0)}")
+    print(f"Blessings Received: {stats.get('blessingsReceived', 0)}")
+    print(f"Curses Received: {stats.get('cursesReceived', 0)}")
+    print(f"Divine Spark Charges: {stats.get('divineSpark', 0)}")
 
     print(Fore.GREEN + "\n--- Inventory ---")
     inventory = player_data.get("inventory", [])
@@ -295,6 +370,132 @@ def show_stats_screen():
         print(Fore.BLUE + "\n(Press Enter to return to combat...)")
         get_clean_input()
         combat()
+
+# The section for being reborn
+def reborn():
+    global player, currentFloor
+    clearScreen()
+
+    #if persistentStats["monstersKilled"] < 150:
+    #    print(Fore.RED + "You must defeat 150 monsters to unlock Reborn.")
+    #    time.sleep(2)
+    #    combat()
+    #    return
+
+    if currentFloor < 1.70:
+        print(Fore.RED + "You must reach floor 170 to use Reborn.")
+        time.sleep(2)
+        combat()
+        return
+
+    print(Fore.YELLOW + "--- Reborn ---")
+    print(Fore.CYAN + "This resets you to Floor 0 with all boosts kept.")
+    print(Fore.CYAN + "You gain 100,000 coins. It costs 1,000 XP to use.")
+    print(Fore.CYAN + "You can only do this after reaching Floor 170")
+    print(Fore.YELLOW + "\nDo you want to Reborn? (yes/no)")
+
+    choice = get_clean_input().strip().lower()
+    if choice in ["yes", "y"]:
+        if player.xp < 1000:
+            print(Fore.RED + "You don't have enough XP!")
+            time.sleep(2)
+            combat()
+            return
+        player.xp -= 1000
+        player.coins += 100000
+        currentFloor = 0
+        persistentStats["rebornsUsed"] += 1
+        print(Fore.GREEN + "You are reborn. The climb begins anew!")
+        time.sleep(5)
+        resetMonster()
+        combat()
+    else:
+        print(Fore.YELLOW + "Rebirth canceled.")
+        time.sleep(1.5)
+        combat()
+
+# Help me god oh please help me
+def wishing_well():
+    global player, wishing_well_cost
+
+    clearScreen()
+    if persistentStats["monstersKilled"] < 100:
+        print(Fore.RED + "You must defeat 100 monsters to unlock the Wishing Well.")
+        time.sleep(2)
+        combat()
+        return
+
+    while True:
+        clearScreen()
+        print(Fore.CYAN + "--- The Wishing Well ---")
+        print(Fore.YELLOW + f"Current Wish Cost: {wishing_well_cost} coins        |    Current Coins:",player.coins)
+        print(Fore.GREEN + f"Blessings so far: {persistentStats['blessingsReceived']}")
+        print(Fore.RED + f"Curses so far: {persistentStats['cursesReceived']}")
+        print(Fore.BLUE + f"Wishes made: {persistentStats['wishingCoinsUsed']}")
+
+        print(Fore.MAGENTA + "\nBoosts granted by blessings so far:")
+        print(f" +{round(player.levelHealthBonus,1)} Health  |  +{round(player.levelDamageBonus,1)} Damage  |  +{round(player.levelDefenseBonus,1)} Defense")
+        print(f"Divine Spark Charges: {persistentStats.get('divineSpark', 0)}")
+        print(Fore.YELLOW + "\nType 'y' to wish, or 'exit' to leave.")
+
+        choice = get_clean_input().strip().lower()
+        if choice in ["exit", "leave"]:
+            combat()
+            return
+        if choice != "y":
+            if len(persistentStats["obtainedBlessings"]) == len(blessings) and len(persistentStats["obtainedCurses"]) == len(curses):
+                print(Fore.LIGHTBLACK_EX + "You have received every blessing and curse. You gain some xp instead!")
+                pityXp = (wishing_well_cost * 1.2)
+                player.xp += pityXp
+                print(Fore.GREEN+("You gained",round(pityXp,1)))
+                time.sleep(2)
+                combat()
+                return
+            else:
+                continue
+
+        if player.coins < wishing_well_cost:
+            print(Fore.RED + "Not enough coins.")
+            time.sleep(2)
+            continue
+
+        player.coins -= wishing_well_cost
+        persistentStats["wishingCoinsUsed"] += 1
+        wishing_well_cost = int(wishing_well_cost * 1.2)
+
+        roll = random.randint(1, 100)
+        if roll <= 55:
+            # Blessing
+            blessing = random.choice(blessings)
+            if blessing["name"] in persistentStats["obtainedBlessings"]:
+                print(Fore.YELLOW + f"You already received {blessing['name']}! You get half your coins back.")
+                player.coins += wishing_well_cost // 2
+            else:
+                blessing["effect"](player)
+                persistentStats["obtainedBlessings"].append(blessing["name"])
+                persistentStats["blessingsReceived"] += 1
+                print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
+        elif roll <= 95:
+            # Curse
+            curse = random.choice(curses)
+            if curse["name"] in persistentStats["obtainedCurses"]:
+                print(Fore.YELLOW + f"You already endured {curse['name']}. Refunding half your coins.")
+                player.coins += wishing_well_cost // 2
+            else:
+                curse["effect"](player)
+                persistentStats["obtainedCurses"].append(curse["name"])
+                persistentStats["cursesReceived"] += 1
+                print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
+        else:
+            # 5% Chance: Divine Spark or Nothing
+            if random.random() < 0.5:
+                persistentStats["divineSpark"] += 1
+                print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
+            else:
+                print(Fore.LIGHTBLACK_EX + "The well remains silent. Nothing happens.")
+
+        apply_inventory_boosts()
+        time.sleep(3)
 
 # LETS GO GAMBLING!!!!!
 def get_item_coin_value(item):
@@ -459,37 +660,48 @@ def tamagatchi():
         start_tamagatchi_thread()
         print(Fore.YELLOW + "You have adopted a strange glowing creature!")
         print(Fore.RED + "Feed and care for it to earn permanent stat boosts.")
-
-    update_tamagatchi()
-    print(Fore.CYAN + "\n--- Tamagatchi Status ---")
-    print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 20")
-    print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 50")
-    print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
-
-    if tamagatchi_data["hunger"] <= 5:
-        print(Fore.YELLOW + "Your Tamagatchi isn't hungry enough to be fed.")
         time.sleep(2)
-        combat()
-        return
 
-    cost = tamagatchi_data["hunger"] * 1.4 * (persistentStats["tamagatchiFeeds"] + 1)
-    print(Fore.YELLOW + f"\nFeeding cost: {cost} XP. Proceed? (y/n): ", end='')
-    choice = get_clean_input().strip().lower()
+    while True:
+        clearScreen()
+        update_tamagatchi()
+        print(Fore.CYAN + "\n--- Tamagatchi Status ---")
+        print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 100")
+        print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 50")
+        print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
+        print(Fore.YELLOW + f"XP: {round(player.xp,1)}")
 
-    if choice == "y" and player.xp >= cost:
-        tamagatchi_data["hunger"] = max(tamagatchi_data["hunger"] - 4, 0)
-        tamagatchi_data["bond"] = min(tamagatchi_data["bond"] + 1, 20)
-        player.xp -= cost
-        persistentStats["tamagatchiFeeds"] += 1
-        print(Fore.GREEN + "You feed your companion! It looks happier.")
-    elif choice == "y":
-        print(Fore.RED + "Not enough XP.")
-    else:
-        print(Fore.YELLOW + "You chose not to feed it.")
+        if tamagatchi_data["hunger"] <= 5:
+            print(Fore.YELLOW + "Your Tamagatchi isn't hungry enough to be fed.")
+        else:
+            cost = tamagatchi_data["hunger"] * 1.4 * (persistentStats["tamagatchiFeeds"] + 1)
+            print(Fore.YELLOW + f"Feeding cost: {round(cost,1)} XP")
+        
+        print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
+        choice = get_clean_input().strip().lower()
 
-    apply_inventory_boosts()
-    time.sleep(1)
-    combat()
+        if choice in ["exit", "leave"]:
+            combat()
+            return
+
+        if choice == "feed":
+            if tamagatchi_data["hunger"] <= 5:
+                print(Fore.YELLOW + "It's not hungry enough to feed.")
+            else:
+                if player.xp >= cost:
+                    tamagatchi_data["hunger"] = max(tamagatchi_data["hunger"] - 4, 0)
+                    tamagatchi_data["bond"] = min(tamagatchi_data["bond"] + 1, 20)
+                    player.xp -= cost
+                    persistentStats["tamagatchiFeeds"] += 1
+                    print(Fore.GREEN + "You feed your companion! It looks happier.")
+                else:
+                    print(Fore.RED + "Not enough XP to feed.")
+            time.sleep(1.5)
+        else:
+            print(Fore.RED + "Invalid command.")
+            time.sleep(1.2)
+
+        apply_inventory_boosts()
 
 def update_tamagatchi():
     if not tamagatchi_data["active"] or tamagatchi_data["last_update"] is None:
@@ -499,15 +711,15 @@ def update_tamagatchi():
     now = datetime.now()
     elapsed = (now - last_time).total_seconds()
 
-    # Hunger increases every 10-120 seconds
-    hunger_increase = int(elapsed // random.randint(10, 120))
+    # Hunger increases every once in a while
+    hunger_increase = int(elapsed // random.randint(60, 640))
     if hunger_increase > 0:
         tamagatchi_data["hunger"] += hunger_increase
         tamagatchi_data["last_update"] = now.isoformat()
 
-    if tamagatchi_data["hunger"] > 10:
+    if tamagatchi_data["hunger"] > 100:
         tamagatchi_data["bond"] = max(0, tamagatchi_data["bond"] - 1)
-        tamagatchi_data["hunger"] = 20
+        tamagatchi_data["hunger"] = 100
     elif tamagatchi_data["hunger"] < 5:
         tamagatchi_data["bond"] += 1
 
@@ -649,18 +861,22 @@ def minigameSelection():
     choice = get_clean_input().lower()
     if choice == "tamagatchi" or choice == "tama":
         tamagatchi()
-    elif choice == "gambling" or choice == "gamble":
+    elif choice == "gambling" or choice == "gamble" or choice == "gamb":
         gambling()
     elif choice == "fishing" or choice == "fish":
         fishing()
     elif choice == "exit":
         combat()
+    elif choice == "wishing well" or choice == "wish" or choice == "wishingwell" or choice == "wsh":
+        wishing_well()
+    elif choice == "reborn" or choice == "born" or choice == "re":
+        reborn()
     else:
         print(Fore.RED+"Invalid input, try again")
         minigameSelection()
 
 def saveToFile():
-    global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId, endlessMode, endlessKills
+    global currentMonsterFight, currentMonsterHealth, globalSavePath, monsterId, endlessMode, endlessKills, wishing_well_cost
     save_path = os.path.join(saveDirectory, currentSaveName)
     globalSavePath = save_path
 
@@ -697,6 +913,7 @@ def saveToFile():
         "firstLaunch": firstLaunch,
         "tamagatchi": tamagatchi_data,
         "persistentStats": persistentStats,
+        "wishing_well_cost": wishing_well_cost,
     }
 
     with open(save_path, "w") as f:
@@ -736,7 +953,7 @@ def loadFromFile(filename):
     global healthboostCost, damageBoostCost, DefenseBoostCost
     global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
     global currentMonsterFight, currentMonsterHealth, monsterId, firstLaunch, endlessMode, endlessKills
-    global tamagatchi_data, is_dead
+    global tamagatchi_data, is_dead, wishing_well_cost
 
     save_path = os.path.join(saveDirectory, filename)
     try:
@@ -774,6 +991,9 @@ def loadFromFile(filename):
         firstLaunch = data.get("firstLaunch",firstLaunch)
         tamagatchi_data = data.get("tamagatchi", tamagatchi_data)
         player.coins = data["player"].get("coins", 0)
+        
+        wishing_well_cost = data.get("wishing_well_cost", wishing_well_cost)
+        
         if "persistentStats" in data:
             persistentStats.update(data["persistentStats"])
             
@@ -808,28 +1028,37 @@ def try_drop_item():
         time.sleep(0.5)
 
 def apply_inventory_boosts():
-    global currentHealth, maxHealth, currentDamage, currentDefense, dodgeBoostMod, baseDodgeBoostMod
+    global currentHealth, maxHealth, currentDamage, currentDefense
+    global dodgeBoostMod, baseDodgeBoostMod
+
+    # Reset stats to base + level bonuses
     maxHealth = player.baseHealth + player.levelHealthBonus
     currentDamage = player.baseDamage + player.levelDamageBonus
     currentDefense = player.baseDefense + player.levelDefenseBonus
 
+    # Reset dodge to base blessing value
     dodgeBoostMod = baseDodgeBoostMod
-    item_dodge_total = 0
+
+    # Apply item bonuses
     for item in player.inventory:
         boosts = item.get("boosts", {})
         maxHealth += boosts.get("health", 0)
         currentDamage += boosts.get("damage", 0)
         currentDefense += boosts.get("defense", 0)
-        item_dodge_total += boosts.get("dodge", 0)
-    item_dodge_total = min(item_dodge_total, 20)
-    dodgeBoostMod += item_dodge_total
+        dodgeBoostMod += boosts.get("dodge", 0)
 
+    # Clamp dodge from items
+    if dodgeBoostMod > baseDodgeBoostMod + 20:
+        dodgeBoostMod = baseDodgeBoostMod + 20
+
+    # Apply tamagatchi boosts
     update_tamagatchi()
     if tamagatchi_data["active"]:
         maxHealth += tamagatchi_data["boosts"]["health"]
         currentDamage += tamagatchi_data["boosts"]["damage"]
         currentDefense += tamagatchi_data["boosts"]["defense"]
 
+    # Clamp health
     if currentHealth > maxHealth:
         currentHealth = maxHealth
 
@@ -1099,7 +1328,16 @@ def combat():
             if currentHealth > maxHealth:
                 currentHealth = maxHealth
             try_drop_item()
-            player.xp += round(monsterVariables.maxHealth[monsterId] / 12, 1)
+            
+            # Calculate XP with Divine Spark bonus
+            xpGain = round(monsterVariables.maxHealth[monsterId] / 12, 1)
+            if persistentStats.get("divineSpark", 0) > 0:
+                xpGain *= 2
+                persistentStats["divineSpark"] -= 1
+                print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xpGain}!")
+            
+            player.xp += xpGain
+            
             resetMonster()
             apply_inventory_boosts()
             time.sleep(0.5)
