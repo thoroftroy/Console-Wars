@@ -15,7 +15,7 @@ class playerVariables:
     baseHealth = 25
     baseDamage = 3.5
     baseDefense = 0
-    actionList = ["Attack","Retreat","Level","Inventory","Minigames","Stats","Exit"]
+    actionList = ["Attack","Retreat","Level","Inventory","Minigames/Other","Stats","Exit"]
     buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop"]
     gameList = ["Tamagachi","Gambling","Fishing","Wishing Well","Reborn"]
     xp = 5
@@ -920,8 +920,14 @@ def minigameSelection():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.BLACK+"|")
-    print(Fore.YELLOW+"Welcome to the minigame section!")
-    print(Fore.BLUE+"         You can complete minigames for small boosts to stats or xp!")
+    print(Fore.YELLOW+"Welcome to the Minigame/Other section!")
+    print(Fore.BLUE+"  You can complete minigames for boosts to stats or xp!")
+    print(Fore.BLACK+"|")
+    print(Fore.YELLOW+"Tamagatchi: A friend you feed xp from time to time for stat boosts.")
+    print(Fore.YELLOW+"Gambling: Gamble your items and coins into more xp and eventually, massive stat bonuses.")
+    print(Fore.YELLOW+"Fishing: Sit down, relax, and fish for xp and items.")
+    print(Fore.YELLOW+"Wishing Well: Spend lots of coins (from gambling) to unlock massive stat bonuses, but bewhere, for you may get cursed...")
+    print(Fore.YELLOW+"Reborn: Start the game over again with all your stats once you reach a high enough level.")
     print(Fore.BLACK+"|")
     print(Fore.BLUE,player.gameList)
     print(Fore.BLACK+"|")
@@ -1352,7 +1358,7 @@ def combat():
         levelup()
     elif choice == "inventory" or choice == "inv":
         showInventory()
-    elif choice == "minigames" or choice == "mini" or choice == "games" or choice == "minigames" or choice == "min":
+    elif choice == "minigames" or choice == "mini" or choice == "games" or choice == "minigames" or choice == "min" or choice == "other":
         minigameSelection()
     elif choice == "stats" or choice == "st":
         show_stats_screen()
