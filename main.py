@@ -375,7 +375,7 @@ def show_stats_screen():
 def reborn():
     global player, currentFloor
     global healthboostCost, damageBoostCost, DefenseBoostCost
-    global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
+    global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost, wishing_well_cost
     clearScreen()
 
     #if persistentStats["monstersKilled"] < 150:
@@ -394,6 +394,7 @@ def reborn():
     print(Fore.CYAN + "This resets you to Floor 0 with all boosts kept.")
     print(Fore.CYAN+"This will reset the price of items in the shop, but not how much they boost your character.")
     print(Fore.CYAN+"Tamagatchi will be buffed!")
+    print(Fore.CYAN+"Wishing well cost will be reset!")
     print(Fore.CYAN + "You gain 100,000 coins. It costs 1,000 XP to use.")
     print(Fore.CYAN + "You can only do this after reaching Floor 170")
     print(Fore.YELLOW + "\nDo you want to Reborn? (yes/no)")
@@ -407,6 +408,7 @@ def reborn():
             return
         player.xp -= 1000
         player.coins += 100000
+        wishing_well_cost = 1000
         currentFloor = 0
         persistentStats["rebornsUsed"] += 1
         print(Fore.GREEN + "You are reborn. The climb begins anew!")
@@ -547,7 +549,7 @@ def gamble_stat_change(amount):
         return amount * 2
 
 def gambling():
-    global player
+    global player, healthBoostMod, damageBoostMod, defenseBoostMod
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.YELLOW + "Welcome to the Gambling Den")
@@ -685,6 +687,12 @@ def gambling():
                         new_total = getattr(player, f"level{stat_choice.capitalize()}Bonus") + change
                         setattr(player, f"level{stat_choice.capitalize()}Bonus", max(0, new_total))
                         print(Fore.MAGENTA + f"{stat_choice.capitalize()} changed by {change}. New total: {max(0, new_total)}")
+                        if stat_choice == "health":
+                            healthBoostMod += change
+                        elif stat_choice == "damage":
+                            damageBoostMod += change
+                        elif stat_choice == "defense":
+                            defenseBoostMod += change
                 except ValueError:
                     print(Fore.RED + "Invalid number.")
     elif choice == "leave" or choice == "exit":
@@ -758,7 +766,7 @@ def tamagatchi():
             else:
                 if player.xp >= cost:
                     tamagatchi_data["hunger"] = max(tamagatchi_data["hunger"] - 4, 0)
-                    tamagatchi_data["bond"] = min(tamagatchi_data["bond"] + 1, 20)
+                    tamagatchi_data["bond"] = min(tamagatchi_data["bond"] + 1, maxBond)
                     player.xp -= cost
                     persistentStats["tamagatchiFeeds"] += 1
                     print(Fore.GREEN + "You feed your companion! It looks happier.")
