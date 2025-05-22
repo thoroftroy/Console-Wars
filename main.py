@@ -570,7 +570,7 @@ def gambling():
     print(Fore.GREEN + "\nOptions:")
     print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
-    print(Fore.GREEN + " [convert] → Convert 5 coins into 1 XP")
+    print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
     if currentFloor >= 2.0:
         print(Fore.GREEN + " [highrisk] → Gamble your health, damage, or defense stats")
     else:
@@ -617,9 +617,9 @@ def gambling():
             if amount <= 0 or amount > player.coins:
                 print(Fore.RED + "Invalid amount.")
             else:
-                floor_scale = 1 + (currentFloor * 2.5)
-                multipliers = [0, 0.1, 0.2, 0.4, 1.0, 1.2, 1.4, 1.8, 2, 3]
-                weights =     [30,40,   30,   30,  50,   8, 2.5, 2, 1.5, 0.1]
+                floor_scale = 1 + (currentFloor * 1.5)
+                multipliers = [0, 0.1, 0.2, 0.4, 1.0, 1.2, 1.4, 1.8, 2, 2.5]
+                weights =     [30,40,   30,   30,  50,   5, 2.5, 2, 1.5, 0.1]
 
                 # Boost rewards slightly at higher floors
                 scaled_multipliers = [m * floor_scale for m in multipliers]
@@ -648,11 +648,11 @@ def gambling():
         else:
             print(Fore.YELLOW + f"You currently have {player.coins} coins.")
             try:
-                amount = int(input(Fore.CYAN + "How many coins would you like to convert (5 coins = 1 xp)? ").strip())
+                amount = int(input(Fore.CYAN + "How many coins would you like to convert (10 coins = 1 xp)? ").strip())
                 if amount < 10 or amount > player.coins:
                     print(Fore.RED + "Invalid amount. Must be at least 10 and no more than your current coins.")
                 else:
-                    xp_gain = round(amount / 5, 2)
+                    xp_gain = round(amount / 10, 2)
                     player.coins -= amount
                     player.xp += xp_gain
                     persistentStats["coinsConvertedToXP"] += amount
