@@ -214,6 +214,15 @@ def clearScreen():
     elif platform.system() == 'Windows':
         os.system('cls')
 
+# This should flush the input preventing glitches from input buffering
+def get_clean_input(prompt=""):
+    try:
+        time.sleep(0.05)
+        print(prompt, end='', flush=True)
+        return input()
+    except EOFError:
+        return ""
+
 #                                       Functions
 def show_stats_screen():
     global is_dead
@@ -280,11 +289,11 @@ def show_stats_screen():
 
     if data.get("currentHealth", currentHealth) <= 0:
         print(Fore.RED + "\nThis player is dead. Exiting...")
-        input()
+        get_clean_input()
         sys.exit()
     else:
         print(Fore.BLUE + "\n(Press Enter to return to combat...)")
-        input()
+        get_clean_input()
         combat()
 
 # LETS GO GAMBLING!!!!!
@@ -465,7 +474,7 @@ def tamagatchi():
 
     cost = tamagatchi_data["hunger"] * 2 * (persistentStats["tamagatchiFeeds"] + 1)
     print(Fore.YELLOW + f"\nFeeding cost: {cost} XP. Proceed? (y/n): ", end='')
-    choice = input().strip().lower()
+    choice = get_clean_input().strip().lower()
 
     if choice == "y" and player.xp >= cost:
         tamagatchi_data["hunger"] = max(tamagatchi_data["hunger"] - 4, 0)
@@ -518,65 +527,109 @@ def fishing():
     clearScreen()
     print(Style.RESET_ALL)
     print(Fore.CYAN + "You sit quietly by the water and begin fishing...")
-    print(Fore.YELLOW + "When a fish goes on the line hit enter 2-3 times to catch it!")
+    print(Fore.YELLOW + "When a fish goes on the line hit enter quickly to catch it!")
     print(Fore.YELLOW + "Type 'leave' to stop fishing at any time.\n")
 
+    idle_enter_count = 0
+    fish_ready = False
+    cooldown_until = 0
+    fishingPenalty = False
+    penalty_end_time = 0
+
     def fishing_loop():
-        global fishing_active
+        nonlocal fish_ready, cooldown_until, fishingPenalty, penalty_end_time
         while fishing_active:
+            if fishingPenalty:
+                time.sleep(0.5)
+                continue
+            if time.time() < cooldown_until:
+                time.sleep(0.5)
+                continue
+
             wait_time = random.uniform(2, 7)
-            print(Fore.BLUE + f"Waiting for a bite...")
+            print(Fore.BLUE + "Waiting for a bite...")
             time.sleep(wait_time)
             if not fishing_active:
                 break
 
-            print(Fore.YELLOW + "\nA fish is on the line! Press Enter within 1 second to catch it!")
+            fish_ready = True
+            print(Fore.YELLOW + "\nA fish is on the line! Press Enter quickly!")
 
             start = time.time()
-            response = input()
+            response = get_clean_input()
             reaction = time.time() - start
+
+            fish_ready = False
 
             if reaction > 1.0:
                 print(Fore.RED + "Too slow! The fish got away.")
+                cooldown_until = time.time() + 3
                 continue
 
-            roll = random.random()
-            if roll < 0.6:
-                scale = 1 + (currentFloor*7.5)
-                base_xp = random.uniform(0.5, 5.0)
-                xp_gain = round(base_xp * scale, 1)
-                player.xp += xp_gain
-                print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
-                persistentStats["fishCaught"] += 1
-            else:
-                weights = [item.get("weight", 1) for item in drop_table]
-                item = random.choices(drop_table, weights=weights, k=1)[0]
-                item_names = [i["name"] for i in player.inventory]
-                if item["name"] in item_names:
-                    value = get_item_coin_value(item)
-                    player.coins += value
-                    print(Fore.MAGENTA + f"You fished up {item['name']} again, but you already own it.")
-                    print(Fore.YELLOW + f"It was automatically sold for {value} coins.")
-                    persistentStats["itemsSold"] += 1
-                    persistentStats["coinsFromSelling"] += value
+            elif fishingPenalty == True:
+                print(Fore.RED + "You reacted in time, but you were penalized for spamming. No rewards given.")
+            elif fishing_active:
+                roll = random.random()
+                if roll < 0.6:
+                    scale = 1 + (currentFloor * 7.5)
+                    base_xp = random.uniform(0.5, 5.0)
+                    xp_gain = round(base_xp * scale, 1)
+                    player.xp += xp_gain
+                    print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
+                    persistentStats["fishCaught"] += 1
                 else:
-                    player.inventory.append(item)
-                    print(Fore.MAGENTA + f"You fished up a rare item: {item['name']}!")
-                    print(Fore.YELLOW + item['desc'])
-                persistentStats["itemsFished"] += 1
-                apply_inventory_boosts()
+                    weights = [item.get("weight", 1) for item in drop_table]
+                    item = random.choices(drop_table, weights=weights, k=1)[0]
+                    item_names = [i["name"] for i in player.inventory]
+                    if item["name"] in item_names:
+                        value = get_item_coin_value(item)
+                        player.coins += value
+                        print(Fore.MAGENTA + f"You fished up {item['name']} again, but you already own it.")
+                        print(Fore.YELLOW + f"It was automatically sold for {value} coins.")
+                        persistentStats["itemsSold"] += 1
+                        persistentStats["coinsFromSelling"] += value
+                    else:
+                        player.inventory.append(item)
+                        print(Fore.MAGENTA + f"You fished up a rare item: {item['name']}!")
+                        print(Fore.YELLOW + item['desc'])
+                    persistentStats["itemsFished"] += 1
+                    apply_inventory_boosts()
+
+            cooldown_until = time.time() + 3
 
     thread = threading.Thread(target=fishing_loop, daemon=True)
     thread.start()
 
     while fishing_active:
-        cmd = input()
-        if cmd.strip().lower() == "leave" or cmd.strip().lower() == "exit":
+        now = time.time()
+        if fishingPenalty:
+            remaining = int(penalty_end_time - now)
+            if remaining <= 0:
+                fishingPenalty = False
+                print(Fore.GREEN + "Penalty over. You may fish again.")
+            else:
+                print(Fore.RED + f"Penalty active! Wait {remaining}s.")
+            time.sleep(1)
+            continue
+
+        cmd = get_clean_input()
+
+        if cmd.strip().lower() in ["leave", "exit"]:
             fishing_active = False
-            print(Fore.GREEN + "You reel in your line and return to camp...")
+            print(Fore.GREEN + "You reel in your line and return to the fight...")
             time.sleep(1)
             combat()
             return
+
+        if cmd.strip() == "" and not fish_ready:
+            idle_enter_count += 1
+            if idle_enter_count > 2:
+                print(Fore.RED + "You're yanking the reel too much! Your line is tangled.")
+                fishingPenalty = True
+                penalty_end_time = time.time() + 10
+                idle_enter_count = 0
+        else:
+            idle_enter_count = 0
 
 def minigameSelection():
     global currentHealth,currentDamage,currentDefense,monsterId,currentMonsterFight,currentMonsterHealth,currentMonsterDefense,healthboostCost
@@ -593,7 +646,7 @@ def minigameSelection():
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
     print(Style.RESET_ALL)
-    choice = input().lower()
+    choice = get_clean_input().lower()
     if choice == "tamagatchi" or choice == "tama":
         tamagatchi()
     elif choice == "gambling" or choice == "gamble":
@@ -821,7 +874,7 @@ def showInventory():
     print(Fore.BLACK+"|")
     print(Fore.BLACK+"|")
     print(Fore.BLUE+"Hit 'enter' to leave this screen")
-    choice = input().lower()
+    choice = get_clean_input().lower()
     combat()
 
 def resetMonster():
@@ -892,7 +945,7 @@ def levelup():
     print(Fore.BLACK+"|")
     print(Fore.BLUE+"Things you can buy:",player.buyList)
     print(Fore.BLUE+"(Type 'exit' to go back to combat)")
-    choice = input().lower()
+    choice = get_clean_input().lower()
     if choice == "health" or choice == "hlth" or choice == "hp":
         if player.xp >= healthboostCost:
             player.levelHealthBonus += healthBoostMod
@@ -977,7 +1030,7 @@ def combat():
     showCombatStats()
     saveToFile() # Saves the file every turn
     # Player's actions
-    choice = input().lower()
+    choice = get_clean_input().lower()
     if choice == "attack" or choice == "atk" or choice == "":
         print(Fore.YELLOW +"You are attacking!")
         damage = round((currentDamage + random.uniform(0,5)) - currentMonsterDefense,2) 
@@ -1103,7 +1156,7 @@ def main():
     clearScreen()
     print(Fore.BLUE+"What is your name? [type the name you used previously to load the file]")
     listSavedFiles()
-    name_input = input().strip().lower()
+    name_input = get_clean_input().strip().lower()
     
     # Ensure the save file ends with `.json`
     if not name_input.endswith('.json'):
@@ -1126,7 +1179,7 @@ def main():
     if firstLaunch == True:
         print(Fore.YELLOW+"Chooce difficulty: (Easy or Hard)")
         print(Fore.CYAN+"          (Easy justs boosts your starting xp)")
-        choice = input().lower()
+        choice = get_clean_input().lower()
         if choice == "easy":
             print(Fore.GREEN+"Granting extra xp!")
             player.xp += 15
