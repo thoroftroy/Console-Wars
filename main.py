@@ -617,9 +617,9 @@ def gambling():
             if amount <= 0 or amount > player.coins:
                 print(Fore.RED + "Invalid amount.")
             else:
-                floor_scale = 1 + (currentFloor * 5)
-                multipliers = [0, 0.25, 0.5, 0.75, 1.0, 1.5, 2, 3, 5, 10]
-                weights = [15, 20, 18, 15, 10, 8, 6, 5, 2, 1]
+                floor_scale = 1 + (currentFloor * 2.5)
+                multipliers = [0, 0.1, 0.2, 0.4, 1.0, 1.2, 1.4, 1.8, 2, 3]
+                weights =     [30,40,   30,   30,  50,   8, 2.5, 2, 1.5, 0.1]
 
                 # Boost rewards slightly at higher floors
                 scaled_multipliers = [m * floor_scale for m in multipliers]
