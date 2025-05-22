@@ -11,21 +11,21 @@ import threading
 # Define libraries and classes
 class playerVariables:
     name = "placeHolderName"
-    maxHealth = 25
-    health = 25
+    maxHealth = 25.0
+    health = 25.0
     damage = 3.5
-    defense = 0
-    dodge = 5
-    escape = 20
-    drop = 7
+    defense = 0.0
+    dodge = 5.0
+    escape = 20.0
+    drop = 7.0
     
     difficulty = 0 # Difficulty goes from 5 - 15, 15 = Easy, 10 = Normal, and 5 = Hard. This just deteramins starting xp (direclty the same number as difficulty but also recorded for the stats screen)
     
-    actionList = ["Attack","Retreat","Level","Inventory","Minigames/Other","Stats","Exit"]
+    actionList = ["Attack","Retreat","Level","Inventory","Minigames/Other","Stats","Boss Fight","Exit"]
     buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop"]
     gameList = ["Tamagachi","Gambling","Fishing","Wishing Well","Reborn"]
     
-    xp = 0
+    xp = 0.0
     coins = 0
     inventory = []
     
@@ -40,22 +40,22 @@ class monsterVariables:
     maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
     maxDamage = [4,        7,      10,        15,      23,       34,    51,     77,  115,   173,      259,    389,      584,    876,   1314,      1971,      2956,   4434,    6651,     9976,   14964,     22445,    33668,     50502, 75754, 113630,    170445,255668,     383502,  575253,  862880,    1294320,1941479,  2912219,   4368329, 6552493,9828740,      14743110,   22114665,33171997,]
     minDamage = [2,        2,       3,         5,       8,       11,    17,     26,   38,    58,       86,    130,      195,    292,    438,       657,       985,   1478,    2217,     3325,    4988,      7482,    11223,     16834, 25251,  37877,     56815, 85223,     127834,  191751,  287627,     431440, 647160,   970740,   1456110, 2184164,3276247,       4914370,    7371555,11057332,]
-    Defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
+    defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
 
-    monsterId = 0
-    
-    currentMonsterHealth = 0
-    
+# Classes for ease
+player = playerVariables()
+monster = monsterVariables()
+
 # Endless mode
 endlessMode = False
 endlessKills = 0
 demon_lord_data = {
     "demonLordsDefeated": 0,
     
-    "health": monsterVariables.maxHealth[-1],
-    "minDamage": monsterVariables.minDamage[-1],
-    "maxDamage": monsterVariables.maxDamage[-1],
-    "defense": monsterVariables.Defense[-1]
+    "health": monster.maxHealth[-1],
+    "minDamage": monster.minDamage[-1],
+    "maxDamage": monster.maxDamage[-1],
+    "defense": monster.defense[-1]
 }
 
 # Minigame libraries
@@ -130,23 +130,23 @@ shop_data = {
 
 # Other Stats to keep track of
 persistentStats = {
-    "currentFloor": 0,
-    "currentRoom": 0,
+    "floor": 0,
+    "room": 0,
+    "bossFightReady": False,
     "monstersKilled": 0,
     "rebornsUsed": 0,
     "is_dead": False,
 }
 
 # Current Variables
-# Classes for ease
-player = playerVariables()
-monster = monsterVariables()
 # Important stuff
 firstLaunch = True
 
 # Monster Variables
-currentMonsterFight = monster[monster.monsterId] # type: ignore
-currentMonsterHealth = monster[monster.monsterId] # type: ignore
+monsterId = 0
+currentMonsterFight = monster.names[monsterId] 
+currentMonsterHealth = monster.maxHealth[monsterId]
+currentMonsterDefense = monster.defense[monsterId]
 
 # Save and load variables
 currentSaveName = ''
@@ -329,7 +329,37 @@ def show_inventory(): # Shows the players inventory
     pass
 
 def show_combat_stats(): # this is the main function to show all the stats during combat, it runs after each turn (or when coming back to combat after playing a minigame or something else) to refresh the page and show what the current stats of all enemies and players are. 
-    pass
+    global currentMonsterFight, currentMonsterHealth, monsterId, player, monster, persistentStats
+    clear_screen()
+    print(Fore.BLACK+"|")
+    monsterHealthPercentage = round((currentMonsterHealth / monster.maxHealth[monsterId]) * 100,2)
+    print(Fore.WHITE +"You are currently fighting a",currentMonsterFight,"  (Floor:"+str(persistentStats["floor"])+"."+str(persistentStats["room"])+")")
+    print(Fore.BLACK +"|")
+    print(Fore.RED+currentMonsterFight,"Health:")
+    print(Fore.BLACK + "|", end='')
+    # Cap health bar
+    bar_length = min(round(monsterHealthPercentage / 2), 1000)
+    print(Fore.RED + '=' * bar_length, end='')
+    if monsterHealthPercentage > 2000:
+        print(Fore.RED + " (HP: " + str(int(currentMonsterHealth)) + ")")
+    else:
+        print(Fore.RED + f" {monsterHealthPercentage}%")
+    print(Fore.BLACK +"|")
+    print(Fore.BLACK +"|")
+    currentHealthPercentage = round((player.health / player.maxHealth) * 100,2)
+    print(Fore.GREEN+"Player Stats:")
+    print(Fore.GREEN+" Health: ",end='')
+    for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
+    print("",str(currentHealthPercentage)+"%  ("+str(round(player.health,1))+")")
+    print(Fore.GREEN +" Damage:",round(player.damage,1), " |  Defense:",round(player.defense,1)," |  Xp:",round(player.xp,1))
+    print(Fore.GREEN +" Dodge Chance:",str(round(player.dodge,1))+"% |  Retreat Chance:",str(round(player.escape,1))+"%"," |  Item Drop Chance:",str(round(player.drop,1))+"%")
+    print(Fore.BLACK +"|")
+    if tamagatchi_data["active"]:
+        print(Fore.CYAN + f"Tamagatchi → Bond: {tamagatchi_data['bond']} | Hunger: {tamagatchi_data['hunger']} | Boosts: {tamagatchi_data['boosts']}")
+        print(Fore.BLACK +"|")
+    print(Fore.BLACK +"|")
+    print(Fore.BLUE +"Actions:",player.actionList)
+    print(Style.RESET_ALL)
 
 # Minigame/Other Functions
 def reborn(): # A simple rebirth, resets the floor to default but keep boosts to get even stronger
@@ -366,12 +396,78 @@ def minigame_selection():
     pass
 
 # Saving and Loading Functions
-def save_to_file():
-    pass
-def list_saved_files():
-    pass
-def load_from_file():
-    pass
+def save_to_file(): # Saves the file
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data
+    player.name = os.path.splitext(currentSaveName)[0]
+
+    data = {
+        "player": player.__dict__,
+        "persistentStats": persistentStats,
+        "tamagatchi_data": tamagatchi_data,
+        "well_data": well_data,
+        "endlessMode": endlessMode,
+        "endlessKills": endlessKills,
+        "monsterId": monsterId,
+        "currentMonsterHealth": currentMonsterHealth
+    }
+
+    with open(globalSavePath, "w") as f:
+        json.dump(data, f, indent=4)
+    
+def list_saved_files(): # lists saved files
+    files = os.listdir(saveDirectory)
+    json_files = [f for f in files if f.endswith('.json')]
+    active = []
+    dead = []
+
+    for file in json_files:
+        try:
+            with open(os.path.join(saveDirectory, file), 'r') as f:
+                data = json.load(f)
+                if data.get("persistentStats", {}).get("is_dead", False):
+                    dead.append(file)
+                else:
+                    active.append(file)
+        except Exception:
+            continue
+
+    print(Fore.CYAN + "Active Save Files:")
+    for f in active:
+        print("  " + f)
+    print(Fore.RED + "\nDead Save Files:")
+    for f in dead:
+        print("  " + f)
+    print(Style.RESET_ALL)
+
+def load_from_file(filename): # Load data from files
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data
+    global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
+
+    path = os.path.join(saveDirectory, filename)
+    globalSavePath = path
+
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
+
+        for k, v in data.get("player", {}).items():
+            setattr(player, k, v)
+
+        persistentStats.update(data.get("persistentStats", {}))
+        tamagatchi_data.update(data.get("tamagatchi_data", {}))
+        well_data.update(data.get("well_data", {}))
+        endlessMode = data.get("endlessMode", False)
+        endlessKills = data.get("endlessKills", 0)
+        monsterId = data.get("monsterId", 0)
+        currentMonsterFight = monster.names[monsterId]
+        currentMonsterHealth = data.get("currentMonsterHealth", monster.maxHealth[monsterId])
+        currentMonsterDefense = monster.defense[monsterId]
+
+        print(Fore.GREEN + f"Loaded from {filename}")
+        return True
+    except Exception as e:
+        print(Fore.RED + f"Failed to load save: {e}")
+        return False
 
 # Other Main Functions
 def try_drop_item(): # This runs when attacking or fishing to try to drop an item and to know weather to sell it or not
@@ -380,11 +476,51 @@ def try_drop_item(): # This runs when attacking or fishing to try to drop an ite
 def apply_boosts(): # Applies external boosts from items, wishes, lvl ups/shops and gambling
     pass
 
-def reset_monster(): # Used with manage_floor to reset the monster to the next one after it is killed
-    pass
+def reset_monster():
+    # Resets monster based on current floor + room count, or spawns boss
+    global monsterId, player, monster, currentMonsterFight, currentMonsterHealth, currentMonsterDefense, persistentStats
 
-def manage_foors(): # Assigns monsters to each floor, ecah floor has 10 rooms which can spawn 3 monsters from the list, shifting once to the right every floor. The 10 rooms can be tried as many times as you want until you kill the boss, an optional super strong monster at the end of each floor. (This will just be the monster after the 3rd or strongest enemy in the floor). After killing the boss (only accessable after clearing 10 rooms) you can type next to go to the next floor at any time or stay on the floor and grind. This funciton also manages the weights of the mosnters so the first in the 3 that cna spawn is the most common with the third being the least common
-    pass
+    if endlessMode:
+        # Endless logic placeholder
+        pass
+    else:
+        weights = manage_floors()
+        tier_indices = [i for i, w in enumerate(weights) if w > 0]
+
+        if persistentStats["bossFightReady"] and persistentStats["room"] == 10:
+            # Boss is the monster immediately to the right of the strongest in the tier
+            boss_index = tier_indices[-1] + 1
+            if boss_index >= len(monster.names):
+                boss_index = tier_indices[-1]  # fallback to last if out of range
+            monsterId = boss_index
+        else:
+            # Random monster from current floor weights
+            monsterId = random.choices(range(len(monster.names)), weights=weights, k=1)[0]
+
+        currentMonsterFight = monster.names[monsterId]
+        currentMonsterHealth = monster.maxHealth[monsterId]
+        currentMonsterDefense = monster.defense[monsterId]
+
+def manage_floors():
+    # Calculates spawn weights for current floor based on 3 rotating monsters
+    global persistentStats, monster
+
+    total_monsters = len(monster.names)
+    tier_size = 3
+
+    # Determine monster tier group for this floor
+    floor = persistentStats["floor"]
+    tier_start = min(floor % (total_monsters - tier_size + 1), total_monsters - tier_size)
+    tier_end = tier_start + tier_size
+
+    # Determine if boss is available
+    if persistentStats["room"] >= 10:
+        persistentStats["bossFightReady"] = True
+
+    # Weights: [common, uncommon, rare]
+    base_weights = [1.0, 0.75, 0.5]
+    weights = [base_weights[i - tier_start] if tier_start <= i < tier_end else 0 for i in range(total_monsters)]
+    return weights
 
 def level_up(): # Manages the level up screen or shop where you can buy boosts
     pass
@@ -392,9 +528,155 @@ def level_up(): # Manages the level up screen or shop where you can buy boosts
 
 # Main Functions
 def combat():
+    global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
     
+    player_turn_used = False
+
     while True:
-        pass
-    
-def startup(): # funciton that runs on start up, allows loading a file or creating a new one, choosing difficulty, then starts combat.
-    pass
+        show_combat_stats()
+        save_to_file()
+
+        choice = input(Fore.BLUE + "What will you do? ").strip().lower()
+        print()
+
+        if choice in ["attack", "atk", ""]:
+            print(Fore.YELLOW + "You attack!")
+            player_turn_used = True
+            damage = max(1, round(player.damage + random.uniform(0, 5) - currentMonsterDefense, 2))
+            currentMonsterHealth -= damage
+            print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
+
+        elif choice in ["retreat", "ret"]:
+            print(Fore.YELLOW + "Attempting to retreat...")
+            if random.randint(0, 100) < player.escape:
+                print(Fore.GREEN + "You successfully escaped!")
+                reset_monster()
+                continue
+            else:
+                print(Fore.RED + "Retreat failed!")
+
+        elif choice in ["level", "lvl"]:
+            level_up()
+
+        elif choice in ["inventory", "inv"]:
+            show_inventory()
+
+        elif choice in ["minigames", "mini", "games", "min", "other"]:
+            minigame_selection()
+
+        elif choice in ["stats", "st"]:
+            show_stats_screen()
+            input(Fore.CYAN + "\n(Press Enter to return to combat...)")
+
+        elif choice == "exit":
+            sys.exit()
+
+        else:
+            print(Fore.RED + "Invalid input.")
+            time.sleep(0.8)
+
+        time.sleep(0.5)
+
+        # Section for managing when you kill a monster
+        if currentMonsterHealth <= 0:
+            print(Fore.GREEN + "You defeated the monster!")
+            persistentStats["monstersKilled"] += 1
+            persistentStats["room"] += 1
+
+            xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
+            if well_data["divineSpark"] > 0:
+                xp_gain *= 2
+                well_data["divineSpark"] -= 1
+                print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xp_gain}!")
+
+            player.xp += xp_gain
+            try_drop_item()
+
+            if currentMonsterFight == "Demon Lord":
+                endlessKills += 1
+                print(Fore.MAGENTA + f"Demon Lord defeated! Total defeated: {endlessKills}")
+            elif endlessMode:
+                endlessKills += 1
+
+            reset_monster()
+            apply_boosts()
+            continue
+        
+        # Section for when the mosnter fights back
+        if player_turn_used:
+            player_turn_used = False
+            if random.randint(0, 100) < player.dodge:
+                print(Fore.YELLOW + "You dodged the attack!")
+            else:
+                print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
+                if endlessMode:
+                    scale = 4 ** endlessKills
+                    dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player.defense, 2)
+                else:
+                    dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player.defense, 2)
+
+                dmg = max(1, dmg)
+                player.health -= dmg
+                print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
+
+        # Function for when the player dies
+        if player.health <= 0:
+            print(Fore.RED + "You have died.")
+            if endlessMode:
+                print(Fore.YELLOW + f"You defeated {endlessKills} Demon Lords!")
+            persistentStats["is_dead"] = True
+            save_to_file()
+            show_stats_screen()
+            sys.exit()
+
+        time.sleep(0.8)
+
+# Stat up code
+def startup():
+    global currentSaveName, savedGames, globalSavePath, firstLaunch, endlessMode, endlessKills
+
+    clear_screen()
+    print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
+    list_saved_files()
+
+    name_input = input(Fore.GREEN + "\n> ").strip().lower()
+    if not name_input.endswith(".json"):
+        name_input += ".json"
+
+    currentSaveName = name_input
+    globalSavePath = os.path.join(saveDirectory, currentSaveName)
+
+    savedGames = [f for f in os.listdir(saveDirectory) if f.endswith(".json")]
+
+    if currentSaveName in savedGames:
+        success = load_from_file(currentSaveName)
+        if not success:
+            print(Fore.RED + "Failed to load save. Exiting.")
+            sys.exit()
+        if persistentStats.get("is_dead", False):
+            show_stats_screen()
+            print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
+            sys.exit()
+    else:
+        print(Fore.YELLOW + f"Creating new save file: {currentSaveName}")
+
+    if firstLaunch:
+        print(Fore.YELLOW + "Choose difficulty: Easy / Normal / Hard")
+        print(Fore.CYAN + "(Easy gives bonus XP; Hard gives less)")
+        choice = input(Fore.GREEN + "> ").strip().lower()
+
+        if choice == "easy":
+            player.difficulty = 15
+        elif choice == "normal":
+            player.difficulty = 10
+        elif choice == "hard":
+            player.difficulty = 5
+        else:
+            player.difficulty = 10  # Default to normal
+
+        player.xp += player.difficulty
+        firstLaunch = False
+
+    combat()
+
+startup()
