@@ -374,6 +374,8 @@ def show_stats_screen():
 # The section for being reborn
 def reborn():
     global player, currentFloor
+    global healthboostCost, damageBoostCost, DefenseBoostCost
+    global dodgeBoostCost, escapeBoostCost, dropChanceBoostCost
     clearScreen()
 
     #if persistentStats["monstersKilled"] < 150:
@@ -390,6 +392,7 @@ def reborn():
 
     print(Fore.YELLOW + "--- Reborn ---")
     print(Fore.CYAN + "This resets you to Floor 0 with all boosts kept.")
+    print(Fore.CYAN+"This will reset the price of items in the shop, but not how much they boost your character.")
     print(Fore.CYAN + "You gain 100,000 coins. It costs 1,000 XP to use.")
     print(Fore.CYAN + "You can only do this after reaching Floor 170")
     print(Fore.YELLOW + "\nDo you want to Reborn? (yes/no)")
@@ -407,6 +410,14 @@ def reborn():
         persistentStats["rebornsUsed"] += 1
         print(Fore.GREEN + "You are reborn. The climb begins anew!")
         time.sleep(5)
+        # Reset shop costs to base values
+        healthboostCost = 2
+        damageBoostCost = 3
+        DefenseBoostCost = 4
+        dodgeBoostCost = 5
+        escapeBoostCost = 2
+        dropChanceBoostCost = 10
+
         resetMonster()
         combat()
     else:
@@ -839,11 +850,11 @@ def fishing():
                 roll = random.random()
                 if roll < 0.6:
                     if currentFloor >= 50:
-                        mult = 10 * int(currentFloor / 0.5)
+                        mult = 10 * int(currentFloor * 1000)
                     else:
                         mult = 1
-                    scale = 1 + (currentFloor * 7.5)
-                    base_xp = random.uniform(0.5, 5.0)
+                    scale = 1 + (currentFloor * 100)
+                    base_xp = random.uniform(0.5, 20.0)
                     xp_gain = round((base_xp * scale) * mult, 1)
                     player.xp += xp_gain
                     print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
