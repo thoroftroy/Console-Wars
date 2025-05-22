@@ -513,6 +513,27 @@ def get_item_coin_value(item):
                 value += val * 3
     return max(1, int(value))  # always at least 1 coin
 
+def gamble_stat_change(amount):
+    roll = random.randint(1, 100)
+    if roll <= 10:
+        # Lose it all
+        return -amount
+    elif roll <= 30:
+        # Lose half
+        return -int(amount * 0.5)
+    elif roll <= 50:
+        # Small Change
+        return int(amount * 0.2)
+    elif roll <= 75:
+        # Gain 50%
+        return int(amount * 0.5)
+    elif roll <= 90:
+        # Double
+        return amount
+    else:
+        # Triple
+        return amount * 2
+
 def gambling():
     global player
     clearScreen()
@@ -520,6 +541,12 @@ def gambling():
     print(Fore.YELLOW + "Welcome to the Gambling Den")
     print(Fore.CYAN + f"You have {player.coins} coins.")
     print(Fore.CYAN + f"You have {len(player.inventory)} items in your inventory.")
+    print(Fore.BLACK,"|")
+    print(Fore.MAGENTA + "\n--- Gamble-Affected Stats (Without Boosts) ---")
+    print(Fore.YELLOW + f"Health Bonus: {round(player.levelHealthBonus, 1)}  |  Damage Bonus: {round(player.levelDamageBonus, 1)}  |  Defense Bonus: {round(player.levelDefenseBonus, 1)}")
+    print(Fore.LIGHTBLACK_EX + "(These are the actual values affected by gambling.)")
+    print(Fore.LIGHTBLACK_EX + "Your *true* stats in combat may be much higher due to items, blessings, and tamagatchi bonuses.")
+    print(Fore.BLACK,"|")
     
     if player.coins == 0 and not player.inventory:
         print(Fore.RED + "\nYou have no coins or items to interact with.")
@@ -533,8 +560,12 @@ def gambling():
     print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
     print(Fore.GREEN + " [convert] → Convert 5 coins into 1 XP")
+    if currentFloor >= 2.0:
+        print(Fore.GREEN + " [highrisk] → Gamble your health, damage, or defense stats")
+    else:
+        print(Fore.RED + " [highrisk] → (Unlocks at level 200)")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
-
+    print(Fore.BLACK,"|")
     choice = input(Fore.CYAN + "\nYour choice: ").lower().strip()
 
     if choice == "sell" or choice == "sll":
@@ -569,7 +600,6 @@ def gambling():
                 print(Fore.RED + "Invalid input.")
             persistentStats["itemsSold"] += len(player.inventory)
             apply_inventory_boosts()
-
     elif choice == "gamble" or choice == "gam":
         try:
             amount = int(input(Fore.YELLOW + "Enter the number of coins to bet: ").strip())
@@ -586,10 +616,10 @@ def gambling():
                 result = random.choices(scaled_multipliers, weights=weights, k=1)[0]
                 change = int(amount * result)
                 player.coins -= amount
-                persistentStats["gamblingCoinsSpent"] += amount
-                player.coins += change
-                persistentStats["gamblingCoinsWon"] += change
                 persistentStats["gamblingBets"] += 1
+                persistentStats["gamblingCoinsSpent"] += amount
+                persistentStats["gamblingCoinsWon"] += max(0, change)
+                player.coins += change
                 
                 if result == 0:
                     print(Fore.RED + f"You lost everything you bet!")
@@ -601,7 +631,6 @@ def gambling():
                     print(Fore.GREEN + f"You won! Your coins grew to {change} from your bet.")
         except ValueError:
             print(Fore.RED + "Invalid input. Please enter a number.")
-
     elif choice == "convert" or choice == "con":
         if player.coins < 10:
             print(Fore.RED + "You need at least 10 coins to convert to XP.")
@@ -619,7 +648,33 @@ def gambling():
                     print(Fore.GREEN + f"Converted {amount} coins into {xp_gain} XP.")
             except ValueError:
                 print(Fore.RED + "Invalid input. Please enter a number.")
+    elif choice == "highrisk" or choice == "risk" or choice == "high" or choice == "high risk":
+        if currentFloor < 2.0:
+            print(Fore.RED + "You must be level 200+ to use High Risk Gamble.")
+        else:
+            print(Fore.YELLOW + "Choose a stat to gamble: [health / damage / defense]")
+            stat_choice = input().strip().lower()
+            abbreviations = {
+                "hp": "health",
+                "dmg": "damage",
+                "def": "defense"
+            }
+            stat_choice = abbreviations.get(stat_choice, stat_choice)
 
+            if stat_choice not in ["health", "damage", "defense"]:
+                print(Fore.RED + "Invalid stat.")
+            else:
+                try:
+                    amount = int(input(Fore.CYAN + f"How many points of {stat_choice} to gamble? ").strip())
+                    if amount <= 0 or amount > getattr(player, f"level{stat_choice.capitalize()}Bonus"):
+                        print(Fore.RED + "Invalid amount.")
+                    else:
+                        change = gamble_stat_change(amount)
+                        new_total = getattr(player, f"level{stat_choice.capitalize()}Bonus") + change
+                        setattr(player, f"level{stat_choice.capitalize()}Bonus", max(0, new_total))
+                        print(Fore.MAGENTA + f"{stat_choice.capitalize()} changed by {change}. New total: {max(0, new_total)}")
+                except ValueError:
+                    print(Fore.RED + "Invalid number.")
     elif choice == "leave" or choice == "exit":
         saveToFile()
         combat()
@@ -627,7 +682,7 @@ def gambling():
     else:
         print(Fore.RED + "Invalid choice.")
 
-    time.sleep(1.2)
+    time.sleep(2.2)
     gambling()
 
 # Tamagachi stuff
@@ -783,9 +838,13 @@ def fishing():
             elif fishing_active:
                 roll = random.random()
                 if roll < 0.6:
+                    if currentFloor >= 50:
+                        mult = 10 * int(currentFloor / 0.5)
+                    else:
+                        mult = 1
                     scale = 1 + (currentFloor * 7.5)
                     base_xp = random.uniform(0.5, 5.0)
-                    xp_gain = round(base_xp * scale, 1)
+                    xp_gain = round((base_xp * scale) * mult, 1)
                     player.xp += xp_gain
                     print(Fore.GREEN + f"You caught a fish and gained {xp_gain} XP!")
                     persistentStats["fishCaught"] += 1
