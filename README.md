@@ -51,6 +51,7 @@ project_root/
 Install with:
 ```bash
 pip install colorama
+```
 
 ## Launching The Game
 
