@@ -853,7 +853,7 @@ def fishing():
                         mult = 10 * int(currentFloor * 1000)
                     else:
                         mult = 1
-                    scale = 1 + (currentFloor * 100)
+                    scale = 1 + (currentFloor * 30)
                     base_xp = random.uniform(0.5, 20.0)
                     xp_gain = round((base_xp * scale) * mult, 1)
                     player.xp += xp_gain
