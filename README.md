@@ -93,4 +93,6 @@ py main.py
 7. Reborn
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
+## Known Issue
+*WARNING* this issue is gamebreaking: If you play for too long it reaches a maximum recursion rate and currupts you entire save. I am currently working on a fix. For now, every 200 or so levels just exit and reopen the game and that will temporarily fix it.
 
