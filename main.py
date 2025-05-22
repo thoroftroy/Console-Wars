@@ -733,7 +733,7 @@ def tamagatchi():
         update_tamagatchi()
         print(Fore.CYAN + "\n--- Tamagatchi Status ---")
         print(Fore.MAGENTA + f"Hunger: {tamagatchi_data['hunger']} / 100")
-        print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 50")
+        print(Fore.MAGENTA + f"Bond: {tamagatchi_data['bond']} / 20")
         print(Fore.GREEN + f"Boosts: {tamagatchi_data['boosts']}")
         print(Fore.YELLOW + f"XP: {round(player.xp,1)}")
 
@@ -789,14 +789,14 @@ def update_tamagatchi():
     elif tamagatchi_data["hunger"] < 5:
         tamagatchi_data["bond"] += 1
 
-    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 50)
+    tamagatchi_data["bond"] = min(tamagatchi_data["bond"], 20)
 
     # Boosts scale stronger now
     bond = tamagatchi_data["bond"]
     scale = max(1, currentFloor * 10)
-    tamagatchi_data["boosts"]["health"] = int(bond * 4 * scale)
-    tamagatchi_data["boosts"]["damage"] = int(bond * 2 * scale)
-    tamagatchi_data["boosts"]["defense"] = int((bond * 1.1) * scale)
+    tamagatchi_data["boosts"]["health"] = int(bond * 1.3 * scale)
+    tamagatchi_data["boosts"]["damage"] = int(bond * 0.3 * scale)
+    tamagatchi_data["boosts"]["defense"] = int((bond * 0.1) * scale)
 
 # Fishing stuff
 def fishing():
