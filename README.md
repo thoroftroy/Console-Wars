@@ -97,7 +97,9 @@ You will notice that there are 3 python files in the repository. Main is the ori
 7. Reborn
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
-## Known Issue
+## Known Issue(s)
+If you play the current version there is a glitch were exiting the level up menue occasionally gives the monsters a turn (I'm sure the fix is easy, I am just stupid)
+
 If you play the old version(s) (main.py):
 
 *WARNING* this issue is gamebreaking: If you play for too long it reaches a maximum recursion rate and currupts you entire save. I am currently working on a fix. For now, every 200 or so levels just exit and reopen the game and that will temporarily fix it.
