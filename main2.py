@@ -877,31 +877,34 @@ def start_tamagatchi_thread():
         while tamagatchi_data["active"] and not tamagatchi_stop_event.is_set():
             if tamagatchi_data["last_update"] is not None:
                 update_tamagatchi()
-            time.sleep(60)
+            time.sleep(random.uniform(30, 200)) # How long it takes for the tamagatchi to update
     tamagatchi_thread = threading.Thread(target=loop, daemon=True)
     tamagatchi_thread.start()
 
 def update_tamagatchi():
     hunger = tamagatchi_data["hunger"]
     bond = tamagatchi_data["bond"]
-    reborns = persistentStats.get("rebornsUsed", 0)
+    kills = persistentStats.get("monstersKilled", 0)
 
+    # Hunger increases
     if hunger < 100:
         tamagatchi_data["hunger"] += 1
 
+    # Bond slowly increases if well-fed (under 20 hunger)
+    if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
+        tamagatchi_data["bond"] += 1
+
+    # Recalculate boosts if bond is at a multiple of 5
     if bond > 0 and bond % 5 == 0:
-        if reborns >= 6: # Increases boosts at high amounts of reborns
-            tamagatchi_data["boosts"]["health"] = bond * 6
-            tamagatchi_data["boosts"]["damage"] = bond * 3
-            tamagatchi_data["boosts"]["defense"] = int(bond * 2.4)
-        elif reborns >= 1:
-            tamagatchi_data["boosts"]["health"] = bond * 4
-            tamagatchi_data["boosts"]["damage"] = bond * 2
-            tamagatchi_data["boosts"]["defense"] = int(bond * 1.6)
-        else:
-            tamagatchi_data["boosts"]["health"] = bond * 2
-            tamagatchi_data["boosts"]["damage"] = bond * 1.2
-            tamagatchi_data["boosts"]["defense"] = int(bond * 0.8)
+        scale = 1
+        if persistentStats.get("rebornsUsed", 0) >= 6:
+            scale = 3
+        elif persistentStats.get("rebornsUsed", 0) >= 1:
+            scale = 2
+
+        tamagatchi_data["boosts"]["health"] = int(bond * scale * (1 + kills * 1))
+        tamagatchi_data["boosts"]["damage"] = int(bond * scale * (1 + kills * 0.3))
+        tamagatchi_data["boosts"]["defense"] = int(bond * scale * (1 + kills * 0.1))
 
 def tamagatchi():
     global player, persistentStats
@@ -929,7 +932,6 @@ def tamagatchi():
 
     while True:
         clear_screen()
-        update_tamagatchi()
         hunger = tamagatchi_data["hunger"]
         bond = tamagatchi_data["bond"]
         boosts = tamagatchi_data["boosts"]
@@ -938,6 +940,9 @@ def tamagatchi():
         print(Fore.MAGENTA + f"Bond: {bond} / {max_bond}")
         print(Fore.GREEN + f"Boosts: {boosts}")
         print(Fore.YELLOW + f"XP: {round(player['xp'], 1)}")
+        print(Fore.BLACK+"|")
+        print(Fore.YELLOW+"Tamagatchi will be much happier if hunger is kept under 20")
+        print(Fore.BLACK+"|")
 
         if hunger <= 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
@@ -1074,6 +1079,10 @@ def load_from_file(filename): # Load data from files
         currentMonsterFight = monster.names[monsterId]
         currentMonsterHealth = data.get("currentMonsterHealth", monster.maxHealth[monsterId])
         currentMonsterDefense = monster.defense[monsterId]
+
+        # Stats the tamagatchi thread
+        if tamagatchi_data.get("active"):
+            start_tamagatchi_thread()
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
@@ -1311,7 +1320,7 @@ def combat():
             damage = max(1, round(player["damage"] + random.uniform(0, 5) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         elif choice in ["retreat", "ret"]:
             if persistentStats.get("bossFightReady", False):
@@ -1348,8 +1357,14 @@ def combat():
 
         time.sleep(0.5)
 
+        # Function for when a mosnter dies
         if currentMonsterHealth <= 0:
             print(Fore.GREEN + "You defeated the monster!")
+            
+        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
+            if random.random() < 0.2:
+                tamagatchi_data["bond"] += 1
+
             persistentStats["monstersKilled"] += 1
             player["health"] += round(monster.maxHealth[monsterId]/10)
 
@@ -1397,6 +1412,7 @@ def combat():
                 dmg = max(1, dmg)
                 player["health"] -= dmg
                 print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
+                time.sleep(0.8)
 
         if player["health"] <= 0:
             print(Fore.RED + "You have died.")
