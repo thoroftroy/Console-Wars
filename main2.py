@@ -494,8 +494,8 @@ def reborn():
 
     clear_screen()
 
-    if persistentStats["floor"] < 1.70:
-        print(Fore.RED + "You must reach floor 170 to use Reborn.")
+    if persistentStats["floor"] < 100:
+        print(Fore.RED + "You must reach floor 100 to use Reborn.")
         time.sleep(2)
         combat()
         return
@@ -544,8 +544,8 @@ def wishing_well():
     global player, well_data
 
     clear_screen()
-    if persistentStats["monstersKilled"] < 100:
-        print(Fore.RED + "You must defeat 100 monsters to unlock the Wishing Well.")
+    if persistentStats["monstersKilled"] < 1000:
+        print(Fore.RED + "You must defeat 1000 monsters to unlock the Wishing Well.")
         time.sleep(2)
         combat()
         return
@@ -757,10 +757,10 @@ def gambling(): # Manages the gambling screen
     print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
     print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
-    if persistentStats["floor"] >= 20:
+    if persistentStats["floor"] >= 50:
         print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats")
     else:
-        print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
+        print(Fore.RED + " [highrisk] → Unlocks at Floor 50+")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
     print(Fore.BLACK,"|")
 
@@ -838,8 +838,8 @@ def gambling(): # Manages the gambling screen
             print(Fore.RED + "Invalid input.")
 
     elif choice in ["highrisk", "high", "risk"]:
-        if persistentStats["floor"] < 2:
-            print(Fore.RED + "High Risk unlocked at Floor 2.0")
+        if persistentStats["floor"] < 50:
+            print(Fore.RED + "High Risk unlocked at Floor 50")
         else:
             stat = input(Fore.YELLOW + "Which stat? [health/damage/defense]: ").strip().lower()
             if stat in ["health", "damage", "defense"]:
@@ -885,12 +885,24 @@ def start_tamagatchi_thread():
 def update_tamagatchi():
     hunger = tamagatchi_data["hunger"]
     bond = tamagatchi_data["bond"]
+    reborns = persistentStats.get("rebornsUsed", 0)
+
     if hunger < 100:
         tamagatchi_data["hunger"] += 1
+
     if bond > 0 and bond % 5 == 0:
-        tamagatchi_data["boosts"]["health"] = bond * 2
-        tamagatchi_data["boosts"]["damage"] = bond
-        tamagatchi_data["boosts"]["defense"] = int(bond * 0.8)
+        if reborns >= 6: # Increases boosts at high amounts of reborns
+            tamagatchi_data["boosts"]["health"] = bond * 6
+            tamagatchi_data["boosts"]["damage"] = bond * 3
+            tamagatchi_data["boosts"]["defense"] = int(bond * 2.4)
+        elif reborns >= 1:
+            tamagatchi_data["boosts"]["health"] = bond * 4
+            tamagatchi_data["boosts"]["damage"] = bond * 2
+            tamagatchi_data["boosts"]["defense"] = int(bond * 1.6)
+        else:
+            tamagatchi_data["boosts"]["health"] = bond * 2
+            tamagatchi_data["boosts"]["damage"] = bond * 1.2
+            tamagatchi_data["boosts"]["defense"] = int(bond * 0.8)
 
 def tamagatchi():
     global player, persistentStats
@@ -931,7 +943,7 @@ def tamagatchi():
         if hunger <= 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
         else:
-            cost = hunger * 1.4 * (persistentStats["tamagatchiFeeds"] + 1)
+            cost = round(hunger * 1.3 * (persistentStats["tamagatchiFeeds"] + 1,1))
             print(Fore.YELLOW + f"Feeding cost: {round(cost, 1)} XP")
 
         print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
@@ -1003,6 +1015,8 @@ def save_to_file(): # Saves the file
         "tamagatchi_data": tamagatchi_data,
         "well_data": well_data,
         "shop_data": shop_data,
+        "fishing_data": fishing_data,
+        "gambling_data": gambling_data,
         "endlessMode": endlessMode,
         "endlessKills": endlessKills,
         "monsterId": monsterId,
@@ -1053,6 +1067,8 @@ def load_from_file(filename): # Load data from files
         tamagatchi_data.update(data.get("tamagatchi_data", {}))
         shop_data.update(data.get("shop_data", {}))
         well_data.update(data.get("well_data", {}))
+        fishing_data.update(data.get("fishing_data", {}))
+        gambling_data.update(data.get("gambling_data", {}))
         endlessMode = data.get("endlessMode", False)
         endlessKills = data.get("endlessKills", 0)
         monsterId = data.get("monsterId", 0)
