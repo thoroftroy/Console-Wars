@@ -73,6 +73,10 @@ python3 Console-Wars.py
 py Console-Wars.py
 ```
 ---
+**Note**
+
+You will notice that there are 3 python files in the repository. Main is the original, Main2 is a slightly older version of the main game and Console-Wars is the actual game. The other two files are only there for archival purposes, you do not need to install them. 
+
 ## How to Play
 1. Combat
    
