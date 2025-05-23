@@ -894,17 +894,19 @@ def update_tamagatchi():
     if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
         tamagatchi_data["bond"] += 1
 
-    # Recalculate boosts if bond is at a multiple of 5
-    if bond > 0 and bond % 5 == 0:
+    # Recalculate boosts
+    if bond > 0:
         scale = 1
         if persistentStats.get("rebornsUsed", 0) >= 6:
             scale = 3
         elif persistentStats.get("rebornsUsed", 0) >= 1:
             scale = 2
 
-        tamagatchi_data["boosts"]["health"] = int(bond * scale * (1 + kills * 1))
-        tamagatchi_data["boosts"]["damage"] = int(bond * scale * (1 + kills * 0.3))
-        tamagatchi_data["boosts"]["defense"] = int(bond * scale * (1 + kills * 0.1))
+        tamagatchi_data["boosts"]["health"] = int(bond * scale * (1 + (kills/10) * 1))
+        tamagatchi_data["boosts"]["damage"] = int(bond * scale * (1 + (kills/10) * 0.3))
+        tamagatchi_data["boosts"]["defense"] = int(bond * scale * (1 + (kills/10) * 0.1))
+    
+    apply_boosts()
 
 def tamagatchi():
     global player, persistentStats
@@ -1319,6 +1321,7 @@ def combat():
             player_turn_used = True
             damage = max(1, round(player["damage"] + random.uniform(0, 5) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
+
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
             time.sleep(0.2)
 
@@ -1359,12 +1362,11 @@ def combat():
 
         # Function for when a mosnter dies
         if currentMonsterHealth <= 0:
+            if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
+                if random.random() < 0.2:
+                    tamagatchi_data["bond"] += 1
             print(Fore.GREEN + "You defeated the monster!")
             
-        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
-            if random.random() < 0.2:
-                tamagatchi_data["bond"] += 1
-
             persistentStats["monstersKilled"] += 1
             player["health"] += round(monster.maxHealth[monsterId]/10)
 
