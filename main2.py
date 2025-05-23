@@ -9,32 +9,6 @@ from datetime import datetime
 import threading
 
 # Define libraries and classes
-class playerVariables:
-    name = "placeHolderName"
-    maxHealth = 25.0
-    health = 25.0
-    damage = 3.5
-    defense = 0.0
-    dodge = 5.0
-    escape = 20.0
-    drop = 7.0
-    
-    difficulty = 0 # Difficulty goes from 5 - 15, 15 = Easy, 10 = Normal, and 5 = Hard. This just deteramins starting xp (direclty the same number as difficulty but also recorded for the stats screen)
-    
-    actionList = ["Attack","Retreat","Level","Inventory","Minigames/Other","Stats","Boss Fight","Exit"]
-    buyList = ["Health","Damage","Defense","Dodge","Retreat","Drop"]
-    gameList = ["Tamagachi","Gambling","Fishing","Wishing Well","Reborn"]
-    
-    xp = 0.0
-    coins = 0
-    inventory = []
-    
-    healthBoost = 0
-    damageBoost = 0
-    defenseBoost = 0
-    dodgeBoost = 0
-    escapeBoost = 0
-
 class monsterVariables:
     names =     ["Slime","Goblin","Skeleton","Zombie","Vampire","Orc","Giant","Ent","Warg","Banshee","Ghoul","Bandit","Troll","Shade","Basilisk","Minotaur","Witch","Drake","Warlock","Knight","Behemoth","Chimera","Specter","Ogre","Harpy","Revenant","Lich","Manticore","Wyvern","Wyrm","Juggernaut","Hydra","Phantom","Colossus","Ifrit","Kraken","Dreadnought","Leviathan","Titan","Demon Lord"]
     maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
@@ -43,8 +17,31 @@ class monsterVariables:
     defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
 
 # Classes for ease
-player = playerVariables()
 monster = monsterVariables()
+
+# The Player Library
+player = {
+    "name": "placeHolderName",
+    "maxHealth": 25.0,
+    "health": 25.0,
+    "damage": 3.5,
+    "defense": 0.0,
+    "dodge": 5.0,
+    "escape": 20.0,
+    "drop": 7.0,
+    "difficulty": 0,
+    "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
+    "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
+    "gameList": ["Tamagachi", "Gambling", "Fishing", "Wishing Well", "Reborn"],
+    "xp": 0.0,
+    "coins": 0,
+    "inventory": [],
+    "healthBoost": 0,
+    "damageBoost": 0,
+    "defenseBoost": 0,
+    "dodgeBoost": 0,
+    "escapeBoost": 0
+}
 
 # Endless mode
 endlessMode = False
@@ -138,9 +135,7 @@ persistentStats = {
     "is_dead": False,
 }
 
-# Current Variables
-# Important stuff
-firstLaunch = True
+# Global Variables
 
 # Monster Variables
 monsterId = 0
@@ -154,6 +149,12 @@ savedGames = []
 globalSavePath = ''
 saveDirectory = "saves"
 os.makedirs(saveDirectory, exist_ok=True)
+
+# Thread management flags
+fishing_thread = None
+fishing_stop_event = threading.Event()
+tamagatchi_thread = None
+tamagatchi_stop_event = threading.Event()
 
 # Drop Table
 drop_table = [
@@ -302,7 +303,7 @@ curses = [
     {"name": "Broken Blade", "desc": "Your weapon weakens.", "boosts": {"damage": -150}},
     {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved.", "boosts": {"divineSpark": -3}},
     {"name": "Weakening Fog", "desc": "Your body fades.", "boosts": {"health": -10, "defense": -10}},
-    {"name": "Sluggish Blood", "desc": "Your lifeforce drains.", "boosts": {"healh": -1000}},
+    {"name": "Sluggish Blood", "desc": "Your lifeforce drains.", "boosts": {"health": -1000}},
     {"name": "Shattered Luck", "desc": "Fortune slips away.", "boosts": {"drop": -10}},
     {"name": "Doom’s Brand", "desc": "All gains halved temporarily.", "boosts": {"divineSpark": -5}}
 ]
@@ -319,14 +320,140 @@ def clear_screen():
         os.system('cls')
 
 # Stats Functions
-def show_stats_screen(): # Shows a bunch of player stats for the dead file and living ones if you want
-    pass
+def show_stats_screen():
+    clear_screen()
+    print(Style.RESET_ALL)
 
-def get_item_coin_value(): # Gets the coin value of an item
-    pass
+    if os.path.exists(globalSavePath):
+        with open(globalSavePath, "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
 
-def show_inventory(): # Shows the players inventory
-    pass
+    player_data = data.get("player", player)
+    stats = data.get("persistentStats", persistentStats)
+    tama = data.get("tamagatchi_data", tamagatchi_data)
+    well = data.get("well_data", well_data)
+
+    print(Fore.RED + ("===== PLAYER IS DECEASED =====\n" if stats.get("is_dead", False) else "===== PLAYER STATISTICS =====\n"))
+
+    print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}")
+    print(Fore.CYAN + f"Current Floor: {stats.get('floor', 0)}.{stats.get('room', 0)}")
+    print(f"XP: {round(player_data.get('xp', 0), 1)}  |  Coins: {round(player_data.get('coins', 0), 1)}")
+    print(f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
+    print(f"Dodge Chance: {round(player_data.get('dodge', 0), 1)}%  |  Retreat Chance: {round(player_data.get('escape', 0), 1)}%  |  Drop Chance: {round(player_data.get('drop', 0), 1)}%")
+    print(f"Reborns Used: {stats.get('rebornsUsed', 0)}")
+
+    print(Fore.MAGENTA + "\n--- Combat Stats ---")
+    print(f"Monsters Killed: {stats.get('monstersKilled', 0)}")
+    print(f"Demon Lords Defeated: {demon_lord_data.get('demonLordsDefeated', 0)}")
+
+    print(Fore.MAGENTA + "\n--- Gambling Stats ---")
+    print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
+    print(f"Coins Gambled: {gambling_data.get('gamblingCoinsSpent', 0)} | Coins Won: {gambling_data.get('gamblingCoinsWon', 0)}")
+    print(f"Items Sold: {gambling_data.get('itemsSold', 0)} | Coins from Selling: {gambling_data.get('coinsFromSelling', 0)}")
+    print(f"Coins Converted to XP: {gambling_data.get('coinsConvertedToXP', 0)}")
+
+    print(Fore.CYAN + "\n--- Fishing ---")
+    print(f"Fish Caught: {fishing_data.get('fishCaught', 0)} | Items Fished: {fishing_data.get('itemsFished', 0)}")
+
+    print(Fore.CYAN + "\n--- Wishing Well ---")
+    print(f"Wishes Made: {well.get('wishingCoinsUsed', 0)}")
+    print(f"Blessings Received: {well.get('blessingsReceived', 0)}")
+    print(f"Curses Received: {well.get('cursesReceived', 0)}")
+    print(f"Divine Spark Charges: {well.get('divineSpark', 0)}")
+
+    print(Fore.GREEN + "\n--- Inventory ---")
+    inventory = player_data.get("inventory", [])
+    if inventory:
+        for item in inventory:
+            print(f"- {item['name']} | {item['boosts']}")
+    else:
+        print("(Empty)")
+
+    print(Fore.CYAN + "\n--- Tamagatchi ---")
+    print(f"Active: {tama.get('active', False)} | Hunger: {tama.get('hunger', 0)} | Bond: {tama.get('bond', 0)}")
+    print(f"Boosts: {tama.get('boosts', {})}")
+
+    if persistentStats["is_dead"]:
+        print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
+        sys.exit()
+        
+    print(Fore.BLUE + "\n(Press Enter to return to combat...)")
+    input(Fore.GREEN + "> ")
+    
+    combat()
+    
+def get_item_coin_value(item):
+    #Calculate the coin value of an item based on its boosts and rarity.
+    #Heuristic:
+    #    - Each point of boost contributes 3–6 coins depending on stat type.
+    #    - Extremely rare items (lower weight) are worth significantly more.
+
+    if not isinstance(item, dict) or "boosts" not in item:
+        return 0
+
+    value = 0
+    boosts = item.get("boosts", {})
+    weight = item.get("weight", 1)
+
+    # Base value for each stat type
+    for stat, amount in boosts.items():
+        if stat == "health":
+            value += amount * 3
+        elif stat == "damage":
+            value += amount * 5
+        elif stat == "defense":
+            value += amount * 4
+        elif stat in ["dodge", "escape", "drop"]:
+            value += amount * 10  # utility stats are rarer
+        elif stat == "xp":
+            value += amount * 0.5
+        elif stat == "coins":
+            value += amount
+        elif stat == "divineSpark":
+            value += amount * 20
+        elif stat == "heal" and amount == "full":
+            value += 500
+
+    # Rarity multiplier (inverse of weight; capped to avoid extreme inflation)
+    rarity_bonus = min(50, round(25 / weight)) if weight > 0 else 100
+    value = round(value * (1 + rarity_bonus / 100))
+
+    return max(1, int(value))  # Ensure at least 1 coin
+
+def show_inventory(): # Shows the inventory
+    clear_screen()
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Inventory Overview")
+    print(Fore.BLACK + "|")
+
+    # Grab current inventory
+    inventory = player.get("inventory", [])
+
+    # If empty, show guidance
+    if not inventory:
+        print(Fore.RED + "Your inventory is currently empty.")
+        print(Fore.YELLOW + "Defeat monsters to earn rare artifacts.")
+        print(Fore.YELLOW + "Artifacts grant permanent stat boosts.")
+    else:
+        # Loop through and display all owned items
+        for i, item in enumerate(inventory, 1):
+            name = item.get("name", "Unknown")
+            desc = item.get("desc", "No description provided.")
+            boosts = item.get("boosts", {})
+
+            # Show item number, name, description, and stat boosts
+            print(Fore.CYAN + f"[{i}] {name}")
+            print(Fore.YELLOW + f"  {desc}")
+            print(Fore.MAGENTA + f"  Boosts: {boosts}")
+            print(Fore.BLACK + "|")
+
+    # Exit back to combat
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Press Enter to return to combat.")
+    input(Fore.GREEN + "> ")
+    combat()
 
 def show_combat_stats(): # this is the main function to show all the stats during combat, it runs after each turn (or when coming back to combat after playing a minigame or something else) to refresh the page and show what the current stats of all enemies and players are. 
     global currentMonsterFight, currentMonsterHealth, monsterId, player, monster, persistentStats
@@ -346,65 +473,536 @@ def show_combat_stats(): # this is the main function to show all the stats durin
         print(Fore.RED + f" {monsterHealthPercentage}%")
     print(Fore.BLACK +"|")
     print(Fore.BLACK +"|")
-    currentHealthPercentage = round((player.health / player.maxHealth) * 100,2)
+    currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100,2)
     print(Fore.GREEN+"Player Stats:")
     print(Fore.GREEN+" Health: ",end='')
     for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
-    print("",str(currentHealthPercentage)+"%  ("+str(round(player.health,1))+")")
-    print(Fore.GREEN +" Damage:",round(player.damage,1), " |  Defense:",round(player.defense,1)," |  Xp:",round(player.xp,1))
-    print(Fore.GREEN +" Dodge Chance:",str(round(player.dodge,1))+"% |  Retreat Chance:",str(round(player.escape,1))+"%"," |  Item Drop Chance:",str(round(player.drop,1))+"%")
+    print("",str(currentHealthPercentage)+"%  ("+str(round(player["health"],1))+")")
+    print(Fore.GREEN +" Damage:",round(player["damage"],1), " |  Defense:",round(player["defense"],1)," |  Xp:",round(player["xp"],1))
+    print(Fore.GREEN +" Dodge Chance:",str(round(player["dodge"],1))+"% |  Retreat Chance:",str(round(player["escape"],1))+"%"," |  Item Drop Chance:",str(round(player["drop"],1))+"%")
     print(Fore.BLACK +"|")
     if tamagatchi_data["active"]:
         print(Fore.CYAN + f"Tamagatchi → Bond: {tamagatchi_data['bond']} | Hunger: {tamagatchi_data['hunger']} | Boosts: {tamagatchi_data['boosts']}")
         print(Fore.BLACK +"|")
     print(Fore.BLACK +"|")
-    print(Fore.BLUE +"Actions:",player.actionList)
+    print(Fore.BLUE +"Actions:",player["actionList"])
     print(Style.RESET_ALL)
 
 # Minigame/Other Functions
-def reborn(): # A simple rebirth, resets the floor to default but keep boosts to get even stronger
-    pass
+def reborn():
+    global player, shop_data, well_data, persistentStats
+
+    clear_screen()
+
+    if persistentStats["floor"] < 1.70:
+        print(Fore.RED + "You must reach floor 170 to use Reborn.")
+        time.sleep(2)
+        combat()
+        return
+
+    print(Fore.YELLOW + "--- Reborn ---")
+    print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
+    print(Fore.CYAN + "Shop prices reset, Tamagatchi improves, and well cost resets.")
+    print(Fore.CYAN + "Cost: 1000 XP  →  Reward: 100,000 coins")
+    print(Fore.YELLOW + "\nReborn? (yes/no)")
+
+    choice = input(Fore.GREEN + "> ").strip().lower()
+    if choice in ["yes", "y"]:
+        if player["xp"] < 1000:
+            print(Fore.RED + "You don't have enough XP.")
+            time.sleep(2)
+            combat()
+            return
+
+        player["xp"] -= 1000
+        player["coins"] += 100000
+        well_data["wishing_well_cost"] = 1000
+        persistentStats["floor"] = 0
+        persistentStats["room"] = 0
+        persistentStats["rebornsUsed"] += 1
+
+        # Reset shop costs to base values
+        shop_data["baseHealthBoostCost"] = 2
+        shop_data["baseDamageBoostCost"] = 3
+        shop_data["baseDefenseBoostCost"] = 4
+        shop_data["baseDodgeBoostCost"] = 5
+        shop_data["baseEscapeBoostCost"] = 2
+        shop_data["baseDropBoostCost"] = 10
+
+        print(Fore.GREEN + "You have been reborn. The climb begins anew...")
+        time.sleep(3)
+
+        reset_monster()
+        combat()
+    else:
+        print(Fore.YELLOW + "Rebirth canceled.")
+        time.sleep(1.5)
+        combat()
 
 # Section for managing the wishing well
-def wishing_well(): 
-    pass
+def wishing_well():
+    global player, well_data
+
+    clear_screen()
+    if persistentStats["monstersKilled"] < 100:
+        print(Fore.RED + "You must defeat 100 monsters to unlock the Wishing Well.")
+        time.sleep(2)
+        combat()
+        return
+
+    cost = well_data["wishing_well_cost"]
+    print(Fore.CYAN + "--- The Wishing Well ---")
+    print(Fore.YELLOW + f"Cost to Wish: {cost} coins")
+    print(f"You have: {player['coins']} coins")
+    print(Fore.MAGENTA + "Make a wish? (yes / no)")
+
+    choice = input(Fore.GREEN + "> ").strip().lower()
+    if choice not in ["yes", "y"]:
+        combat()
+        return
+
+    if player["coins"] < cost:
+        print(Fore.RED + "Not enough coins!")
+        time.sleep(2)
+        combat()
+        return
+
+    player["coins"] -= cost
+    well_data["wishing_well_cost"] = int(cost * 1.25)
+    well_data["wishingCoinsUsed"] += 1
+
+    roll = random.randint(1, 100)
+    result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
+
+    if result_type == "spark":
+        print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
+        well_data["divineSpark"] += 1
+        time.sleep(2)
+        combat()
+        return
+
+    elif result_type == "blessing":
+        blessing = random.choice(blessings)
+        if blessing["name"] in well_data["obtainedBlessings"]:
+            print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
+            player["coins"] += cost // 2
+        else:
+            apply_boost(blessing["boosts"])
+            well_data["obtainedBlessings"].append(blessing["name"])
+            well_data["blessingsReceived"] += 1
+            print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
+
+    else:  # curse
+        curse = random.choice(curses)
+        if curse["name"] in well_data["obtainedCurses"]:
+            print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
+            player["coins"] += cost // 2
+        else:
+            apply_boost(curse["boosts"])
+            well_data["obtainedCurses"].append(curse["name"])
+            well_data["cursesReceived"] += 1
+            print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
+
+    apply_boosts()
+    time.sleep(3)
+    combat()
+
+def apply_boost(boost_dict): # This is for the well specifically, not to be confused with the apply boost(s) function down below
+    for key, value in boost_dict.items():
+        if key == "heal" and value == "full":
+            player["health"] = player["maxHealth"]
+        elif key == "divineSpark":
+            well_data["divineSpark"] += value
+        elif key == "xp":
+            player["xp"] += value
+        elif key == "coins":
+            player["coins"] += value
+        elif key in player:
+            player[key] += value
 
 # Section for managing the fishing minigame
 def fishing():
-    pass
+    global fishing_active, fishing_thread, fishing_stop_event
+    fishing_active = True
+    clear_screen()
+    print(Style.RESET_ALL)
+    print(Fore.CYAN + "You sit quietly by the water and begin fishing...")
+    print(Fore.YELLOW + "When a fish bites, press Enter 2-3 times quickly to catch it!")
+    print(Fore.YELLOW + "Type 'leave' to stop fishing at any time.\n")
+
+    idle_enter_count = 0
+    fish_ready = False
+    cooldown_until = 0
+    fishing_penalty = False
+    penalty_end_time = 0
+
+    def fishing_loop():
+        nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
+        while fishing_active and not fishing_stop_event.is_set():
+            if fishing_penalty or time.time() < cooldown_until:
+                time.sleep(0.5)
+                continue
+            print(Fore.BLUE + "Waiting for a bite...")
+            time.sleep(random.uniform(4, 9))
+            if not fishing_active or fishing_stop_event.is_set():
+                break
+            fish_ready = True
+            print(Fore.YELLOW + "\nA fish is on the line! Press Enter quickly!")
+            start = time.time()
+            response = input()
+            reaction_time = time.time() - start
+            fish_ready = False
+
+            if reaction_time > 1.0:
+                print(Fore.RED + "Too slow! The fish got away.")
+                cooldown_until = time.time() + 3
+                continue
+            if fishing_penalty:
+                print(Fore.RED + "Rod tangled from spam. No reward.")
+                continue
+
+            if random.random() < 0.8:
+                scale = 1 + (persistentStats["floor"] * 2)
+                mult = 10 * int(persistentStats["floor"] * 10) if persistentStats["floor"] >= 50 else 1
+                xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
+                player["xp"] += xp_gain
+                print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
+                fishing_data["fishCaught"] += 1
+            else:
+                item = random.choices(drop_table, weights=[i["weight"] for i in drop_table], k=1)[0]
+                owned_names = [i["name"] for i in player["inventory"]]
+                if item["name"] in owned_names:
+                    value = get_item_coin_value(item)
+                    player["coins"] += value
+                    print(Fore.MAGENTA + f"Duplicate item: {item['name']} → sold for {value} coins.")
+                    gambling_data["itemsSold"] += 1
+                    gambling_data["coinsFromSelling"] += value
+                else:
+                    player["inventory"].append(item)
+                    print(Fore.MAGENTA + f"Fished a rare item: {item['name']}!")
+                    print(Fore.YELLOW + item["desc"])
+                fishing_data["itemsFished"] += 1
+                apply_boosts()
+            cooldown_until = time.time() + 3
+
+    if fishing_thread and fishing_thread.is_alive():
+        print(Fore.YELLOW + "Fishing is already active.")
+    else:
+        fishing_stop_event.clear()
+        fishing_thread = threading.Thread(target=fishing_loop, daemon=True)
+        fishing_thread.start()
+
+    while fishing_active:
+        now = time.time()
+        if fishing_penalty:
+            remaining = int(penalty_end_time - now)
+            if remaining <= 0:
+                fishing_penalty = False
+                print(Fore.GREEN + "Line untangled. You may fish again.")
+            else:
+                print(Fore.RED + f"Line tangled! Wait {remaining}s.")
+            time.sleep(1)
+            continue
+
+        cmd = input()
+        if cmd.strip().lower() in ["leave", "exit"]:
+            fishing_active = False
+            fishing_stop_event.set()
+            print(Fore.GREEN + "You pack up and return to combat...")
+            time.sleep(1)
+            break
+        if cmd.strip() == "" and not fish_ready:
+            idle_enter_count += 1
+            if idle_enter_count > 2:
+                print(Fore.RED + "Stop yanking! Line tangled.")
+                fishing_penalty = True
+                penalty_end_time = time.time() + 10
+                idle_enter_count = 0
+        else:
+            idle_enter_count = 0
+    combat()
 
 # Section for managing the gambling minigame
-def gamble_stat_change(): # Returns how much the stats change when doing a high risk gamble
-    pass
-def gamble_change(): # Returns how much coinage you get while doing a normal gamble
-    pass
-def convert_coins_xp(): # Converts coins to xp
-    pass
-def gambling(): # Manges the gambling screen
-    pass
+def gamble_stat_change(amount): # Returns how much the stats change when doing a high risk gamble
+    roll = random.randint(1, 100)
+    if roll <= 10:
+        return -amount
+    elif roll <= 30:
+        return -int(amount * 0.5)
+    elif roll <= 50:
+        return int(amount * 0.2)
+    elif roll <= 75:
+        return int(amount * 0.5)
+    elif roll <= 90:
+        return amount
+    else:
+        return amount * 2
 
-# Section for managing tamagatchi stuff
-def update_tamagatchi(): # Mangages the tamagatchi bonuses, hunger and bond
-    pass
-def start_tamagatchi_thread(): # Starts the thread for the tamagatchi loop
-    pass
-def tamagatchi(): # The tamagatchi minigame management code (feeding and such)
-    pass
+def gambling(): # Manages the gambling screen
+    global player
+    clear_screen()
+    print(Style.RESET_ALL)
+    print(Fore.YELLOW + "Welcome to the Gambling Den")
+    print(Fore.CYAN + f"You have {player['coins']} coins.")
+    print(Fore.BLACK,"|")
+
+    if player["coins"] == 0 and not player["inventory"]:
+        print(Fore.RED + "\nYou have no coins or items to interact with.")
+        print(Fore.YELLOW + "Defeat monsters to gain items. Sell them for coins to gamble!")
+        time.sleep(3)
+        combat()
+        return
+
+    print(Fore.GREEN + "\nOptions:")
+    print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
+    print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
+    print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
+    if persistentStats["floor"] >= 20:
+        print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats")
+    else:
+        print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
+    print(Fore.GREEN + " [leave]   → Exit back to combat")
+    print(Fore.BLACK,"|")
+
+    choice = input(Fore.CYAN + "\nYour choice: ").strip().lower()
+
+    if choice in ["sell"]:
+        if not player["inventory"]:
+            print(Fore.RED + "You have no items to sell.")
+        else:
+            for i, item in enumerate(player["inventory"]):
+                value = get_item_coin_value(item)
+                print(Fore.CYAN + f"[{i}] {item['name']} → {value} coins")
+                print(Fore.MAGENTA + f"     {item['desc']}")
+
+            sel = input(Fore.GREEN + "\nChoose item number to sell or 'all': ").strip().lower()
+            if sel == "all":
+                total = sum(get_item_coin_value(i) for i in player["inventory"])
+                player["coins"] += total
+                gambling_data["itemsSold"] += len(player["inventory"])
+                gambling_data["coinsFromSelling"] += total
+                player["inventory"].clear()
+                print(Fore.GREEN + f"Sold all items for {total} coins.")
+            elif sel.isdigit():
+                i = int(sel)
+                if 0 <= i < len(player["inventory"]):
+                    item = player["inventory"].pop(i)
+                    value = get_item_coin_value(item)
+                    player["coins"] += value
+                    gambling_data["itemsSold"] += 1
+                    gambling_data["coinsFromSelling"] += value
+                    print(Fore.GREEN + f"Sold {item['name']} for {value} coins.")
+                else:
+                    print(Fore.RED + "Invalid item index.")
+            else:
+                print(Fore.RED + "Invalid input.")
+        apply_boosts()
+
+    elif choice in ["gamble", "gam"]:
+        try:
+            amt = int(input(Fore.YELLOW + "Enter coin amount to bet: ").strip())
+            if amt <= 0 or amt > player["coins"]:
+                print(Fore.RED + "Invalid bet amount.")
+            else:
+                mults = [0, 0.1, 0.2, 0.5, 1.0, 1.2, 1.5, 2.0, 3.0]
+                weights = [30, 25, 20, 10, 6, 5, 2, 1, 0.5]
+                scale = 1 + (persistentStats["floor"] * 0.5)
+                mult = random.choices(mults, weights)[0] * scale
+                result = int(amt * mult)
+                player["coins"] -= amt
+                player["coins"] += result
+                gambling_data["gamblingBets"] += 1
+                gambling_data["gamblingCoinsSpent"] += amt
+                gambling_data["gamblingCoinsWon"] += result
+                if result == 0:
+                    print(Fore.RED + "You lost everything!")
+                elif result < amt:
+                    print(Fore.YELLOW + f"You lost some. You got {result} coins back.")
+                else:
+                    print(Fore.GREEN + f"You won! You now have {result} more coins.")
+        except:
+            print(Fore.RED + "Invalid number.")
+
+    elif choice in ["convert"]:
+        try:
+            amt = int(input(Fore.YELLOW + "Coins to convert to XP (10 coins = 1 XP): ").strip())
+            if amt < 10 or amt > player["coins"]:
+                print(Fore.RED + "Invalid amount.")
+            else:
+                xp = round(amt / 10, 2)
+                player["coins"] -= amt
+                player["xp"] += xp
+                gambling_data["coinsConvertedToXP"] += amt
+                print(Fore.GREEN + f"Gained {xp} XP.")
+        except:
+            print(Fore.RED + "Invalid input.")
+
+    elif choice in ["highrisk", "high", "risk"]:
+        if persistentStats["floor"] < 2:
+            print(Fore.RED + "High Risk unlocked at Floor 2.0")
+        else:
+            stat = input(Fore.YELLOW + "Which stat? [health/damage/defense]: ").strip().lower()
+            if stat in ["health", "damage", "defense"]:
+                try:
+                    amt = int(input(Fore.CYAN + f"Points of {stat} to gamble: ").strip())
+                    key = f"{stat}Boost"
+                    if amt <= 0 or amt > player[key]:
+                        print(Fore.RED + "Invalid amount.")
+                    else:
+                        change = gamble_stat_change(amt)
+                        player[key] = max(0, player[key] + change)
+                        print(Fore.MAGENTA + f"{stat.capitalize()} changed by {change}.")
+                        apply_boosts()
+                except:
+                    print(Fore.RED + "Invalid number.")
+            else:
+                print(Fore.RED + "Invalid stat.")
+
+    elif choice in ["leave", "exit"]:
+        combat()
+        return
+
+    else:
+        print(Fore.RED + "Invalid input.")
+
+    time.sleep(2)
+    gambling()
+
+# Tamagachi stuff
+def start_tamagatchi_thread():
+    global tamagatchi_thread
+    if tamagatchi_thread and tamagatchi_thread.is_alive():
+        return
+    tamagatchi_stop_event.clear()
+    def loop():
+        while tamagatchi_data["active"] and not tamagatchi_stop_event.is_set():
+            if tamagatchi_data["last_update"] is not None:
+                update_tamagatchi()
+            time.sleep(60)
+    tamagatchi_thread = threading.Thread(target=loop, daemon=True)
+    tamagatchi_thread.start()
+
+def update_tamagatchi():
+    hunger = tamagatchi_data["hunger"]
+    bond = tamagatchi_data["bond"]
+    if hunger < 100:
+        tamagatchi_data["hunger"] += 1
+    if bond > 0 and bond % 5 == 0:
+        tamagatchi_data["boosts"]["health"] = bond * 2
+        tamagatchi_data["boosts"]["damage"] = bond
+        tamagatchi_data["boosts"]["defense"] = int(bond * 0.8)
+
+def tamagatchi():
+    global player, persistentStats
+    max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
+    clear_screen()
+    print(Style.RESET_ALL)
+
+    if not tamagatchi_data["active"]:
+        if player["xp"] < 100:
+            print(Fore.RED + "You need 100 XP to adopt a Tamagatchi.")
+            time.sleep(3)
+            combat()
+            return
+        player["xp"] -= 100
+        tamagatchi_data.update({
+            "active": True,
+            "last_update": datetime.now().isoformat(),
+            "hunger": 3,
+            "bond": 5
+        })
+        start_tamagatchi_thread()
+        print(Fore.YELLOW + "You adopted a glowing creature!")
+        print(Fore.RED + "Feed it to earn permanent boosts.")
+        time.sleep(2)
+
+    while True:
+        clear_screen()
+        update_tamagatchi()
+        hunger = tamagatchi_data["hunger"]
+        bond = tamagatchi_data["bond"]
+        boosts = tamagatchi_data["boosts"]
+        print(Fore.CYAN + "\n--- Tamagatchi Status ---")
+        print(Fore.MAGENTA + f"Hunger: {hunger} / 100")
+        print(Fore.MAGENTA + f"Bond: {bond} / {max_bond}")
+        print(Fore.GREEN + f"Boosts: {boosts}")
+        print(Fore.YELLOW + f"XP: {round(player['xp'], 1)}")
+
+        if hunger <= 5:
+            print(Fore.YELLOW + "It's not hungry enough to feed.")
+        else:
+            cost = hunger * 1.4 * (persistentStats["tamagatchiFeeds"] + 1)
+            print(Fore.YELLOW + f"Feeding cost: {round(cost, 1)} XP")
+
+        print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
+        choice = input().strip().lower()
+
+        if choice in ["exit", "leave"]:
+            combat()
+            return
+        elif choice == "feed":
+            if hunger <= 5:
+                print(Fore.YELLOW + "It's not hungry enough to feed.")
+            elif player["xp"] >= cost:
+                tamagatchi_data["hunger"] = max(hunger - 4, 0)
+                tamagatchi_data["bond"] = min(bond + 1, max_bond)
+                player["xp"] -= cost
+                persistentStats["tamagatchiFeeds"] += 1
+                print(Fore.GREEN + "You feed your companion! It looks happier.")
+            else:
+                print(Fore.RED + "Not enough XP.")
+        else:
+            print(Fore.RED + "Invalid command.")
+        apply_inventory_boosts()
+        time.sleep(1.5)
 
 # The screen for selecting minigames
 def minigame_selection():
-    pass
+    clear_screen()
+    print(Fore.BLACK + "|")
+    print(Fore.YELLOW + "Welcome to the Minigame/Other section!")
+    print(Fore.BLUE + "  Complete minigames to earn boosts, XP, and more!")
+    print(Fore.BLACK + "|")
+    print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
+    print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
+    print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
+    print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
+    print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Options:", player["gameList"])
+    print(Fore.BLACK + "|")
+    print(Style.RESET_ALL)
+
+    choice = input(Fore.GREEN + "> ").strip().lower()
+
+    if choice in ["tamagatchi", "tama"]:
+        tamagatchi()
+    elif choice in ["gambling", "gamble", "gamb"]:
+        gambling()
+    elif choice in ["fishing", "fish"]:
+        fishing()
+    elif choice in ["wishing well", "wish", "wishingwell", "wsh"]:
+        wishing_well()
+    elif choice in ["reborn", "re", "born"]:
+        reborn()
+    elif choice == "exit":
+        combat()
+    else:
+        print(Fore.RED + "Invalid input. Try again.")
+        time.sleep(1)
+        minigame_selection()
 
 # Saving and Loading Functions
 def save_to_file(): # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data
-    player.name = os.path.splitext(currentSaveName)[0]
+    player["name"] = os.path.splitext(currentSaveName)[0]
 
     data = {
-        "player": player.__dict__,
+        "player": player,
         "persistentStats": persistentStats,
         "tamagatchi_data": tamagatchi_data,
         "well_data": well_data,
+        "shop_data": shop_data,
         "endlessMode": endlessMode,
         "endlessKills": endlessKills,
         "monsterId": monsterId,
@@ -449,12 +1047,11 @@ def load_from_file(filename): # Load data from files
     try:
         with open(path, "r") as f:
             data = json.load(f)
-
-        for k, v in data.get("player", {}).items():
-            setattr(player, k, v)
-
+        
+        player.update(data.get("player", {}))
         persistentStats.update(data.get("persistentStats", {}))
         tamagatchi_data.update(data.get("tamagatchi_data", {}))
+        shop_data.update(data.get("shop_data", {}))
         well_data.update(data.get("well_data", {}))
         endlessMode = data.get("endlessMode", False)
         endlessKills = data.get("endlessKills", 0)
@@ -470,15 +1067,89 @@ def load_from_file(filename): # Load data from files
         return False
 
 # Other Main Functions
-def try_drop_item(): # This runs when attacking or fishing to try to drop an item and to know weather to sell it or not
-    pass
+def try_drop_item():
+    #Attempts to drop an item after combat or fishing, based on player's drop chance.
+    #If an item is already in inventory, it is auto-sold for coins instead.
+    #Applies item boosts immediately if obtained.
+    
+    drop_chance = player["drop"]
+    if random.uniform(0, 100) <= drop_chance:
+        # Get weights and choose one item
+        weights = [item.get("weight", 1) for item in drop_table]
+        dropped_item = random.choices(drop_table, weights=weights, k=1)[0]
 
-def apply_boosts(): # Applies external boosts from items, wishes, lvl ups/shops and gambling
-    pass
+        owned_names = [i["name"] for i in player["inventory"]]
+        if dropped_item["name"] in owned_names:
+            # Duplicate item → convert to coins
+            value = get_item_coin_value(dropped_item)
+            player["coins"] += value
+            print(Fore.MAGENTA + f"You found {dropped_item['name']} again.")
+            print(Fore.YELLOW + f"It was converted into {value} coins.")
+        else:
+            # New item → add to inventory
+            player["inventory"].append(dropped_item)
+            print(Fore.MAGENTA + f"You found: {dropped_item['name']}!")
+            print(Fore.YELLOW + dropped_item["desc"])
+
+        apply_boosts()
+        time.sleep(0.5)
+
+
+def apply_boosts():
+    #Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
+    #This function resets stats to base values and then adds all applicable bonuses.
+
+    # Base stats (adjust if needed)
+    base_health = 25.0
+    base_damage = 3.5
+    base_defense = 0.0
+    base_dodge = 5.0
+    base_escape = 20.0
+    base_drop = 7.0
+
+    # Reset stats to base + permanent boosts
+    player["maxHealth"] = base_health + player["healthBoost"]
+    player["damage"] = base_damage + player["damageBoost"]
+    player["defense"] = base_defense + player["defenseBoost"]
+    player["dodge"] = base_dodge + player["dodgeBoost"]
+    player["escape"] = base_escape + player["escapeBoost"]
+    player["drop"] = base_drop
+
+    # Add item boosts
+    for item in player["inventory"]:
+        boosts = item.get("boosts", {})
+        player["maxHealth"] += boosts.get("health", 0)
+        player["damage"] += boosts.get("damage", 0)
+        player["defense"] += boosts.get("defense", 0)
+        player["dodge"] += boosts.get("dodge", 0)
+        player["escape"] += boosts.get("escape", 0)
+        player["drop"] += boosts.get("drop", 0)
+
+    # Clamp capped values
+    player["drop"] = min(player["drop"], shop_data["dropBoostCap"])
+    player["dodge"] = min(player["dodge"], shop_data["dodgeBoostCap"])
+    player["escape"] = min(player["escape"], shop_data["escapeBoostCap"])
+
+    # Apply tamagatchi boosts
+    if tamagatchi_data.get("active"):
+        boosts = tamagatchi_data["boosts"]
+        player["maxHealth"] += boosts.get("health", 0)
+        player["damage"] += boosts.get("damage", 0)
+        player["defense"] += boosts.get("defense", 0)
+
+    # Make sure current health isn't above max
+    if player["health"] > player["maxHealth"]:
+        player["health"] = player["maxHealth"]
+
 
 def reset_monster():
     # Resets monster based on current floor + room count, or spawns boss
     global monsterId, player, monster, currentMonsterFight, currentMonsterHealth, currentMonsterDefense, persistentStats
+
+    if persistentStats["bossFightReady"]:
+        boss_index = min(monsterId + 1, len(monster.names) - 1)
+        monsterId = boss_index
+        persistentStats["bossFightReady"] = False
 
     if endlessMode:
         # Endless logic placeholder
@@ -488,6 +1159,8 @@ def reset_monster():
         tier_indices = [i for i, w in enumerate(weights) if w > 0]
 
         if persistentStats["bossFightReady"] and persistentStats["room"] == 10:
+            print(Fore.RED+"A boss monster approaches... defeat this enemy to move on to the next floor")
+            time.sleep(1.5)
             # Boss is the monster immediately to the right of the strongest in the tier
             boss_index = tier_indices[-1] + 1
             if boss_index >= len(monster.names):
@@ -522,19 +1195,97 @@ def manage_floors():
     weights = [base_weights[i - tier_start] if tier_start <= i < tier_end else 0 for i in range(total_monsters)]
     return weights
 
-def level_up(): # Manages the level up screen or shop where you can buy boosts
-    pass
+# The level up screen
+def level_up():
+    while True:
+        clear_screen()
+        print(Fore.BLACK + "|")
+        print(Fore.GREEN + f"Upgrade Costs (Current XP: {round(player['xp'], 1)})")
+        print(Fore.GREEN +
+            f" Health: {shop_data['baseHealthBoostCost']} |" +
+            f" Damage: {shop_data['baseDamageBoostCost']} |" +
+            f" Defense: {shop_data['baseDefenseBoostCost']}\n" +
+            f" Dodge: {shop_data['baseDodgeBoostCost']} |" +
+            f" Escape: {shop_data['baseEscapeBoostCost']} |" +
+            f" Drop: {shop_data['baseDropBoostCost']}")
+        print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
+        print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
+        choice = input(Fore.GREEN + "> ").strip().lower()
+
+        upgrade_map = {
+            "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod", "healthBoostCap"),
+            "damage": ("damageBoost", "baseDamageBoostCost", "baseDamageBoostCostFactor", "damageBoostMod", "damageBoostCap"),
+            "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod", "defenseBoostCap"),
+            "dodge": ("dodgeBoost", "baseDodgeBoostCost", "baseDodgeBoostCostFactor", "dodgeBoostMod", "dodgeBoostCap"),
+            "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod", "escapeBoostCap"),
+            "drop": ("drop", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
+        }
+
+        aliases = {
+            "hp": "health", "hlth": "health",
+            "dmg": "damage",
+            "def": "defense",
+            "dod": "dodge", "dodge chance": "dodge", "dodgechance": "dodge",
+            "ret": "escape", "esc": "escape", "retreat": "escape",
+            "drp": "drop", "drop chance": "drop", "dropchance": "drop"
+        }
+
+        choice = aliases.get(choice, choice)
+
+        if choice in upgrade_map:
+            boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
+            current_cost = shop_data[cost_key]
+            boost_mod = shop_data[mod_key]
+            cap = shop_data[cap_key]
+
+            if player["xp"] < current_cost:
+                print(Fore.RED + "Not enough XP!")
+            elif player[boost_key] >= cap:
+                print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
+            else:
+                player["xp"] -= current_cost
+                player[boost_key] += boost_mod
+                player[boost_key] = min(player[boost_key], cap)
+
+                if choice == "health":
+                    apply_boosts()  # Recalculate maxHealth after boost
+                    heal_amount = player["maxHealth"] * 0.5
+                    player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
+                elif choice not in ["dodge", "escape", "drop"]:
+                    shop_data[mod_key] *= shop_data[factor_key]
+
+                shop_data[cost_key] = round(shop_data[cost_key] * shop_data[factor_key], 1)
+                apply_boosts()
+                print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
+
+        elif choice == "exit":
+            return
+        else:
+            print(Fore.RED + "Invalid input.")
+        time.sleep(1)
 
 # Main Functions
 def combat():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
-    
+
     player_turn_used = False
 
     while True:
         show_combat_stats()
         save_to_file()
+
+        # Handle boss prompt if room is at 10 and not already in a boss fight
+        if persistentStats["room"] >= 10 and not persistentStats["bossFightReady"]:
+            print(Fore.YELLOW + "A powerful presence blocks your path... Boss fight?")
+            choice = input(Fore.GREEN + "Do you wish to challenge it? (yes/no) > ").strip().lower()
+            if choice in ["yes", "y"]:
+                persistentStats["bossFightReady"] = True
+            else:
+                print(Fore.RED + "You chose to wait. The boss still blocks your progress.")
+                persistentStats["room"] = 9
+                time.sleep(1.5)
+                continue
 
         choice = input(Fore.BLUE + "What will you do? ").strip().lower()
         print()
@@ -542,13 +1293,18 @@ def combat():
         if choice in ["attack", "atk", ""]:
             print(Fore.YELLOW + "You attack!")
             player_turn_used = True
-            damage = max(1, round(player.damage + random.uniform(0, 5) - currentMonsterDefense, 2))
+            damage = max(1, round(player["damage"] + random.uniform(0, 5) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
+            time.sleep(0.1)
 
         elif choice in ["retreat", "ret"]:
+            if persistentStats.get("bossFightReady", False):
+                print(Fore.RED + "You cannot retreat from a boss fight!")
+                time.sleep(1)
+                continue
             print(Fore.YELLOW + "Attempting to retreat...")
-            if random.randint(0, 100) < player.escape:
+            if random.randint(0, 100) < player["escape"]:
                 print(Fore.GREEN + "You successfully escaped!")
                 reset_monster()
                 continue
@@ -566,7 +1322,6 @@ def combat():
 
         elif choice in ["stats", "st"]:
             show_stats_screen()
-            input(Fore.CYAN + "\n(Press Enter to return to combat...)")
 
         elif choice == "exit":
             sys.exit()
@@ -574,14 +1329,23 @@ def combat():
         else:
             print(Fore.RED + "Invalid input.")
             time.sleep(0.8)
+            continue  # prevents monster from getting a turn on bad input
 
         time.sleep(0.5)
 
-        # Section for managing when you kill a monster
         if currentMonsterHealth <= 0:
             print(Fore.GREEN + "You defeated the monster!")
             persistentStats["monstersKilled"] += 1
-            persistentStats["room"] += 1
+            player["health"] += round(monster.maxHealth[monsterId]/10)
+
+            if persistentStats.get("bossFightReady", False):
+                persistentStats["floor"] += 1
+                persistentStats["room"] = 0
+                persistentStats["bossFightReady"] = False
+                print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
+                time.sleep(0.5)
+            else:
+                persistentStats["room"] += 1
 
             xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
             if well_data["divineSpark"] > 0:
@@ -589,7 +1353,7 @@ def combat():
                 well_data["divineSpark"] -= 1
                 print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xp_gain}!")
 
-            player.xp += xp_gain
+            player["xp"] += xp_gain
             try_drop_item()
 
             if currentMonsterFight == "Demon Lord":
@@ -598,42 +1362,38 @@ def combat():
             elif endlessMode:
                 endlessKills += 1
 
+            time.sleep(0.5)
             reset_monster()
             apply_boosts()
             continue
-        
-        # Section for when the mosnter fights back
+
         if player_turn_used:
             player_turn_used = False
-            if random.randint(0, 100) < player.dodge:
+            if random.randint(0, 100) < player["dodge"]:
                 print(Fore.YELLOW + "You dodged the attack!")
             else:
                 print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
                 if endlessMode:
                     scale = 4 ** endlessKills
-                    dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player.defense, 2)
+                    dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"], 2)
                 else:
-                    dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player.defense, 2)
+                    dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"], 2)
 
                 dmg = max(1, dmg)
-                player.health -= dmg
+                player["health"] -= dmg
                 print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
 
-        # Function for when the player dies
-        if player.health <= 0:
+        if player["health"] <= 0:
             print(Fore.RED + "You have died.")
             if endlessMode:
                 print(Fore.YELLOW + f"You defeated {endlessKills} Demon Lords!")
             persistentStats["is_dead"] = True
             save_to_file()
-            show_stats_screen()
-            sys.exit()
-
-        time.sleep(0.8)
+            show_stats_screen()  
 
 # Stat up code
 def startup():
-    global currentSaveName, savedGames, globalSavePath, firstLaunch, endlessMode, endlessKills
+    global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
@@ -660,23 +1420,23 @@ def startup():
     else:
         print(Fore.YELLOW + f"Creating new save file: {currentSaveName}")
 
-    if firstLaunch:
+    if currentSaveName not in savedGames:
         print(Fore.YELLOW + "Choose difficulty: Easy / Normal / Hard")
         print(Fore.CYAN + "(Easy gives bonus XP; Hard gives less)")
         choice = input(Fore.GREEN + "> ").strip().lower()
 
         if choice == "easy":
-            player.difficulty = 15
+            player["difficulty"] = 15
         elif choice == "normal":
-            player.difficulty = 10
+            player["difficulty"] = 10 
         elif choice == "hard":
-            player.difficulty = 5
+            player["difficulty"] = 5
         else:
-            player.difficulty = 10  # Default to normal
+            player["difficulty"] = 10   # Default to normal
 
-        player.xp += player.difficulty
-        firstLaunch = False
+        player["xp"] += player["difficulty"]
 
     combat()
 
-startup()
+if __name__ == "__main__":
+    startup() 
