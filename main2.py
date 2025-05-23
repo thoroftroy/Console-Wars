@@ -1178,8 +1178,19 @@ def reset_monster():
         persistentStats["bossFightReady"] = False
 
     if endlessMode:
-        # Endless logic placeholder
-        pass
+            # Endless mode: demon lord keeps getting stronger
+            demon_lord_data["demonLordsDefeated"] += 1
+            multiplier = 2 ** demon_lord_data["demonLordsDefeated"]
+
+            demon_lord_data["health"] = monster.maxHealth[-1] * multiplier
+            demon_lord_data["minDamage"] = monster.minDamage[-1] * multiplier
+            demon_lord_data["maxDamage"] = monster.maxDamage[-1] * multiplier
+            demon_lord_data["defense"] = monster.defense[-1] * multiplier
+
+            currentMonsterFight = f"Demon Lord x{demon_lord_data['demonLordsDefeated']}"
+            currentMonsterHealth = demon_lord_data["health"]
+            currentMonsterDefense = demon_lord_data["defense"]
+            return
     else:
         weights = manage_floors()
         tier_indices = [i for i, w in enumerate(weights) if w > 0]
@@ -1362,6 +1373,14 @@ def combat():
 
         # Function for when a mosnter dies
         if currentMonsterHealth <= 0:
+            # Activate Endless Mode when Demon Lord dies
+            if currentMonsterFight == "Demon Lord" and not endlessMode:
+                endlessMode = True
+                endlessKills = 0
+                print(Fore.RED + "\n--- ENDLESS MODE UNLOCKED ---")
+                print(Fore.MAGENTA + "Demon Lords will now respawn stronger each time.")
+                time.sleep(5)
+            
             if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
                 if random.random() < 0.2:
                     tamagatchi_data["bond"] += 1
