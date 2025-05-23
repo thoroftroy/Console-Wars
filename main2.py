@@ -58,7 +58,6 @@ demon_lord_data = {
 # Minigame libraries
 tamagatchi_data = {
     "tamagatchiFeeds": 0,
-    
     "active": False,
     "last_update": None,
     "hunger": 0,
@@ -943,7 +942,7 @@ def tamagatchi():
         if hunger <= 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
         else:
-            cost = round(hunger * 1.3 * (persistentStats["tamagatchiFeeds"] + 1,1))
+            cost = round(hunger * 1.3 * (tamagatchi_data["tamagatchiFeeds"] + 1), 1)
             print(Fore.YELLOW + f"Feeding cost: {round(cost, 1)} XP")
 
         print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
@@ -959,13 +958,13 @@ def tamagatchi():
                 tamagatchi_data["hunger"] = max(hunger - 4, 0)
                 tamagatchi_data["bond"] = min(bond + 1, max_bond)
                 player["xp"] -= cost
-                persistentStats["tamagatchiFeeds"] += 1
+                tamagatchi_data["tamagatchiFeeds"] += 1
                 print(Fore.GREEN + "You feed your companion! It looks happier.")
             else:
                 print(Fore.RED + "Not enough XP.")
         else:
             print(Fore.RED + "Invalid command.")
-        apply_inventory_boosts()
+        apply_boosts()
         time.sleep(1.5)
 
 # The screen for selecting minigames
