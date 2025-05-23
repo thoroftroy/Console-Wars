@@ -40,7 +40,7 @@
 project_root/
 │
 ├── saves/ # Save files
-├── main.py # The full game script
+├── Console-Wars.py # The full game script
 └── README.md # This file
 ```
 ## Requirements
@@ -64,13 +64,13 @@ python3 --version
 py --version
 ```
 ```
-python main.py
+python Console-Wars.py
 ```
 ```
-python3 main.py
+python3 Console-Wars.py
 ```
 ```
-py main.py
+py Console-Wars.py
 ```
 ---
 ## How to Play
@@ -94,6 +94,8 @@ py main.py
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
 ## Known Issue
+If you play the old version(s) (main.py):
+
 *WARNING* this issue is gamebreaking: If you play for too long it reaches a maximum recursion rate and currupts you entire save. I am currently working on a fix. For now, every 200 or so levels just exit and reopen the game and that will temporarily fix it.
 
 The game is so broken with lots of hacky garbage code so I am working on a second version of the game, main2.py is this new version, it will slowly get updates as I recode the entire thing but with hindsite helping the orginization
