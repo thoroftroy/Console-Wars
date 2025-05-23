@@ -102,5 +102,7 @@ If you play the old version(s) (main.py):
 
 *WARNING* this issue is gamebreaking: If you play for too long it reaches a maximum recursion rate and currupts you entire save. I am currently working on a fix. For now, every 200 or so levels just exit and reopen the game and that will temporarily fix it.
 
-The game is so broken with lots of hacky garbage code so I am working on a second version of the game, main2.py is this new version, it will slowly get updates as I recode the entire thing but with hindsite helping the orginization
+The game is so broken with lots of hacky garbage code so I am working on a second version of the game, main2.py is this newer version, it will slowly get updates as I recode the entire thing but with hindsite helping the orginization.
+
+It is reccomended that you always play the Console-Wars version or the major release in the releases tab. This version is running in the new code-base and has many less bugs.
 
