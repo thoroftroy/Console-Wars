@@ -63,7 +63,7 @@ tamagatchi_data = {
     "last_update": None,
     "hunger": 0,
     "bond": 0,
-    "boosts": {"health": 0, "damage": 0, "defense": 0}
+    "boosts": {"health": 0, "damage": 0, "defense": 0},
 }
 
 fishing_data = {
