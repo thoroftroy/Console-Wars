@@ -41,7 +41,8 @@ player = {
     "damageBoost": 0,
     "defenseBoost": 0,
     "dodgeBoost": 0,
-    "escapeBoost": 0
+    "escapeBoost": 0,
+    "dropBoost": 0,
 }
 
 # Endless mode
@@ -1164,7 +1165,7 @@ def apply_boosts():
     player["defense"] = base_defense + player["defenseBoost"]
     player["dodge"] = base_dodge + player["dodgeBoost"]
     player["escape"] = base_escape + player["escapeBoost"]
-    player["drop"] = base_drop
+    player["drop"] = base_drop + player["dropBoost"] 
 
     # Add item boosts
     for item in player["inventory"]:
@@ -1281,7 +1282,7 @@ def level_up():
             "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod", "defenseBoostCap"),
             "dodge": ("dodgeBoost", "baseDodgeBoostCost", "baseDodgeBoostCostFactor", "dodgeBoostMod", "dodgeBoostCap"),
             "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod", "escapeBoostCap"),
-            "drop": ("drop", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
+            "drop": ("dropBoost", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
         }
 
         aliases = {
