@@ -1447,7 +1447,7 @@ def combat():
 
         if choice in ["attack", "atk", ""]:
             print(Fore.YELLOW + "You attack!")
-            damage = max(1, round(player["damage"] * random.uniform(0.9, 1.5) - currentMonsterDefense, 2))
+            damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
             time.sleep(0.2)
