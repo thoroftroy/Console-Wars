@@ -657,7 +657,7 @@ def fishing():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
         while fishing_active and not fishing_stop_event.is_set():
             if fishing_penalty or time.time() < cooldown_until:
-                time.sleep(0.5)
+                time.sleep(0.2)
                 continue
             print(Fore.BLUE + "Waiting for a bite...")
             time.sleep(random.uniform(4, 9))
@@ -706,7 +706,7 @@ def fishing():
                     print(Fore.YELLOW + item["desc"])
                 fishing_data["itemsFished"] += 1
                 apply_boosts()
-            cooldown_until = time.time() + 3
+            cooldown_until = time.time() + 1
 
     if fishing_thread and fishing_thread.is_alive():
         print(Fore.YELLOW + "Fishing is already active.")
