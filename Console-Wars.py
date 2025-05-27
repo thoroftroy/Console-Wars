@@ -111,10 +111,10 @@ shop_data = {
     "baseDropBoostCostFactor": 1.4,
     
     # How much each boost gives you each time (This number is multiplied with the stat for exponential increases)
-    "healthBoostMod": 1.9,
-    "damageBoostMod": 1.17,
-    "defenseBoostMod": 1.2,
-    "dodgeBoostMod": 1.3,
+    "healthBoostMod": 1.05,
+    "damageBoostMod": 1.13,
+    "defenseBoostMod": 1.12,
+    "dodgeBoostMod": 1.13,
     "escapeBoostMod": 1.5,
     "dropBoostMod": 1.3,
     
@@ -1306,16 +1306,24 @@ def level_up():
                 print(Fore.RED + "Not enough XP!")
             elif player[boost_key] >= cap:
                 print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
-            else:
+            else: # applies stat boosts
                 player["xp"] -= current_cost
-                
-                # Upgrades the players stats
-                if player[boost_key] == 0:
-                    player[boost_key] = boost_mod
+                if choice == "health":
+                    # Ensure minimum initial value
+                    if player[boost_key] <= 0:
+                        player[boost_key] = 1.0
+                    
+                    player[boost_key] *= (boost_mod*3)  # where boost_mod > 1.0
+                    
+                    # Cap and reapply
+                    player[boost_key] = min(player[boost_key], cap)
+                    apply_boosts()
+                    heal_amount = player["maxHealth"] * 0.5
+                    player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
                 else:
-                    player[boost_key] *= boost_mod
-
+                    player[boost_key] += boost_mod
                 player[boost_key] = min(player[boost_key], cap)
+
 
                 if choice == "health":
                     apply_boosts()  # Recalculate maxHealth after boost
