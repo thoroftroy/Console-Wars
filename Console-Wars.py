@@ -311,6 +311,23 @@ curses = [
 # Functions
 
 # Helper Functions
+def timed_input(timeout=1.0):
+    result = []
+    def read_input():
+        try:
+            result.append(input())
+        except EOFError:
+            pass
+
+    input_thread = threading.Thread(target=read_input)
+    input_thread.daemon = True
+    input_thread.start()
+    input_thread.join(timeout)
+
+    if input_thread.is_alive():
+        return None  # Timeout
+    return result[0] if result else ''
+
 # Define the current os and clear screen properly
 def clear_screen():
     print(Style.RESET_ALL)
@@ -648,15 +665,21 @@ def fishing():
                 break
             fish_ready = True
             print(Fore.YELLOW + "\nA fish is on the line! Press Enter quickly!")
-            start = time.time()
-            response = input()
-            reaction_time = time.time() - start
+            
+            response = timed_input(timeout=1.0)
             fish_ready = False
 
-            if reaction_time > 1.0:
+            if response is None:
                 print(Fore.RED + "Too slow! The fish got away.")
                 cooldown_until = time.time() + 3
                 continue
+
+            fish_ready = False
+
+            #if reaction_time > 1.0:
+            #    print(Fore.RED + "Too slow! The fish got away.")
+            #    cooldown_until = time.time() + 3
+            #    continue
             if fishing_penalty:
                 print(Fore.RED + "Rod tangled from spam. No reward.")
                 continue
