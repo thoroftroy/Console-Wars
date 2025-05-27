@@ -926,6 +926,8 @@ def update_tamagatchi():
         max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
         if tamagatchi_data["bond"] < max_bond:
             tamagatchi_data["bond"] += 1
+        else:
+            tamagatchi_data["bond"] = max_bond
 
     # Recalculate boosts
     if bond > 0:
