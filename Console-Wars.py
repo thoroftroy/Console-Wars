@@ -7,12 +7,13 @@ import platform
 import json
 from datetime import datetime
 import threading
+import pygame
 
 # Define libraries and classes
 class monsterVariables:
     names =     ["Slime","Goblin","Skeleton","Zombie","Vampire","Orc","Giant","Ent","Warg","Banshee","Ghoul","Bandit","Troll","Shade","Basilisk","Minotaur","Witch","Drake","Warlock","Knight","Behemoth","Chimera","Specter","Ogre","Harpy","Revenant","Lich","Manticore","Wyvern","Wyrm","Juggernaut","Hydra","Phantom","Colossus","Ifrit","Kraken","Dreadnought","Leviathan","Titan","Demon Lord"]
     maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
-    maxDamage = [4,        7,      10,        15,      23,       34,    51,     77,  115,   173,      259,    389,      584,    876,   1314,      1971,      2956,   4434,    6651,     9976,   14964,     22445,    33668,     50502, 75754, 113630,    170445,255668,     383502,  575253,  862880,    1294320,1941479,  2912219,   4368329, 6552493,9828740,      14743110,   22114665,33171997,]
+    maxDamage = [4,        7,      10,       15,      23,       34,    51,     77,  115,   173,      259,    389,      584,    876,   1314,      1971,      2956,   4434,    6651,     9976,   14964,     22445,    33668,     50502, 75754, 113630,    170445,255668,     383502,  575253,  862880,    1294320,1941479,  2912219,   4368329, 6552493,9828740,      14743110,   22114665,33171997,]
     minDamage = [2,        2,       3,         5,       8,       11,    17,     26,   38,    58,       86,    130,      195,    292,    438,       657,       985,   1478,    2217,     3325,    4988,      7482,    11223,     16834, 25251,  37877,     56815, 85223,     127834,  191751,  287627,     431440, 647160,   970740,   1456110, 2184164,3276247,       4914370,    7371555,11057332,]
     defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
 
@@ -1302,11 +1303,76 @@ def level_up():
             print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
+def monster_death_check():
+    global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
+    if currentMonsterHealth <= 0:
+    # Activate Endless Mode when Demon Lord dies
+        if currentMonsterFight == "Demon Lord" and not endlessMode:
+            endlessMode = True
+            endlessKills = 0
+            print(Fore.RED + "\n--- ENDLESS MODE UNLOCKED ---")
+            print(Fore.MAGENTA + "Demon Lords will now respawn stronger each time.")
+            time.sleep(5)
+            
+        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
+            if random.random() < 0.2:
+                tamagatchi_data["bond"] += 1
+        print(Fore.GREEN + "You defeated the monster!")
+            
+        persistentStats["monstersKilled"] += 1
+        player["health"] += round(monster.maxHealth[monsterId]/10)
+
+        if persistentStats.get("bossFightReady", False):
+            persistentStats["floor"] += 1
+            persistentStats["room"] = 0
+            persistentStats["bossFightReady"] = False
+            print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
+            time.sleep(0.5)
+        else:
+            persistentStats["room"] += 1
+
+        # This is what happens when you kill a monster
+        xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
+        if well_data["divineSpark"] > 0:
+            xp_gain *= 2
+            well_data["divineSpark"] -= 1
+            print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xp_gain}!")
+
+        player["xp"] += xp_gain
+        try_drop_item()
+
+        if currentMonsterFight == "Demon Lord":
+            endlessKills += 1
+            print(Fore.MAGENTA + f"Demon Lord defeated! Total defeated: {endlessKills}")
+        elif endlessMode:
+            endlessKills += 1
+
+        time.sleep(0.5)
+        reset_monster()
+        apply_boosts()
+    else:
+        monster_turn()
+
+def monster_turn():
+    global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
+    if random.randint(0, 100) < player["dodge"]:
+        print(Fore.YELLOW + "You dodged the attack!")
+    else:
+        print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
+        if endlessMode:
+            scale = 4 ** endlessKills
+            dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"], 2)
+        else:
+            dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"], 2)
+
+        dmg = max(1, dmg)
+        player["health"] -= dmg
+        print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
+        time.sleep(0.8)
+
 # Main Functions
 def combat():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
-
-    player_turn_used = False
 
     while True:
         show_combat_stats()
@@ -1329,17 +1395,17 @@ def combat():
 
         if choice in ["attack", "atk", ""]:
             print(Fore.YELLOW + "You attack!")
-            player_turn_used = True
             damage = max(1, round(player["damage"] + random.uniform(0, 5) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
-
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
             time.sleep(0.2)
+            monster_death_check()
 
         elif choice in ["retreat", "ret"]:
             if persistentStats.get("bossFightReady", False):
                 print(Fore.RED + "You cannot retreat from a boss fight!")
                 time.sleep(1)
+                monster_death_check()
                 continue
             print(Fore.YELLOW + "Attempting to retreat...")
             if random.randint(0, 100) < player["escape"]:
@@ -1348,6 +1414,7 @@ def combat():
                 continue
             else:
                 print(Fore.RED + "Retreat failed!")
+                monster_turn()
 
         elif choice in ["level", "lvl"]:
             level_up()
@@ -1367,73 +1434,9 @@ def combat():
         else:
             print(Fore.RED + "Invalid input.")
             time.sleep(0.8)
-            continue  # prevents monster from getting a turn on bad input
+            continue 
 
         time.sleep(0.5)
-
-        # Function for when a mosnter dies
-        if currentMonsterHealth <= 0:
-            # Activate Endless Mode when Demon Lord dies
-            if currentMonsterFight == "Demon Lord" and not endlessMode:
-                endlessMode = True
-                endlessKills = 0
-                print(Fore.RED + "\n--- ENDLESS MODE UNLOCKED ---")
-                print(Fore.MAGENTA + "Demon Lords will now respawn stronger each time.")
-                time.sleep(5)
-            
-            if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
-                if random.random() < 0.2:
-                    tamagatchi_data["bond"] += 1
-            print(Fore.GREEN + "You defeated the monster!")
-            
-            persistentStats["monstersKilled"] += 1
-            player["health"] += round(monster.maxHealth[monsterId]/10)
-
-            if persistentStats.get("bossFightReady", False):
-                persistentStats["floor"] += 1
-                persistentStats["room"] = 0
-                persistentStats["bossFightReady"] = False
-                print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
-                time.sleep(0.5)
-            else:
-                persistentStats["room"] += 1
-
-            xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
-            if well_data["divineSpark"] > 0:
-                xp_gain *= 2
-                well_data["divineSpark"] -= 1
-                print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xp_gain}!")
-
-            player["xp"] += xp_gain
-            try_drop_item()
-
-            if currentMonsterFight == "Demon Lord":
-                endlessKills += 1
-                print(Fore.MAGENTA + f"Demon Lord defeated! Total defeated: {endlessKills}")
-            elif endlessMode:
-                endlessKills += 1
-
-            time.sleep(0.5)
-            reset_monster()
-            apply_boosts()
-            continue
-
-        if player_turn_used:
-            player_turn_used = False
-            if random.randint(0, 100) < player["dodge"]:
-                print(Fore.YELLOW + "You dodged the attack!")
-            else:
-                print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
-                if endlessMode:
-                    scale = 4 ** endlessKills
-                    dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"], 2)
-                else:
-                    dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"], 2)
-
-                dmg = max(1, dmg)
-                player["health"] -= dmg
-                print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
-                time.sleep(0.8)
 
         if player["health"] <= 0:
             print(Fore.RED + "You have died.")
