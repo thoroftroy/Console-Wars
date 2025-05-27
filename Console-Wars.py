@@ -1308,7 +1308,13 @@ def level_up():
                 print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
             else:
                 player["xp"] -= current_cost
-                player[boost_key] += boost_mod
+                
+                # Upgrades the players stats
+                if player[boost_key] == 0:
+                    player[boost_key] = boost_mod
+                else:
+                    player[boost_key] *= boost_mod
+
                 player[boost_key] = min(player[boost_key], cap)
 
                 if choice == "health":
