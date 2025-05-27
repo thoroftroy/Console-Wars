@@ -923,7 +923,9 @@ def update_tamagatchi():
 
     # Bond slowly increases if well-fed (under 20 hunger)
     if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
-        tamagatchi_data["bond"] += 1
+        max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
+        if tamagatchi_data["bond"] < max_bond:
+            tamagatchi_data["bond"] += 1
 
     # Recalculate boosts
     if bond > 0:
