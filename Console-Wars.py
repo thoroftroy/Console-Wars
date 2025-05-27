@@ -789,7 +789,7 @@ def gambling(): # Manages the gambling screen
     if persistentStats["floor"] >= 20:
         print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats")
     else:
-        print(Fore.RED + " [highrisk] → Unlocks at Floor 50+")
+        print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
     print(Fore.BLACK,"|")
 
