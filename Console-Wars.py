@@ -987,10 +987,10 @@ def tamagatchi():
         elif choice == "feed":
             if hunger <= 5:
                 print(Fore.YELLOW + "It's not hungry enough to feed.")
-            elif player["xp"] >= cost:
+            elif player["xp"] >= cost: # type: ignore
                 tamagatchi_data["hunger"] = max(hunger - 4, 0)
                 tamagatchi_data["bond"] = min(bond + 1, max_bond)
-                player["xp"] -= cost
+                player["xp"] -= cost # type: ignore
                 tamagatchi_data["tamagatchiFeeds"] += 1
                 print(Fore.GREEN + "You feed your companion! It looks happier.")
             else:
@@ -1151,7 +1151,7 @@ def apply_boosts():
     #Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
     #This function resets stats to base values and then adds all applicable bonuses.
 
-    # Base stats (adjust if needed)
+    # Base stats 
     base_health = 25.0
     base_damage = 3.5
     base_defense = 0.0
@@ -1323,7 +1323,6 @@ def level_up():
                 else:
                     player[boost_key] += boost_mod
                 player[boost_key] = min(player[boost_key], cap)
-
 
                 if choice == "health":
                     apply_boosts()  # Recalculate maxHealth after boost
