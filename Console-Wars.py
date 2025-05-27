@@ -110,12 +110,12 @@ shop_data = {
     "baseDropBoostCostFactor": 1.4,
     
     # How much each boost gives you each time (This number is multiplied with the stat for exponential increases)
-    "healthBoostMod": 1.2,
-    "damageBoostMod": 1.2,
+    "healthBoostMod": 1.9,
+    "damageBoostMod": 1.17,
     "defenseBoostMod": 1.2,
-    "dodgeBoostMod": 1.2,
-    "escapeBoostMod": 1.2,
-    "dropBoostMod": 1.2,
+    "dodgeBoostMod": 1.3,
+    "escapeBoostMod": 1.5,
+    "dropBoostMod": 1.3,
     
     "healthBoostCap": 10000000000,
     "damageBoostCap": 10000000000,
@@ -828,12 +828,12 @@ def gambling(): # Manages the gambling screen
                 print(Fore.RED + "Invalid bet amount.")
             else:
                 mults = [0, 0.1, 0.2, 0.5, 1.0, 1.2, 1.5, 2.0, 3.0]
-                weights = [30, 25, 20, 10, 6, 5, 2, 1, 0.5]
+                weights = [10, 20, 10, 5, 6, 10, 50, 5, 2]
                 scale = 1 + (persistentStats["floor"] * 0.5)
                 mult = random.choices(mults, weights)[0] * scale
                 result = int(amt * mult)
                 player["coins"] -= amt
-                player["coins"] += result
+                player["coins"] += result + 1
                 gambling_data["gamblingBets"] += 1
                 gambling_data["gamblingCoinsSpent"] += amt
                 gambling_data["gamblingCoinsWon"] += result
@@ -843,6 +843,7 @@ def gambling(): # Manages the gambling screen
                     print(Fore.YELLOW + f"You lost some. You got {result} coins back.")
                 else:
                     print(Fore.GREEN + f"You won! You now have {result} more coins.")
+                    player["coins"] += amt
         except:
             print(Fore.RED + "Invalid number.")
 
