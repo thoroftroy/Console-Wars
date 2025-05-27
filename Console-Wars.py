@@ -103,7 +103,7 @@ shop_data = {
     "baseDropBoostCost": 10,
     
     # How much the cost goes up each time
-    "baseHealthBoostCostFactor": 1.15,
+    "baseHealthBoostCostFactor": 1.35,
     "baseDamageBoostCostFactor": 1.25,
     "baseDefenseBoostCostFactor": 1.4,
     "baseDodgeBoostCostFactor": 1.7,
@@ -1306,32 +1306,46 @@ def level_up():
                 print(Fore.RED + "Not enough XP!")
             elif player[boost_key] >= cap:
                 print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
-            else: # applies stat boosts
+            else:  # applies stat boosts
                 player["xp"] -= current_cost
+
                 if choice == "health":
-                    # Ensure minimum initial value
+                    base_health = 25.0
+
                     if player[boost_key] <= 0:
-                        player[boost_key] = 1.0
-                    
-                    player[boost_key] *= (boost_mod*3)  # where boost_mod > 1.0
-                    
-                    # Cap and reapply
-                    player[boost_key] = min(player[boost_key], cap)
+                        player[boost_key] = 1.0  # Starting point
+
+                    current_boost = player[boost_key]
+                    proposed_boost = current_boost * boost_mod
+
+                    # Calculate new maxHealth
+                    current_max = player["maxHealth"]
+                    proposed_max = base_health + proposed_boost
+                    increase = proposed_max - current_max
+                    max_increase = current_max * 0.5
+
+                    # Enforce cap
+                    if increase > max_increase:
+                        proposed_max = current_max + max_increase
+                        proposed_boost = proposed_max - base_health
+
+                    player[boost_key] = min(proposed_boost, cap)
+
                     apply_boosts()
                     heal_amount = player["maxHealth"] * 0.5
                     player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
+
                 else:
                     player[boost_key] += boost_mod
-                player[boost_key] = min(player[boost_key], cap)
+                    player[boost_key] = min(player[boost_key], cap)  # Clamp all boosts
 
-                if choice == "health":
-                    apply_boosts()  # Recalculate maxHealth after boost
-                    heal_amount = player["maxHealth"] * 0.5
-                    player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
-                elif choice not in ["dodge", "escape", "drop"]:
+                # Apply scaling multipliers only to linear boosts
+                if choice not in ["dodge", "escape", "drop"]:
                     shop_data[mod_key] *= shop_data[factor_key]
 
+                # Always scale price
                 shop_data[cost_key] = round(shop_data[cost_key] * shop_data[factor_key], 1)
+
                 apply_boosts()
                 print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
 
@@ -1433,7 +1447,7 @@ def combat():
 
         if choice in ["attack", "atk", ""]:
             print(Fore.YELLOW + "You attack!")
-            damage = max(1, round(player["damage"] + random.uniform(0, 5) - currentMonsterDefense, 2))
+            damage = max(1, round(player["damage"] * random.uniform(0.9, 1.5) - currentMonsterDefense, 2))
             currentMonsterHealth -= damage
             print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
             time.sleep(0.2)
