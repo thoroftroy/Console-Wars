@@ -1206,7 +1206,7 @@ def reset_monster():
     if persistentStats["bossFightReady"]:
         boss_index = min(monsterId + 1, len(monster.names) - 1)
         monsterId = boss_index
-        persistentStats["bossFightReady"] = False
+        #persistentStats["bossFightReady"] = False
 
     if endlessMode:
             # Endless mode: demon lord keeps getting stronger
@@ -1440,6 +1440,7 @@ def combat():
             choice = input(Fore.GREEN + "Do you wish to challenge it? (yes/no) > ").strip().lower()
             if choice in ["yes", "y"]:
                 persistentStats["bossFightReady"] = True
+                reset_monster()
                 #continue
             else:
                 print(Fore.RED + "You chose to wait and reset the floor.")
