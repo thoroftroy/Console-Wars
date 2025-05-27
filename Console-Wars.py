@@ -417,19 +417,19 @@ def get_item_coin_value(item):
     # Base value for each stat type
     for stat, amount in boosts.items():
         if stat == "health":
-            value += amount * 3
+            value += amount * 1.5
         elif stat == "damage":
-            value += amount * 5
+            value += amount * 15
         elif stat == "defense":
-            value += amount * 4
+            value += amount * 18.5
         elif stat in ["dodge", "escape", "drop"]:
-            value += amount * 10  # utility stats are rarer
+            value += amount * 25  # utility stats are rarer
         elif stat == "xp":
-            value += amount * 0.5
+            value += amount * 13.5
         elif stat == "coins":
             value += amount
         elif stat == "divineSpark":
-            value += amount * 20
+            value += amount * 30
         elif stat == "heal" and amount == "full":
             value += 500
 
