@@ -525,7 +525,7 @@ def reborn():
 
     print(Fore.YELLOW + "--- Reborn ---")
     print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
-    print(Fore.CYAN + "Shop prices reset, Tamagatchi improves, and well cost resets.")
+    print(Fore.CYAN + "Shop prices are lowered, Tamagatchi improves, and well cost resets.")
     print(Fore.CYAN + "Cost: All XP  →  Reward: 100,000 coins")
     print(Fore.YELLOW + "\nReborn? (yes/no)")
 
@@ -544,13 +544,13 @@ def reborn():
         persistentStats["room"] = 0
         persistentStats["rebornsUsed"] += 1
 
-        # Reset shop costs to base values
-        shop_data["baseHealthBoostCost"] = 2
-        shop_data["baseDamageBoostCost"] = 3
-        shop_data["baseDefenseBoostCost"] = 4
-        shop_data["baseDodgeBoostCost"] = 5
-        shop_data["baseEscapeBoostCost"] = 2
-        shop_data["baseDropBoostCost"] = 10
+        # Reset shop costs to base values with a minimum value
+        shop_data["baseHealthBoostCost"] = max(100, int(shop_data["baseHealthBoostCost"] / 100))
+        shop_data["baseDamageBoostCost"] = max(100, int(shop_data["baseDamageBoostCost"] / 100))
+        shop_data["baseDefenseBoostCost"] = max(100, int(shop_data["baseDefenseBoostCost"] / 100))
+        shop_data["baseDodgeBoostCost"] = max(100, int(shop_data["baseDodgeBoostCost"] / 100))
+        shop_data["baseEscapeBoostCost"] = max(10, int(shop_data["baseEscapeBoostCost"] / 100))
+        shop_data["baseDropBoostCost"] = max(10, int(shop_data["baseDropBoostCost"] / 100))
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
         time.sleep(3)
@@ -601,7 +601,7 @@ def wishing_well():
         print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
         well_data["divineSpark"] += 1
         time.sleep(2)
-        combat()
+        #combat()
         return
 
     elif result_type == "blessing":
@@ -939,15 +939,12 @@ def update_tamagatchi():
 
     # Recalculate boosts
     if bond > 0:
-        scale = 1
-        if persistentStats.get("rebornsUsed", 0) >= 6:
-            scale = 3
-        elif persistentStats.get("rebornsUsed", 0) >= 1:
-            scale = 2
+        scale = 1 * (persistentStats["rebornsUsed"] + 1)
+        floorBoost = persistentStats["floor"] + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * scale * (1 + (kills/10) * 1))
-        tamagatchi_data["boosts"]["damage"] = int(bond * scale * (1 + (kills/10) * 0.3))
-        tamagatchi_data["boosts"]["defense"] = int(bond * scale * (1 + (kills/10) * 0.1))
+        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/8) * 1))
+        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.3))
+        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.1))
     
     apply_boosts()
 
