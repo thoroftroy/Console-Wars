@@ -1417,12 +1417,12 @@ def monster_death_check():
             persistentStats["floor"] += 1
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
+            persistentStats["loop_times"] = 0
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
             time.sleep(0.5)
         else:
             persistentStats["room"] += 1
 
-        # This is what happens when you kill a monster
         xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
         if well_data["divine_spark"] > 0:
             xp_gain *= 2
@@ -1473,16 +1473,24 @@ def combat():
         if persistentStats["room"] >= 10 and persistentStats["boss_fight_ready"] is False: 
             print(Fore.YELLOW + "A powerful presence blocks your path... Boss fight?")
             choice = input(Fore.GREEN + "Do you wish to challenge it? (yes/no) > ").strip().lower()
-            if choice in ["yes", "y"]:
+            if persistentStats["loop_times"] >= 3:
+                print(Fore.RED + "You can't ignore this fight any longer...")
+                time.sleep(0.8)
                 persistentStats["boss_fight_ready"] = True
                 reset_monster()
-                #continue
             else:
-                print(Fore.RED + "You chose to wait and reset the floor.")
-                persistentStats["room"] = 1
-                reset_monster()
-                time.sleep(1.5)
-                #continue
+                if choice in ["yes", "y"]:
+                    persistentStats["boss_fight_ready"] = True
+                    reset_monster()
+                    #continue
+                else:
+                    print(Fore.RED + "You chose to wait and reset the floor.")
+                    print(Fore.YELLOW + "You may reset",str(2-persistentStats["loop_times"]),"more times!")
+                    persistentStats["room"] = 1
+                    persistentStats["loop_times"] += 1
+                    reset_monster()
+                    time.sleep(1.5)
+                    #continue
         else:
             choice = input(Fore.BLUE + "What will you do? ").strip().lower()
             print()
@@ -1575,13 +1583,13 @@ def startup():
         choice = input(Fore.GREEN + "> ").strip().lower()
 
         if choice == "easy":
-            player["difficulty"] = 15
+            player["difficulty"] = 25
         elif choice == "normal":
-            player["difficulty"] = 10 
+            player["difficulty"] = 15 
         elif choice == "hard":
-            player["difficulty"] = 5
+            player["difficulty"] = 10
         else:
-            player["difficulty"] = 10   # Default to normal
+            player["difficulty"] = 15   # Default to normal
 
         player["xp"] += player["difficulty"]
 
