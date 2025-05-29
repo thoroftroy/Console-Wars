@@ -117,9 +117,9 @@ shop_data = {
     "escapeBoostMod": 1.5,
     "dropBoostMod": 1.3,
     
-    "healthBoostCap": 10000000000,
-    "damageBoostCap": 10000000000,
-    "defenseBoostCap": 10000000000,
+    "healthBoostCap": 1000000000000,
+    "damageBoostCap": 1000000000000,
+    "defenseBoostCap": 1000000000000,
     "dodgeBoostCap": 55,
     "escapeBoostCap": 95,
     "dropBoostCap": 25,
@@ -248,7 +248,8 @@ drop_table = [
     {"name": "Veil of the End",    "desc": "Shields its bearer from death itself.",                      "boosts": {"health": 700, "defense": 200}, "weight": 0.05},
     {"name": "Godbreaker",         "desc": "Crafted to kill the divine.",                                "boosts": {"damage": 750}, "weight": 0.05},
     {"name": "Bloodmoon Relic",    "desc": "Hungers for endless battle.",                                "boosts": {"health": 400, "damage": 300}, "weight": 0.05},
-    {"name": "Shield of Eternity", "desc": "No force may breach its guard.",                             "boosts": {"defense": 600}, "weight": 0.05}
+    {"name": "Shield of Eternity", "desc": "No force may breach its guard.",                             "boosts": {"defense": 600}, "weight": 0.05},
+    {"name": "Infinity Gauntlet",  "desc": "I am inevitable",                                            "boosts": {"damage":1000, "defense": 600}, "weight": 0.05},
 ]
 
 # Wishing well buffs and nerfs
@@ -289,23 +290,25 @@ blessings = [
     {"name": "Bloodlust", "desc": "Massive damage at health cost.", "boosts": {"damage": 1500, "health": -500}},
     {"name": "Armor of Fate", "desc": "Boosts defense and health.", "boosts": {"defense": 1500, "health": 1000}},
     {"name": "Wish of Kings", "desc": "XP and coin surge.", "boosts": {"xp": 500, "coins": 5000}},
-    {"name": "Ultimate Form", "desc": "Ascend to greatness.", "boosts": {"health": 20000, "damage": 20000, "defense": 2000}}
+    {"name": "Ultimate Form", "desc": "Ascend to greatness.", "boosts": {"health": 20000, "damage": 20000, "defense": 2000}},
+    {"name": "Ultimate Soul", "desc": "Above all else.", "boosts": {"health": 150000, "damage": 200, "defense": 200}},
+    {"name": "Ultimate Hammer", "desc": "Let the judgment of god strike.", "boosts": {"health": 100, "damage": 20000, "defense": 2000}},
 ]
 curses = [
-    {"name": "Curse of Weakness", "desc": "Your strength fades.", "boosts": {"damage": -10}},
-    {"name": "Curse of Fragility", "desc": "You feel frail.", "boosts": {"health": -30}},
-    {"name": "Curse of Vulnerability", "desc": "Your armor fails you.", "boosts": {"defense": -10}},
-    {"name": "Hex of Misfortune", "desc": "You lose your edge in luck.", "boosts": {"drop": -5}},
-    {"name": "Curse of Confusion", "desc": "Your mind blurs, XP drops.", "boosts": {"xp": -250}},
-    {"name": "Curse of Loss", "desc": "Half your coins vanish.", "boosts": {"coins": -50}},
-    {"name": "Crippling Wound", "desc": "You bleed long after the blow.", "boosts": {"health": -200}},
-    {"name": "Crack in Armor", "desc": "Your defenses fall apart.", "boosts": {"defense": -100}},
-    {"name": "Broken Blade", "desc": "Your weapon weakens.", "boosts": {"damage": -150}},
-    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved.", "boosts": {"divineSpark": -3}},
-    {"name": "Weakening Fog", "desc": "Your body fades.", "boosts": {"health": -10, "defense": -10}},
-    {"name": "Sluggish Blood", "desc": "Your lifeforce drains.", "boosts": {"health": -1000}},
-    {"name": "Shattered Luck", "desc": "Fortune slips away.", "boosts": {"drop": -10}},
-    {"name": "Doom’s Brand", "desc": "All gains halved temporarily.", "boosts": {"divineSpark": -5}}
+    {"name": "Curse of Weakness", "desc": "Your strength fades. (-10 damage)", "boosts": {"damage": -10}},
+    {"name": "Curse of Fragility", "desc": "You feel frail. (-30 health)", "boosts": {"health": -30}},
+    {"name": "Curse of Vulnerability", "desc": "Your armor fails you (-10 defense).", "boosts": {"defense": -10}},
+    {"name": "Hex of Misfortune", "desc": "You lose your edge in luck. (-5 drop chance)", "boosts": {"drop": -5}},
+    {"name": "Curse of Confusion", "desc": "Your mind blurs, XP drops. (-2500 xp)", "boosts": {"xp": -2500}},
+    {"name": "Curse of Loss", "desc": "You lose some coins. (-500 coins)", "boosts": {"coins": -500}},
+    {"name": "Crippling Wound", "desc": "You bleed long after the blow. (-200 health)", "boosts": {"health": -200}},
+    {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-100 defense)", "boosts": {"defense": -100}},
+    {"name": "Broken Blade", "desc": "Your weapon weakens. (-150 damage)", "boosts": {"damage": -150}},
+    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divineSpark": -3}},
+    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health/defense)", "boosts": {"health": -10, "defense": -10}},
+    {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
+    {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
+    {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divineSpark": -5}}
 ]
 
 # Functions
@@ -689,7 +692,7 @@ def fishing():
 
             if random.random() < 0.8:
                 scale = 1 + (persistentStats["floor"] * 2)
-                mult = 10 * int(persistentStats["floor"] * 10) if persistentStats["floor"] >= 50 else 1
+                mult = 10 * int(persistentStats["floor"] * 10) if persistentStats["floor"] >= 10 else 1
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
@@ -787,7 +790,7 @@ def gambling(): # Manages the gambling screen
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
     print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
     if persistentStats["floor"] >= 20:
-        print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats")
+        print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats (costs 10,000 coins)")
     else:
         print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
@@ -879,6 +882,7 @@ def gambling(): # Manages the gambling screen
                     if amt <= 0 or amt > player[key]:
                         print(Fore.RED + "Invalid amount.")
                     else:
+                        player["coins"] -= 10000
                         change = gamble_stat_change(amt)
                         player[key] = max(0, player[key] + change)
                         print(Fore.MAGENTA + f"{stat.capitalize()} changed by {change}.")
@@ -916,6 +920,7 @@ def update_tamagatchi():
     hunger = tamagatchi_data["hunger"]
     bond = tamagatchi_data["bond"]
     kills = persistentStats.get("monstersKilled", 0)
+    max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
 
     # Hunger increases
     if hunger < 100:
@@ -923,11 +928,12 @@ def update_tamagatchi():
 
     # Bond slowly increases if well-fed (under 20 hunger)
     if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
-        max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
         if tamagatchi_data["bond"] < max_bond:
             tamagatchi_data["bond"] += 1
         else:
             tamagatchi_data["bond"] = max_bond
+    elif hunger >= 20:
+        pass
 
     # Recalculate boosts
     if bond > 0:
