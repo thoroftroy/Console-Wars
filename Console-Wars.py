@@ -68,8 +68,8 @@ tamagatchi_data = {
 
 fishing_data = {
     "active": False,
-    "fishCaught": 0,
-    "itemsFished": 0,
+    "fish_caught": 0,
+    "items_fished": 0,
 }
 
 gambling_data = {
@@ -83,12 +83,12 @@ gambling_data = {
 
 well_data = {
     "wishing_well_cost": 1000,
-    "wishingCoinsUsed": 0,
-    "blessingsReceived": 0,
-    "cursesReceived": 0,
-    "divineSpark": 0,
-    "obtainedBlessings": [],
-    "obtainedCurses": [],
+    "wishing_coins_used": 0,
+    "blessings_received": 0,
+    "curses_received": 0,
+    "divine_spark": 0,
+    "obtained_blessings": [],
+    "obtained_curses": [],
 }
 
 # Keep track of stats from the shop
@@ -129,9 +129,10 @@ shop_data = {
 persistentStats = {
     "floor": 0,
     "room": 0,
-    "bossFightReady": False,
-    "monstersKilled": 0,
-    "rebornsUsed": 0,
+    "loop_times": 0,
+    "boss_fight_ready": False,
+    "monsters_killed": 0,
+    "reborns_used": 0,
     "is_dead": False,
 }
 
@@ -260,7 +261,7 @@ blessings = [
     {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health. (+500 health)", "boosts": {"health": 500}},
     {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage. (+200 damage)", "boosts": {"damage": 200}},
     {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense. (+2000 defense)", "boosts": {"defense": 2000}},
-    {"name": "Divine Spark", "desc": "Doubles XP gain from next 5 fights. (+5 sparks)", "boosts": {"divineSpark": 5}},
+    {"name": "Divine Spark", "desc": "Doubles XP gain from next 5 fights. (+5 sparks)", "boosts": {"divine_spark": 5}},
     {"name": "Gift of Giants", "desc": "Grants incredible health. (+200 health)", "boosts": {"health": 200}},
     {"name": "Fury Unleashed", "desc": "Unleashes devastating power. (+100 damage)", "boosts": {"damage": 100}},
     {"name": "Iron Will", "desc": "Bolsters your defenses. (+80 defense)", "boosts": {"defense": 80}},
@@ -270,7 +271,7 @@ blessings = [
     {"name": "Vital Infusion", "desc": "Legendary health enhancement. (+1000 health)", "boosts": {"health": 1000}},
     {"name": "Warrior’s Flame", "desc": "Burns with immense power. (+400 damage)", "boosts": {"damage": 400}},
     {"name": "Unbreakable Shell", "desc": "Impenetrable defenses. (+250 defense)", "boosts": {"defense": 350}},
-    {"name": "Starlight Boon", "desc": "Double XP for 10 fights. (+10 spark)", "boosts": {"divineSpark": 10}},
+    {"name": "Starlight Boon", "desc": "Double XP for 10 fights. (+10 spark)", "boosts": {"divine_spark": 10}},
     {"name": "Overflowing Vitality", "desc": "Surging health boost. (+20000 health)", "boosts": {"health": 20000}},
     {"name": "Executioner’s Edge", "desc": "Lethal combat precision. (+600 damage)", "boosts": {"damage": 600}},
     {"name": "Impenetrable Core", "desc": "Fortress-like endurance. (+500 defense)", "boosts": {"defense": 500}},
@@ -286,7 +287,7 @@ blessings = [
     {"name": "Sacred Surge", "desc": "Holy boost to health and defense. (+1500 health, +3000 defense)", "boosts": {"health": 1500, "defense": 3000}},
     {"name": "Storm Rage", "desc": "Storm-born speed and power. (+1200 damage, +10 dodge chance)", "boosts": {"damage": 1200, "dodge": 10}},
     {"name": "Radiant Core", "desc": "Heals you to full.", "boosts": {"heal": "full"}},
-    {"name": "Essence of Time", "desc": "XP gain doubled forever. (+99999 spark)", "boosts": {"divineSpark": 99999}},
+    {"name": "Essence of Time", "desc": "XP gain doubled forever. (+99999 spark)", "boosts": {"divine_spark": 99999}},
     {"name": "Bloodlust", "desc": "Massive damage at health cost. (+15000 damage, -1000 health)", "boosts": {"damage": 15000, "health": -1000}},
     {"name": "Armor of Fate", "desc": "Boosts defense and health. (+15000, +10000 health)", "boosts": {"defense": 15000, "health": 10000}},
     {"name": "Wish of Kings", "desc": "XP and coin surge. (+5000 xp, coins 50000)", "boosts": {"xp": 5000, "coins": 50000}},
@@ -305,11 +306,11 @@ curses = [
     {"name": "Crippling Wound", "desc": "You bleed long after the blow. (-200 health)", "boosts": {"health": -200}},
     {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-100 defense)", "boosts": {"defense": -100}},
     {"name": "Broken Blade", "desc": "Your weapon weakens. (-150 damage)", "boosts": {"damage": -150}},
-    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divineSpark": -3}},
+    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divine_spark": -3}},
     {"name": "Weakening Fog", "desc": "Your body fades. (-10 health and defense)", "boosts": {"health": -10, "defense": -10}},
     {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
     {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
-    {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divineSpark": -5}}
+    {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divine_spark": -5}}
 ]
 
 # Functions
@@ -363,10 +364,10 @@ def show_stats_screen():
     print(f"XP: {round(player_data.get('xp', 0), 1)}  |  Coins: {round(player_data.get('coins', 0), 1)}")
     print(f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
     print(f"Dodge Chance: {round(player_data.get('dodge', 0), 1)}%  |  Retreat Chance: {round(player_data.get('escape', 0), 1)}%  |  Drop Chance: {round(player_data.get('drop', 0), 1)}%")
-    print(f"Reborns Used: {stats.get('rebornsUsed', 0)}")
+    print(f"Reborns Used: {stats.get('reborns_used', 0)}")
 
     print(Fore.MAGENTA + "\n--- Combat Stats ---")
-    print(f"Monsters Killed: {stats.get('monstersKilled', 0)}")
+    print(f"Monsters Killed: {stats.get('monsters_killed', 0)}")
     print(f"Demon Lords Defeated: {demon_lord_data.get('demonLordsDefeated', 0)}")
 
     print(Fore.MAGENTA + "\n--- Gambling Stats ---")
@@ -376,13 +377,13 @@ def show_stats_screen():
     print(f"Coins Converted to XP: {gambling_data.get('coinsConvertedToXP', 0)}")
 
     print(Fore.CYAN + "\n--- Fishing ---")
-    print(f"Fish Caught: {fishing_data.get('fishCaught', 0)} | Items Fished: {fishing_data.get('itemsFished', 0)}")
+    print(f"Fish Caught: {fishing_data.get('fish_caught', 0)} | Items Fished: {fishing_data.get('items_fished', 0)}")
 
     print(Fore.CYAN + "\n--- Wishing Well ---")
-    print(f"Wishes Made: {well.get('wishingCoinsUsed', 0)}")
-    print(f"Blessings Received: {well.get('blessingsReceived', 0)}")
-    print(f"Curses Received: {well.get('cursesReceived', 0)}")
-    print(f"Divine Spark Charges: {well.get('divineSpark', 0)}")
+    print(f"Wishes Made: {well.get('wishing_coins_used', 0)}")
+    print(f"Blessings Received: {well.get('blessings_received', 0)}")
+    print(f"Curses Received: {well.get('curses_received', 0)}")
+    print(f"Divine Spark Charges: {well.get('divine_spark', 0)}")
 
     print(Fore.GREEN + "\n--- Inventory ---")
     inventory = player_data.get("inventory", [])
@@ -432,7 +433,7 @@ def get_item_coin_value(item):
             value += amount * 13.5
         elif stat == "coins":
             value += amount
-        elif stat == "divineSpark":
+        elif stat == "divine_spark":
             value += amount * 30
         elif stat == "heal" and amount == "full":
             value += 500
@@ -442,7 +443,7 @@ def get_item_coin_value(item):
     floorBonus = persistentStats["floor"] / 1.2
     if floorBonus <= 1:
         floorBonus = 1
-    value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["rebornsUsed"] * 10) + 1 )) + 100
+    value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["reborns_used"] * 10) + 1 )) + 100
 
     return max(1, int(value))  # Ensure at least 1 coin
 
@@ -543,7 +544,7 @@ def reborn():
         well_data["wishing_well_cost"] = 1000
         persistentStats["floor"] = 0
         persistentStats["room"] = 0
-        persistentStats["rebornsUsed"] += 1
+        persistentStats["reborns_used"] += 1
 
         # Reset shop costs to base values with a minimum value
         shop_data["baseHealthBoostCost"] -= max(1000, int(shop_data["baseHealthBoostCost"] / 10))
@@ -568,7 +569,7 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monstersKilled"] < 250 or persistentStats["floor"] >= 15:
+    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] >= 15:
         print(Fore.RED + "You must defeat 250 monsters and make it to floor 15 to unlock the Wishing Well.")
         time.sleep(2)
         combat()
@@ -596,38 +597,38 @@ def wishing_well():
 
     player["coins"] -= cost
     well_data["wishing_well_cost"] = int(cost * 1.25)
-    well_data["wishingCoinsUsed"] += 1
+    well_data["wishing_coins_used"] += 1
 
     roll = random.randint(1, 100)
     result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
 
     if result_type == "spark":
         print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
-        well_data["divineSpark"] += 1
+        well_data["divine_spark"] += 1
         time.sleep(2)
         #combat()
         return
 
     elif result_type == "blessing":
         blessing = random.choice(blessings)
-        if blessing["name"] in well_data["obtainedBlessings"]:
+        if blessing["name"] in well_data["obtained_blessings"]:
             print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
             player["coins"] += cost // 2
         else:
             apply_boost(blessing["boosts"])
-            well_data["obtainedBlessings"].append(blessing["name"])
-            well_data["blessingsReceived"] += 1
+            well_data["obtained_blessings"].append(blessing["name"])
+            well_data["blessings_received"] += 1
             print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
 
     else:  # curse
         curse = random.choice(curses)
-        if curse["name"] in well_data["obtainedCurses"]:
+        if curse["name"] in well_data["obtained_curses"]:
             print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
             player["coins"] += cost // 2
         else:
             apply_boost(curse["boosts"])
-            well_data["obtainedCurses"].append(curse["name"])
-            well_data["cursesReceived"] += 1
+            well_data["obtained_curses"].append(curse["name"])
+            well_data["curses_received"] += 1
             print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
 
     apply_boosts()
@@ -638,8 +639,8 @@ def apply_boost(boost_dict): # This is for the well specifically, not to be conf
     for key, value in boost_dict.items():
         if key == "heal" and value == "full":
             player["health"] = player["maxHealth"]
-        elif key == "divineSpark":
-            well_data["divineSpark"] += value
+        elif key == "divine_spark":
+            well_data["divine_spark"] += value
         elif key == "xp":
             player["xp"] += value
         elif key == "coins":
@@ -707,7 +708,7 @@ def fishing():
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
-                fishing_data["fishCaught"] += 1
+                fishing_data["fish_caught"] += 1
             else:
                 item = random.choices(drop_table, weights=[i["weight"] for i in drop_table], k=1)[0]
                 owned_names = [i["name"] for i in player["inventory"]]
@@ -721,7 +722,7 @@ def fishing():
                     player["inventory"].append(item)
                     print(Fore.MAGENTA + f"Fished a rare item: {item['name']}!")
                     print(Fore.YELLOW + item["desc"])
-                fishing_data["itemsFished"] += 1
+                fishing_data["items_fished"] += 1
                 apply_boosts()
             cooldown_until = time.time() + 1
 
@@ -937,8 +938,8 @@ def start_tamagatchi_thread():
 def update_tamagatchi():
     hunger = tamagatchi_data["hunger"]
     bond = tamagatchi_data["bond"]
-    kills = persistentStats.get("monstersKilled", 0)
-    max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
+    kills = persistentStats.get("monsters_killed", 0)
+    max_bond = 20 * (persistentStats["reborns_used"] + 1)
 
     # Hunger increases
     if hunger < 100:
@@ -958,7 +959,7 @@ def update_tamagatchi():
 
     # Recalculate boosts
     if bond > 0:
-        scale = 1 * (persistentStats["rebornsUsed"] + 1)
+        scale = 1 * (persistentStats["reborns_used"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
         tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/8) * 1.2))
@@ -969,7 +970,7 @@ def update_tamagatchi():
 
 def tamagatchi():
     global player, persistentStats
-    max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
+    max_bond = 20 * (persistentStats["reborns_used"] + 1)
     clear_screen()
     print(Style.RESET_ALL)
 
@@ -1237,10 +1238,10 @@ def reset_monster():
     # Resets monster based on current floor + room count, or spawns boss
     global monsterId, player, monster, currentMonsterFight, currentMonsterHealth, currentMonsterDefense, persistentStats
 
-    if persistentStats["bossFightReady"]:
+    if persistentStats["boss_fight_ready"]:
         boss_index = min(monsterId + 1, len(monster.names) - 1)
         monsterId = boss_index
-        #persistentStats["bossFightReady"] = False
+        #persistentStats["boss_fight_ready"] = False
 
     if endlessMode:
             # Endless mode: demon lord keeps getting stronger
@@ -1260,7 +1261,7 @@ def reset_monster():
         weights = manage_floors()
         tier_indices = [i for i, w in enumerate(weights) if w > 0]
 
-        if persistentStats["bossFightReady"] and persistentStats["room"] == 10:
+        if persistentStats["boss_fight_ready"] and persistentStats["room"] == 10:
             print(Fore.RED+"A boss monster approaches... defeat this enemy to move on to the next floor")
             time.sleep(1.5)
             # Boss is the monster immediately to the right of the strongest in the tier
@@ -1290,7 +1291,7 @@ def manage_floors():
 
     # Determine if boss is available
     #if persistentStats["room"] >= 10:
-    #    persistentStats["bossFightReady"] = True
+    #    persistentStats["boss_fight_ready"] = True
 
     # Weights: [common, uncommon, rare]
     base_weights = [1.0, 0.75, 0.5]
@@ -1337,7 +1338,7 @@ def level_up():
 
         if choice in upgrade_map:
             boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
-            current_cost = (shop_data[cost_key] * (persistentStats["rebornsUsed"] + 1))
+            current_cost = (shop_data[cost_key] * (persistentStats["reborns_used"] + 1))
             boost_mod = shop_data[mod_key]
             cap = shop_data[cap_key]
 
@@ -1409,13 +1410,13 @@ def monster_death_check():
                 tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
             
-        persistentStats["monstersKilled"] += 1
+        persistentStats["monsters_killed"] += 1
         player["health"] += round(monster.maxHealth[monsterId]/10)
 
-        if persistentStats.get("bossFightReady", False):
+        if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
             persistentStats["room"] = 0
-            persistentStats["bossFightReady"] = False
+            persistentStats["boss_fight_ready"] = False
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
             time.sleep(0.5)
         else:
@@ -1423,9 +1424,9 @@ def monster_death_check():
 
         # This is what happens when you kill a monster
         xp_gain = round(monster.maxHealth[monsterId] / 12, 1)
-        if well_data["divineSpark"] > 0:
+        if well_data["divine_spark"] > 0:
             xp_gain *= 2
-            well_data["divineSpark"] -= 1
+            well_data["divine_spark"] -= 1
             print(Fore.YELLOW + f"The Divine Spark doubles your XP to {xp_gain}!")
 
         player["xp"] += xp_gain
@@ -1469,11 +1470,11 @@ def combat():
         save_to_file()
 
         # Handle boss prompt if room is at 10 and not already in a boss fight
-        if persistentStats["room"] >= 10 and persistentStats["bossFightReady"] is False: 
+        if persistentStats["room"] >= 10 and persistentStats["boss_fight_ready"] is False: 
             print(Fore.YELLOW + "A powerful presence blocks your path... Boss fight?")
             choice = input(Fore.GREEN + "Do you wish to challenge it? (yes/no) > ").strip().lower()
             if choice in ["yes", "y"]:
-                persistentStats["bossFightReady"] = True
+                persistentStats["boss_fight_ready"] = True
                 reset_monster()
                 #continue
             else:
@@ -1495,7 +1496,7 @@ def combat():
                 monster_death_check()
 
             elif choice in ["retreat", "ret"]:
-                if persistentStats.get("bossFightReady", False):
+                if persistentStats.get("boss_fight_ready", False):
                     print(Fore.RED + "You cannot retreat from a boss fight!")
                     time.sleep(1)
                     monster_death_check()
