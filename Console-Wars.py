@@ -254,9 +254,9 @@ drop_table = [
 
 # Wishing well buffs and nerfs
 blessings = [
-    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health.", "boosts": {"health": 50}},
-    {"name": "Blessing of Power", "desc": "Greatly increases your damage.", "boosts": {"damage": 20}},
-    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense.", "boosts": {"defense": 20}},
+    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health.", "boosts": {"health": 500}},
+    {"name": "Blessing of Power", "desc": "Greatly increases your damage.", "boosts": {"damage": 200}},
+    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense.", "boosts": {"defense": 200}},
     {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health.", "boosts": {"health": 500}},
     {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage.", "boosts": {"damage": 200}},
     {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense.", "boosts": {"defense": 200}},
@@ -666,7 +666,7 @@ def fishing():
                 time.sleep(0.2)
                 continue
             print(Fore.BLUE + "Waiting for a bite...")
-            time.sleep(random.uniform(4, 9))
+            time.sleep(random.uniform(3, 8))
             if not fishing_active or fishing_stop_event.is_set():
                 break
             fish_ready = True
@@ -692,7 +692,7 @@ def fishing():
 
             if random.random() < 0.8:
                 scale = 1 + (persistentStats["floor"] * 2)
-                mult = 10 * int(persistentStats["floor"] * 5) if persistentStats["floor"] >= 15 else 1
+                mult = 10 * int(persistentStats["floor"] * 2.5) if persistentStats["floor"] >= 15 else 1
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
