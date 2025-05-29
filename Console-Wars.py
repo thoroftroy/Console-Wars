@@ -837,8 +837,8 @@ def gambling(): # Manages the gambling screen
                 print(Fore.RED + "Invalid bet amount.")
             else:
                 mults = [0, 0.3, 0.4, 0.5, 1.0, 1.1, 1.2, 1.3, 1.4]
-                weights = [10, 20, 10, 5, 6, 10, 30, 5, 2]
-                scale = 1 + (persistentStats["floor"] * 0.5)
+                weights = [10, 20, 10, 5, 6, 10, 20, 5, 2]
+                scale = 1 + (persistentStats["floor"] / 10)
                 mult = random.choices(mults, weights)[0] * scale
                 result = int(amt * mult)
                 player["coins"] -= amt
