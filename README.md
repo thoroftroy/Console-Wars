@@ -46,7 +46,7 @@ project_root/
 ## Requirements
 
 - Python 3.6+
-- `colorama` module (for colored terminal output)
+- `colorama` module (for colored terminal output [This is NOT optional])
 
 Install with:
 ```bash
