@@ -786,7 +786,7 @@ def gambling(): # Manages the gambling screen
     clear_screen()
     print(Style.RESET_ALL)
     print(Fore.YELLOW + "Welcome to the Gambling Den")
-    if persistentStats["floor"] < 5:
+    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to gamble!")
         time.sleep(1)
@@ -974,7 +974,7 @@ def tamagatchi():
     clear_screen()
     print(Style.RESET_ALL)
 
-    if persistentStats["floor"] < 5:
+    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to unlock the Tamagatchi!")
         time.sleep(1)
