@@ -692,7 +692,7 @@ def fishing():
 
             if random.random() < 0.8:
                 scale = 1 + (persistentStats["floor"] * 2)
-                mult = 10 * int(persistentStats["floor"] * 10) if persistentStats["floor"] >= 10 else 1
+                mult = 10 * int(persistentStats["floor"] * 5) if persistentStats["floor"] >= 15 else 1
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
@@ -715,7 +715,8 @@ def fishing():
             cooldown_until = time.time() + 1
 
     if fishing_thread and fishing_thread.is_alive():
-        print(Fore.YELLOW + "Fishing is already active.")
+        print(Fore.RED + "Fishing is already active. (You should NOT be seing this message)")
+        print(Fore.RED + "Exit the fishing and reopen it to (hopfully) fix it")
     else:
         fishing_stop_event.clear()
         fishing_thread = threading.Thread(target=fishing_loop, daemon=True)
