@@ -1,6 +1,6 @@
 import random
 import time
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 import os
 import sys
 import platform
@@ -933,7 +933,7 @@ def start_tamagatchi_thread():
         while tamagatchi_data["active"] and not tamagatchi_stop_event.is_set():
             if tamagatchi_data["last_update"] is not None:
                 update_tamagatchi()
-            time.sleep(random.uniform(30, 200)) # How long it takes for the tamagatchi to update
+            time.sleep(random.uniform(30, 200)) # How long it takes for the tamagatchi to update (30 - 200)
     tamagatchi_thread = threading.Thread(target=loop, daemon=True)
     tamagatchi_thread.start()
 
@@ -956,7 +956,7 @@ def update_tamagatchi():
     elif hunger >= 20:
         pass
     
-    if tamagatchi_data["bond"] > max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)
+    if tamagatchi_data["bond"] >= max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)   | It doesn't work...
         tamagatchi_data["bond"] = max_bond
 
     # Recalculate boosts
@@ -1409,7 +1409,7 @@ def level_up():
                 apply_boosts()
                 print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
 
-        elif choice == "exit":
+        elif choice in ["exit", "leave"]:
             return
         else:
             print(Fore.RED + "Invalid input.")
@@ -1428,7 +1428,9 @@ def monster_death_check():
             
         if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
             if random.random() < 0.2:
-                tamagatchi_data["bond"] += 1
+                max_bond = 20 * (persistentStats["reborns_used"] + 1)
+                if tamagatchi_data["bond"] < max_bond:
+                    tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
             
         persistentStats["monsters_killed"] += 1
