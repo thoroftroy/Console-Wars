@@ -116,10 +116,10 @@ shop_data = {
     "dodgeBoostMod": 1.13,
     "escapeBoostMod": 1.5,
     "dropBoostMod": 1.3,
-    
-    "healthBoostCap": 1000000000000,
-    "damageBoostCap": 1000000000000,
-    "defenseBoostCap": 1000000000000,
+                     #9,223,372,036,854,775,807 is the overflow number, just ensure that number is never exeeded
+    "healthBoostCap": 8000000000000000000,
+    "damageBoostCap": 8000000000000000000,
+    "defenseBoostCap": 8000000000000000000,
     "dodgeBoostCap": 55,
     "escapeBoostCap": 95,
     "dropBoostCap": 25,
@@ -254,45 +254,46 @@ drop_table = [
 
 # Wishing well buffs and nerfs
 blessings = [
-    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health.", "boosts": {"health": 500}},
-    {"name": "Blessing of Power", "desc": "Greatly increases your damage.", "boosts": {"damage": 200}},
-    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense.", "boosts": {"defense": 200}},
-    {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health.", "boosts": {"health": 500}},
-    {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage.", "boosts": {"damage": 200}},
-    {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense.", "boosts": {"defense": 2000}},
-    {"name": "Divine Spark", "desc": "Doubles XP gain from next 5 fights.", "boosts": {"divineSpark": 5}},
-    {"name": "Gift of Giants", "desc": "Grants incredible health.", "boosts": {"health": 200}},
-    {"name": "Fury Unleashed", "desc": "Unleashes devastating power.", "boosts": {"damage": 100}},
-    {"name": "Iron Will", "desc": "Bolsters your defenses.", "boosts": {"defense": 80}},
-    {"name": "Echo of Titans", "desc": "A resounding health surge.", "boosts": {"health": 300}},
-    {"name": "Blazing Strength", "desc": "Overwhelming might fills you.", "boosts": {"damage": 250}},
-    {"name": "Wall of Ages", "desc": "Your armor thickens with time.", "boosts": {"defense": 200}},
-    {"name": "Vital Infusion", "desc": "Legendary health enhancement.", "boosts": {"health": 1000}},
-    {"name": "Warrior’s Flame", "desc": "Burns with immense power.", "boosts": {"damage": 400}},
-    {"name": "Unbreakable Shell", "desc": "Impenetrable defenses.", "boosts": {"defense": 350}},
-    {"name": "Starlight Boon", "desc": "Double XP for 10 fights.", "boosts": {"divineSpark": 10}},
-    {"name": "Overflowing Vitality", "desc": "Surging health boost.", "boosts": {"health": 20000}},
-    {"name": "Executioner’s Edge", "desc": "Lethal combat precision.", "boosts": {"damage": 600}},
-    {"name": "Impenetrable Core", "desc": "Fortress-like endurance.", "boosts": {"defense": 500}},
-    {"name": "Fortune’s Favor", "desc": "Boosts drop rate.", "boosts": {"drop": 5}},
-    {"name": "Dodge Mastery", "desc": "Increased dodge capability.", "boosts": {"dodge": 10}},
-    {"name": "Escape Artist", "desc": "Enhanced retreat chance.", "boosts": {"escape": 15}},
-    {"name": "XP Infusion", "desc": "Gain a large XP boost.", "boosts": {"xp": 1000}},
-    {"name": "Coin Cascade", "desc": "Gain a surge of wealth.", "boosts": {"coins": 5000}},
-    {"name": "Jackpot", "desc": "An immense wealth blessing.", "boosts": {"coins": 50000}},
-    {"name": "Hyper Health", "desc": "Extreme vitality granted.", "boosts": {"health": 50000}},
-    {"name": "Overclocked Power", "desc": "Inhuman strength surge.", "boosts": {"damage": 10000}},
-    {"name": "Ancient Plate", "desc": "Timeless defense boost.", "boosts": {"defense": 10000}},
-    {"name": "Sacred Surge", "desc": "Holy boost to health and defense.", "boosts": {"health": 1500, "defense": 3000}},
-    {"name": "Storm Rage", "desc": "Storm-born speed and power.", "boosts": {"damage": 1200, "dodge": 10}},
+    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health. (+500 health)", "boosts": {"health": 500}},
+    {"name": "Blessing of Power", "desc": "Greatly increases your damage. (+200 damage)", "boosts": {"damage": 200}},
+    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense. (+200 defense)", "boosts": {"defense": 200}},
+    {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health. (+500 health)", "boosts": {"health": 500}},
+    {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage. (+200 damage)", "boosts": {"damage": 200}},
+    {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense. (+2000 defense)", "boosts": {"defense": 2000}},
+    {"name": "Divine Spark", "desc": "Doubles XP gain from next 5 fights. (+5 sparks)", "boosts": {"divineSpark": 5}},
+    {"name": "Gift of Giants", "desc": "Grants incredible health. (+200 health)", "boosts": {"health": 200}},
+    {"name": "Fury Unleashed", "desc": "Unleashes devastating power. (+100 damage)", "boosts": {"damage": 100}},
+    {"name": "Iron Will", "desc": "Bolsters your defenses. (+80 defense)", "boosts": {"defense": 80}},
+    {"name": "Echo of Titans", "desc": "A resounding health surge. (+300 health)", "boosts": {"health": 300}},
+    {"name": "Blazing Strength", "desc": "Overwhelming might fills you. (+250 damage)", "boosts": {"damage": 250}},
+    {"name": "Wall of Ages", "desc": "Your armor thickens with time. (+200 defense)", "boosts": {"defense": 200}},
+    {"name": "Vital Infusion", "desc": "Legendary health enhancement. (+1000 health)", "boosts": {"health": 1000}},
+    {"name": "Warrior’s Flame", "desc": "Burns with immense power. (+400 damage)", "boosts": {"damage": 400}},
+    {"name": "Unbreakable Shell", "desc": "Impenetrable defenses. (+250 defense)", "boosts": {"defense": 350}},
+    {"name": "Starlight Boon", "desc": "Double XP for 10 fights. (+10 spark)", "boosts": {"divineSpark": 10}},
+    {"name": "Overflowing Vitality", "desc": "Surging health boost. (+20000 health)", "boosts": {"health": 20000}},
+    {"name": "Executioner’s Edge", "desc": "Lethal combat precision. (+600 damage)", "boosts": {"damage": 600}},
+    {"name": "Impenetrable Core", "desc": "Fortress-like endurance. (+500 defense)", "boosts": {"defense": 500}},
+    {"name": "Fortune’s Favor", "desc": "Boosts drop rate. (+5 drop chance)", "boosts": {"drop": 5}},
+    {"name": "Dodge Mastery", "desc": "Increased dodge capability. (+10 dodge chance)", "boosts": {"dodge": 10}},
+    {"name": "Escape Artist", "desc": "Enhanced retreat chance. (+80 retreat chance)", "boosts": {"escape": 80}},
+    {"name": "XP Infusion", "desc": "Gain a large XP boost. (+100000 xp)", "boosts": {"xp": 100000}},
+    {"name": "Coin Cascade", "desc": "Gain a surge of wealth. (+5000 coins)", "boosts": {"coins": 5000}},
+    {"name": "Jackpot", "desc": "An immense wealth blessing. (+50000 coins)", "boosts": {"coins": 50000}},
+    {"name": "Hyper Health", "desc": "Extreme vitality granted. (+50000 health)", "boosts": {"health": 50000}},
+    {"name": "Overclocked Power", "desc": "Inhuman strength surge. (+10000 damage)", "boosts": {"damage": 10000}},
+    {"name": "Ancient Plate", "desc": "Timeless defense boost. (+10000 defense)", "boosts": {"defense": 10000}},
+    {"name": "Sacred Surge", "desc": "Holy boost to health and defense. (+1500 health, +3000 defense)", "boosts": {"health": 1500, "defense": 3000}},
+    {"name": "Storm Rage", "desc": "Storm-born speed and power. (+1200 damage, +10 dodge chance)", "boosts": {"damage": 1200, "dodge": 10}},
     {"name": "Radiant Core", "desc": "Heals you to full.", "boosts": {"heal": "full"}},
-    {"name": "Essence of Time", "desc": "XP gain doubled forever.", "boosts": {"divineSpark": 99999}},
-    {"name": "Bloodlust", "desc": "Massive damage at health cost.", "boosts": {"damage": 15000, "health": -1000}},
-    {"name": "Armor of Fate", "desc": "Boosts defense and health.", "boosts": {"defense": 15000, "health": 10000}},
-    {"name": "Wish of Kings", "desc": "XP and coin surge.", "boosts": {"xp": 5000, "coins": 50000}},
-    {"name": "Ultimate Form", "desc": "Ascend to greatness.", "boosts": {"health": 200000, "damage": 200000, "defense": 20000}},
-    {"name": "Ultimate Soul", "desc": "Above all else.", "boosts": {"health": 1500000, "damage": 2000, "defense": 2000}},
-    {"name": "Ultimate Hammer", "desc": "Let the judgment of god strike.", "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
+    {"name": "Essence of Time", "desc": "XP gain doubled forever. (+99999 spark)", "boosts": {"divineSpark": 99999}},
+    {"name": "Bloodlust", "desc": "Massive damage at health cost. (+15000 damage, -1000 health)", "boosts": {"damage": 15000, "health": -1000}},
+    {"name": "Armor of Fate", "desc": "Boosts defense and health. (+15000, +10000 health)", "boosts": {"defense": 15000, "health": 10000}},
+    {"name": "Wish of Kings", "desc": "XP and coin surge. (+5000 xp, coins 50000)", "boosts": {"xp": 5000, "coins": 50000}},
+    {"name": "Ultimate Form", "desc": "Ascend to greatness. (+200000 health, +200000 damage, +20000 defense)", "boosts": {"health": 200000, "damage": 200000, "defense": 20000}},
+    {"name": "Ultimate Soul", "desc": "Above all else. (+1500000 health, +2000 damage, +2000 defense)", "boosts": {"health": 1500000, "damage": 2000, "defense": 2000}},
+    {"name": "Ultimate Hammer", "desc": "Let the judgment of god strike. (+1000 health, +200000 damage, +20000 defense)", "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
+    {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+10000000 health, damage, and defense)", "boosts": {"health": 10000000, "damage": 10000000, "defense": 10000000}},
 ]
 curses = [
     {"name": "Curse of Weakness", "desc": "Your strength fades. (-10 damage)", "boosts": {"damage": -10}},
@@ -305,7 +306,7 @@ curses = [
     {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-100 defense)", "boosts": {"defense": -100}},
     {"name": "Broken Blade", "desc": "Your weapon weakens. (-150 damage)", "boosts": {"damage": -150}},
     {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divineSpark": -3}},
-    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health/defense)", "boosts": {"health": -10, "defense": -10}},
+    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health and defense)", "boosts": {"health": -10, "defense": -10}},
     {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
     {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
     {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divineSpark": -5}}
@@ -545,12 +546,12 @@ def reborn():
         persistentStats["rebornsUsed"] += 1
 
         # Reset shop costs to base values with a minimum value
-        shop_data["baseHealthBoostCost"] = max(1000, int(shop_data["baseHealthBoostCost"] / 100))
-        shop_data["baseDamageBoostCost"] = max(1000, int(shop_data["baseDamageBoostCost"] / 100))
-        shop_data["baseDefenseBoostCost"] = max(1000, int(shop_data["baseDefenseBoostCost"] / 100))
-        shop_data["baseDodgeBoostCost"] = max(100, int(shop_data["baseDodgeBoostCost"] / 100))
-        shop_data["baseEscapeBoostCost"] = max(10, int(shop_data["baseEscapeBoostCost"] / 100))
-        shop_data["baseDropBoostCost"] = max(10, int(shop_data["baseDropBoostCost"] / 100))
+        shop_data["baseHealthBoostCost"] -= max(1000, int(shop_data["baseHealthBoostCost"] / 10))
+        shop_data["baseDamageBoostCost"] -= max(1000, int(shop_data["baseDamageBoostCost"] / 10))
+        shop_data["baseDefenseBoostCost"] -= max(1000, int(shop_data["baseDefenseBoostCost"] / 10))
+        shop_data["baseDodgeBoostCost"] -= max(100, int(shop_data["baseDodgeBoostCost"] / 10))
+        shop_data["baseEscapeBoostCost"] -= max(10, int(shop_data["baseEscapeBoostCost"] / 10))
+        shop_data["baseDropBoostCost"] -= max(10, int(shop_data["baseDropBoostCost"] / 10))
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
         time.sleep(3)
@@ -839,7 +840,7 @@ def gambling(): # Manages the gambling screen
                 print(Fore.RED + "Invalid bet amount.")
             else:
                 mults = [0, 0.3, 0.4, 0.5, 1.0, 1.1, 1.2, 1.3, 1.4]
-                weights = [10, 20, 10, 5, 6, 10, 20, 5, 2]
+                weights = [10, 20, 10, 7, 12, 10, 20, 5, 2]
                 scale = 1 + (persistentStats["floor"] / 10)
                 mult = random.choices(mults, weights)[0] * scale
                 result = int(amt * mult)
@@ -936,15 +937,18 @@ def update_tamagatchi():
             tamagatchi_data["bond"] = max_bond
     elif hunger >= 20:
         pass
+    
+    if tamagatchi_data["bond"] > max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)
+        tamagatchi_data["bond"] = max_bond
 
     # Recalculate boosts
     if bond > 0:
         scale = 1 * (persistentStats["rebornsUsed"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/8) * 1))
-        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.3))
-        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.1))
+        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/8) * 1.2))
+        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.5))
+        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.3))
     
     apply_boosts()
 
@@ -989,7 +993,7 @@ def tamagatchi():
         if hunger <= 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
         else:
-            cost = round(hunger * 1.3 * (tamagatchi_data["tamagatchiFeeds"] + 1), 1)
+            cost = round(hunger * 1.2 * (tamagatchi_data["tamagatchiFeeds"] + 1), 1)
             print(Fore.YELLOW + f"Feeding cost: {round(cost, 1)} XP")
 
         print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
@@ -1425,7 +1429,7 @@ def monster_turn():
     else:
         print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
         if endlessMode:
-            scale = 4 ** endlessKills
+            scale = 2 ** endlessKills
             dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"], 2)
         else:
             dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"], 2)
