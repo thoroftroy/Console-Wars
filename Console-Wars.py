@@ -409,7 +409,7 @@ def show_stats_screen():
 def get_item_coin_value(item):
     #Calculate the coin value of an item based on its boosts and rarity.
     #Heuristic:
-    #    - Each point of boost contributes 3–6 coins depending on stat type.
+    #    - Each point of boost contributes some coins depending on stat type.
     #    - Extremely rare items (lower weight) are worth significantly more.
 
     if not isinstance(item, dict) or "boosts" not in item:
@@ -428,12 +428,12 @@ def get_item_coin_value(item):
         elif stat == "defense":
             value += amount * 18.5
         elif stat in ["dodge", "escape", "drop"]:
-            value += amount * 25  # utility stats are rarer
+            value += amount * 25  # utility stats are rarer and therefore worth more
         elif stat == "xp":
             value += amount * 13.5
         elif stat == "coins":
             value += amount
-        elif stat == "divine_spark":
+        elif stat == "divine_spark": # I don't think this or the coins/xp are being used
             value += amount * 30
         elif stat == "heal" and amount == "full":
             value += 500
@@ -519,7 +519,7 @@ def reborn():
 
     clear_screen()
 
-    if persistentStats["floor"] < 25:
+    if persistentStats["floor"] <= 25:
         print(Fore.RED + "You must reach floor 25 to use Reborn.")
         time.sleep(2)
         combat()
@@ -982,8 +982,8 @@ def tamagatchi():
 
     if not tamagatchi_data["active"]:
         if player["xp"] < 100:
-            print(Fore.RED + "You need 100 XP to adopt a Tamagatchi.")
-            time.sleep(3)
+            print(Fore.RED + "It costs 100 XP to adopt a Tamagatchi, you do not have that much!")
+            time.sleep(4)
             combat()
             return
         player["xp"] -= 100
@@ -1042,16 +1042,29 @@ def tamagatchi():
 
 # The screen for selecting minigames
 def minigame_selection():
+    global persistentStats
     clear_screen()
     print(Fore.BLACK + "|")
     print(Fore.YELLOW + "Welcome to the Minigame/Other section!")
     print(Fore.BLUE + "  Complete minigames to earn boosts, XP, and more!")
     print(Fore.BLACK + "|")
-    print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
-    print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
+    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
+        print(Fore.RED + "Tamagatchi     → Feed a friend for passive stat boosts.")
+    else:
+        print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
+    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:  
+        print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
+    else:
+        print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
     print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
-    print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
-    print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
+    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] >= 15:
+        print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
+    else:
+        print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
+    if persistentStats["floor"] <= 25:
+        print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
+    else:
+        print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
     print(Fore.BLACK + "|")
     print(Fore.BLUE + "Options:", player["gameList"])
     print(Fore.BLACK + "|")
