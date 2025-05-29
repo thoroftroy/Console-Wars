@@ -983,20 +983,20 @@ def tamagatchi():
         return
 
     if not tamagatchi_data["active"]:
-        if player["xp"] < 100:
-            print(Fore.RED + "It costs 100 XP to adopt a Tamagatchi, you do not have that much!")
+        if player["xp"] < 500:
+            print(Fore.RED + "It costs 500 XP to adopt a Tamagatchi, you do not have that much!")
             time.sleep(4)
             combat()
             return
-        player["xp"] -= 100
+        player["xp"] -= 500
         tamagatchi_data.update({
             "active": True,
             "last_update": datetime.now().isoformat(),
-            "hunger": 3,
+            "hunger": 1,
             "bond": 5
         })
         start_tamagatchi_thread()
-        print(Fore.YELLOW + "You adopted a glowing creature!")
+        print(Fore.YELLOW + "You adopted a strange creature!")
         print(Fore.RED + "Feed it to earn permanent boosts.")
         time.sleep(2)
 
@@ -1084,7 +1084,7 @@ def minigame_selection():
         wishing_well()
     elif choice in ["reborn", "re", "born"]:
         reborn()
-    elif choice == "exit":
+    elif choice in ["exit", "leave"]:
         combat()
     else:
         print(Fore.RED + "Invalid input. Try again.")
@@ -1452,7 +1452,7 @@ def monster_death_check():
                 print(Fore.RED + f"Failed to create backup: {e}")
                 time.sleep(2)
 
-            time.sleep(0.8)
+            time.sleep(1)
         else:
             persistentStats["room"] += 1
 
@@ -1471,7 +1471,7 @@ def monster_death_check():
         elif endlessMode:
             endlessKills += 1
 
-        time.sleep(0.5)
+        time.sleep(0.8)
         reset_monster()
         apply_boosts()
     else:
@@ -1563,7 +1563,7 @@ def combat():
             elif choice in ["stats", "st"]:
                 show_stats_screen()
 
-            elif choice == "exit":
+            elif choice in ["exit", "leave"]:
                 print(Style.RESET_ALL)
                 sys.exit()
 
