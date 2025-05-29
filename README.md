@@ -98,6 +98,8 @@ You will notice that there are 3 python files in the repository. Main is the ori
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
 ## Known Issue(s)
+For the life of me I can't figure out how but the tamagatchi's bond can go above its maximum number
+
 If you play the old version(s) (main.py):
 
 *WARNING* this issue is gamebreaking: If you play for too long it reaches a maximum recursion rate and currupts you entire save. I am currently working on a fix. For now, every 200 or so levels just exit and reopen the game and that will temporarily fix it.
