@@ -571,7 +571,7 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] >= 15:
+    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
         print(Fore.RED + "You must defeat 250 monsters and make it to floor 15 to unlock the Wishing Well.")
         time.sleep(2)
         combat()
@@ -1059,7 +1059,7 @@ def minigame_selection():
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
     print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
-    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] >= 15:
+    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
