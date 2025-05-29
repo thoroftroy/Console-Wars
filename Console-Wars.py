@@ -7,6 +7,7 @@ import platform
 import json
 from datetime import datetime
 import threading
+import shutil
 
 # Define libraries and classes
 class monsterVariables:
@@ -1167,9 +1168,14 @@ def load_from_file(filename): # Load data from files
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
+    
     except Exception as e:
-        print(Fore.RED + f"Failed to load save: {e}")
-        return False
+        print(Fore.RED + f"\nError loading save '{filename}': {e}")
+        print(Fore.RED + "Your save may be corrupted.")
+        print(Fore.YELLOW + "If a backup exists, you can try restoring it by renaming:")
+        print(Fore.CYAN + f"  {filename}.bak  →  {filename}")
+        print(Fore.YELLOW + "Then restart the game.")
+        sys.exit(1)
 
 # Other Main Functions
 def try_drop_item():
@@ -1432,7 +1438,19 @@ def monster_death_check():
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
-            time.sleep(0.5)
+
+            # Save a backup before progressing to next floor
+            print(Fore.BLACK + "|")
+            try:
+                backup_path = globalSavePath + ".bak"
+                save_to_file()  # Save current state
+                shutil.copy(globalSavePath, backup_path)
+                print(Fore.CYAN + f"Backup saved to {backup_path}")
+            except Exception as e:
+                print(Fore.RED + f"Failed to create backup: {e}")
+                time.sleep(2)
+
+            time.sleep(0.8)
         else:
             persistentStats["room"] += 1
 
