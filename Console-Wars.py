@@ -165,7 +165,7 @@ drop_table = [
     {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}, "weight": 12},
     {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3},  "weight": 13},
     {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}, "weight": 10},
-    {"name": "Lucky Ring",         "desc": "Makes you more likely to dodge!",                            "boosts": {"dodge": 5}, "weight": 10},
+    {"name": "Lucky Ring",         "desc": "Makes you more likely to dodge!",                            "boosts": {"dodge": 15}, "weight": 7},
     {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7},  "weight": 8},
     {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}, "weight": 9},
     {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}, "weight": 8},
@@ -964,9 +964,9 @@ def update_tamagatchi():
         scale = 1 * (persistentStats["reborns_used"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.6))
-        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.15))
-        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.015))
+        tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/20) * 0.2))
+        tamagatchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/21) * 0.005))
+        tamagatchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/22) * 0.0005))
     
     apply_boosts()
 
@@ -1050,6 +1050,7 @@ def minigame_selection():
     print(Fore.YELLOW + "Welcome to the Minigame/Other section!")
     print(Fore.BLUE + "  Complete minigames to earn boosts, XP, and more!")
     print(Fore.BLACK + "|")
+    print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
     if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
         print(Fore.RED + "Tamagatchi     → Feed a friend for passive stat boosts.")
     else:
@@ -1058,7 +1059,6 @@ def minigame_selection():
         print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
-    print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
     if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
