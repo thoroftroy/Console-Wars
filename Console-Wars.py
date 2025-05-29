@@ -441,7 +441,7 @@ def get_item_coin_value(item):
     floorBonus = persistentStats["floor"] / 1.2
     if floorBonus <= 1:
         floorBonus = 1
-    value = round(value * (1 + rarity_bonus / 100) * floorBonus)
+    value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["rebornsUsed"] * 10) + 1 )) + 100
 
     return max(1, int(value))  # Ensure at least 1 coin
 
@@ -531,8 +531,8 @@ def reborn():
 
     choice = input(Fore.GREEN + "> ").strip().lower()
     if choice in ["yes", "y"]:
-        if player["xp"] < 1000:
-            print(Fore.RED + "You don't have enough XP.")
+        if player["xp"] <= 1000:
+            print(Fore.RED + "You don't have enough XP, requires at least 1000")
             time.sleep(2)
             combat()
             return
