@@ -545,9 +545,9 @@ def reborn():
         persistentStats["rebornsUsed"] += 1
 
         # Reset shop costs to base values with a minimum value
-        shop_data["baseHealthBoostCost"] = max(100, int(shop_data["baseHealthBoostCost"] / 100))
-        shop_data["baseDamageBoostCost"] = max(100, int(shop_data["baseDamageBoostCost"] / 100))
-        shop_data["baseDefenseBoostCost"] = max(100, int(shop_data["baseDefenseBoostCost"] / 100))
+        shop_data["baseHealthBoostCost"] = max(1000, int(shop_data["baseHealthBoostCost"] / 100))
+        shop_data["baseDamageBoostCost"] = max(1000, int(shop_data["baseDamageBoostCost"] / 100))
+        shop_data["baseDefenseBoostCost"] = max(1000, int(shop_data["baseDefenseBoostCost"] / 100))
         shop_data["baseDodgeBoostCost"] = max(100, int(shop_data["baseDodgeBoostCost"] / 100))
         shop_data["baseEscapeBoostCost"] = max(10, int(shop_data["baseEscapeBoostCost"] / 100))
         shop_data["baseDropBoostCost"] = max(10, int(shop_data["baseDropBoostCost"] / 100))
