@@ -1312,7 +1312,7 @@ def level_up():
 
         if choice in upgrade_map:
             boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
-            current_cost = shop_data[cost_key]
+            current_cost = (shop_data[cost_key] * (persistentStats["rebornsUsed"] + 1))
             boost_mod = shop_data[mod_key]
             cap = shop_data[cap_key]
 
