@@ -565,11 +565,11 @@ def reborn():
 
 # Section for managing the wishing well
 def wishing_well():
-    global player, well_data
+    global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monstersKilled"] < 200:
-        print(Fore.RED + "You must defeat 200 monsters to unlock the Wishing Well.")
+    if persistentStats["monstersKilled"] < 250 or persistentStats["floor"] >= 15:
+        print(Fore.RED + "You must defeat 250 monsters and make it to floor 15 to unlock the Wishing Well.")
         time.sleep(2)
         combat()
         return
@@ -578,6 +578,9 @@ def wishing_well():
     print(Fore.CYAN + "--- The Wishing Well ---")
     print(Fore.YELLOW + f"Cost to Wish: {cost} coins")
     print(f"You have: {player['coins']} coins")
+    print(Fore.BLACK+"|")
+    print(Fore.YELLOW+"Health:",str(round(player["maxHealth"])),"  | Damage:",str(round(player["damage"])),"  | Defense:",str(round(player["defense"])))
+    print(Fore.BLACK+"|")  
     print(Fore.MAGENTA + "Make a wish? (yes / no)")
 
     choice = input(Fore.GREEN + "> ").strip().lower()
@@ -641,6 +644,13 @@ def apply_boost(boost_dict): # This is for the well specifically, not to be conf
             player["xp"] += value
         elif key == "coins":
             player["coins"] += value
+        elif key in ["health", "damage", "defense", "dodge", "escape", "drop"]:
+            boost_key = f"{key}Boost"
+            if boost_key in player:
+                player[boost_key] += value
+            else:
+                # fallback in case a stat exists without a boost counterpart
+                player[key] += value
         elif key in player:
             player[key] += value
 
@@ -771,10 +781,15 @@ def gamble_stat_change(amount): # Returns how much the stats change when doing a
         return amount * 2 * (persistentStats ["floor"] / 7.5) # Lets the big wins and big losses scale with the floor slightly
 
 def gambling(): # Manages the gambling screen
-    global player
+    global player, persistentStats
     clear_screen()
     print(Style.RESET_ALL)
     print(Fore.YELLOW + "Welcome to the Gambling Den")
+    if persistentStats["floor"] < 5:
+        print(Fore.BLACK + "|")
+        print(Fore.RED + "You must reach floor 5 to gamble!")
+        time.sleep(1)
+        return
     print(Fore.CYAN + f"You have {player['coins']} coins.")
     if persistentStats["floor"] >= 20:
         print(Fore.BLACK+"|")
@@ -957,6 +972,12 @@ def tamagatchi():
     max_bond = 20 * (persistentStats["rebornsUsed"] + 1)
     clear_screen()
     print(Style.RESET_ALL)
+
+    if persistentStats["floor"] < 5:
+        print(Fore.BLACK + "|")
+        print(Fore.RED + "You must reach floor 5 to unlock the Tamagatchi!")
+        time.sleep(1)
+        return
 
     if not tamagatchi_data["active"]:
         if player["xp"] < 100:
