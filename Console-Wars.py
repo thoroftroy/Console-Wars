@@ -753,6 +753,7 @@ def fishing():
 
 # Section for managing the gambling minigame
 def gamble_stat_change(amount): # Returns how much the stats change when doing a high risk gamble
+    global persistentStats
     roll = random.randint(1, 100)
     if roll <= 10:
         return -amount
@@ -765,7 +766,7 @@ def gamble_stat_change(amount): # Returns how much the stats change when doing a
     elif roll <= 90:
         return amount
     else:
-        return amount * 2
+        return amount * 2 * (persistentStats ["floor"] / 7.5) # Lets the big wins and big losses scale with the floor slightly
 
 def gambling(): # Manages the gambling screen
     global player
