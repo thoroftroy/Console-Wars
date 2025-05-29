@@ -964,9 +964,9 @@ def update_tamagatchi():
         scale = 1 * (persistentStats["reborns_used"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/8) * 1.2))
-        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.5))
-        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/8) * 0.3))
+        tamagatchi_data["boosts"]["health"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.6))
+        tamagatchi_data["boosts"]["damage"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.15))
+        tamagatchi_data["boosts"]["defense"] = int(bond * floorBoost * scale * (1 + (kills/15.5) * 0.015))
     
     apply_boosts()
 
@@ -1449,7 +1449,7 @@ def monster_death_check():
                 backup_path = globalSavePath + ".bak"
                 save_to_file()  # Save current state
                 shutil.copy(globalSavePath, backup_path)
-                print(Fore.CYAN + f"Backup saved to {backup_path}")
+                #print(Fore.CYAN + f"Backup saved to {backup_path}")
             except Exception as e:
                 print(Fore.RED + f"Failed to create backup: {e}")
                 time.sleep(2)
