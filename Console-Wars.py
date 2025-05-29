@@ -400,6 +400,7 @@ def show_stats_screen():
 
     if persistentStats["is_dead"]:
         print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
+        print(Style.RESET_ALL)
         sys.exit()
         
     print(Fore.BLUE + "\n(Press Enter to return to combat...)")
@@ -1175,6 +1176,7 @@ def load_from_file(filename): # Load data from files
         print(Fore.YELLOW + "If a backup exists, you can try restoring it by renaming:")
         print(Fore.CYAN + f"  {filename}.bak  →  {filename}")
         print(Fore.YELLOW + "Then restart the game.")
+        print(Style.RESET_ALL)
         sys.exit(1)
 
 # Other Main Functions
@@ -1562,6 +1564,7 @@ def combat():
                 show_stats_screen()
 
             elif choice == "exit":
+                print(Style.RESET_ALL)
                 sys.exit()
 
             else:
@@ -1600,10 +1603,12 @@ def startup():
         success = load_from_file(currentSaveName)
         if not success:
             print(Fore.RED + "Failed to load save. Exiting.")
+            print(Style.RESET_ALL)
             sys.exit()
         if persistentStats.get("is_dead", False):
             show_stats_screen()
             print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
+            print(Style.RESET_ALL)
             sys.exit()
     else:
         print(Fore.YELLOW + f"Creating new save file: {currentSaveName}")
