@@ -28,7 +28,7 @@ player = {
     "damage": 3.5,
     "defense": 0.0,
     "dodge": 5.0,
-    "escape": 20.0,
+    "escape": 50.0,
     "drop": 7.0,
     "difficulty": 0,
     "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
@@ -135,6 +135,8 @@ persistentStats = {
     "monsters_killed": 0,
     "reborns_used": 0,
     "is_dead": False,
+    "escapes_used": 0,
+    "coins_from_escapes": 0,
 }
 
 # Global Variables
@@ -278,7 +280,7 @@ blessings = [
     {"name": "Impenetrable Core", "desc": "Fortress-like endurance. (+500 defense)", "boosts": {"defense": 500}},
     {"name": "Fortune’s Favor", "desc": "Boosts drop rate. (+5 drop chance)", "boosts": {"drop": 5}},
     {"name": "Dodge Mastery", "desc": "Increased dodge capability. (+10 dodge chance)", "boosts": {"dodge": 10}},
-    {"name": "Escape Artist", "desc": "Enhanced retreat chance. (+80 retreat chance)", "boosts": {"escape": 80}},
+    {"name": "Escape Artist", "desc": "Enhanced retreat chance. (+80 retreat chance)", "boosts": {"escape": 40}},
     {"name": "XP Infusion", "desc": "Gain a large XP boost. (+100000 xp)", "boosts": {"xp": 100000}},
     {"name": "Coin Cascade", "desc": "Gain a surge of wealth. (+5000 coins)", "boosts": {"coins": 5000}},
     {"name": "Jackpot", "desc": "An immense wealth blessing. (+50000 coins)", "boosts": {"coins": 50000}},
@@ -370,6 +372,7 @@ def show_stats_screen():
     print(Fore.MAGENTA + "\n--- Combat Stats ---")
     print(f"Monsters Killed: {stats.get('monsters_killed', 0)}")
     print(f"Demon Lords Defeated: {demon_lord_data.get('demonLordsDefeated', 0)}")
+    print(f"Times Escaped: {persistentStats['escapes_used']}  |  Coins Looted: {persistentStats['coins_from_escapes']}")
 
     print(Fore.MAGENTA + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
@@ -1217,7 +1220,7 @@ def apply_boosts():
     base_damage = 3.5
     base_defense = 0.0
     base_dodge = 5.0
-    base_escape = 20.0
+    base_escape = 50.0
     base_drop = 7.0
 
     # Reset stats to base + permanent boosts
@@ -1538,7 +1541,7 @@ def combat():
                 time.sleep(0.2)
                 monster_death_check()
 
-            elif choice in ["retreat", "ret"]:
+            elif choice in ["retreat", "ret", "escape", "esc"]:
                 if persistentStats.get("boss_fight_ready", False):
                     print(Fore.RED + "You cannot retreat from a boss fight!")
                     time.sleep(1)
@@ -1547,6 +1550,12 @@ def combat():
                 print(Fore.YELLOW + "Attempting to retreat...")
                 if random.randint(0, 100) < player["escape"]:
                     print(Fore.GREEN + "You successfully escaped!")
+                    loot_gain = random.randint(5, (currentMonsterHealth * (persistentStats["reborns_used"] + 1)))
+                    print(Fore.CYAN + f"You loot the room on the way out and gain {loot_gain} coins!")
+                    player["coins"] += loot_gain
+                    persistentStats["escapes_used"] += 1
+                    persistentStats["coins_from_escapes"] += loot_gain
+                    time.sleep(2.2)
                     reset_monster()
                     continue
                 else:
