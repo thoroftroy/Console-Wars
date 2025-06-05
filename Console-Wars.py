@@ -1817,6 +1817,10 @@ def combat():
                 show_stats_screen()
 
             elif choice in ["exit", "leave"]:
+                save_to_file()
+                print(Fore.GREEN + "Saving game...")
+                print(Fore.RED + "Exiting...")
+                time.sleep(0.1)
                 print(Style.RESET_ALL)
                 sys.exit()
 
