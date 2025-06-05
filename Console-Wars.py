@@ -8,6 +8,13 @@ import json
 from datetime import datetime
 import threading
 import shutil
+from collections import Counter
+
+from numpy.matlib import empty
+
+
+# Notes/Things to do
+# Add in the gatcha game threads for passive xp
 
 # Define libraries and classes
 class monsterVariables:
@@ -33,7 +40,7 @@ player = {
     "difficulty": 0,
     "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
     "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
-    "gameList": ["Tamagachi", "Gambling", "Fishing", "Wishing Well", "Reborn"],
+    "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn"],
     "xp": 0.0,
     "coins": 0,
     "inventory": [],
@@ -90,6 +97,15 @@ well_data = {
     "divine_spark": 0,
     "obtained_blessings": [],
     "obtained_curses": [],
+}
+
+gatcha_data = {
+    "gatcha_pulls_available": 0,
+    "gatchas_pulled": 0,
+    "xp_earned": 0,
+    "characters_owned": [],
+    "last_update": time.time(),
+    "active": False,
 }
 
 # Keep track of stats from the shop
@@ -159,6 +175,8 @@ fishing_thread = None
 fishing_stop_event = threading.Event()
 tamagatchi_thread = None
 tamagatchi_stop_event = threading.Event()
+gatcha_thread = None
+gatcha_stop_event = threading.Event()
 
 # Drop Table
 drop_table = [
@@ -257,7 +275,7 @@ drop_table = [
 ]
 
 # Wishing well buffs and nerfs
-blessings = [
+blessings = [ # Massive bonuses from the wishing well
     {"name": "Blessing of Vitality", "desc": "Greatly increases your max health. (+500 health)", "boosts": {"health": 500}},
     {"name": "Blessing of Power", "desc": "Greatly increases your damage. (+200 damage)", "boosts": {"damage": 200}},
     {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense. (+200 defense)", "boosts": {"defense": 200}},
@@ -299,7 +317,7 @@ blessings = [
     {"name": "Ultimate Hammer", "desc": "Let the judgment of god strike. (+1000 health, +200000 damage, +20000 defense)", "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
     {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+10000000 health, damage, and defense)", "boosts": {"health": 10000000, "damage": 10000000, "defense": 10000000}},
 ]
-curses = [
+curses = [ # Small rare penalties from the wishing well
     {"name": "Curse of Weakness", "desc": "Your strength fades. (-10 damage)", "boosts": {"damage": -10}},
     {"name": "Curse of Fragility", "desc": "You feel frail. (-30 health)", "boosts": {"health": -30}},
     {"name": "Curse of Vulnerability", "desc": "Your armor fails you (-10 defense).", "boosts": {"defense": -10}},
@@ -314,6 +332,80 @@ curses = [
     {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
     {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
     {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divine_spark": -5}}
+]
+
+# Gatcha Table
+gatcha = [  # The gatcha characters will passively earn XP over time as they fight for you in other battles
+    # Common = 1-4
+    # Normal = 5-10
+    # Rare = 11-20
+    # Super Rare = 21-30
+    # Ultra Rare = 31-40
+    # MEGA rare = 41-100
+    {"name": "Catgirl", "desc": "Why?", "rank": "Common", "boosts": {"xp_bonus": 1}},
+    {"name": "Sticky Champion", "desc": "Built for hugs.", "rank": "Common", "boosts": {"xp_bonus": 2}},
+    {"name": "Funky Snail", "desc": "Screams when idle.", "rank": "Common", "boosts": {"xp_bonus": 3}},
+    {"name": "Wandering Ghost", "desc": "Only eats moonlight.", "rank": "Common", "boosts": {"xp_bonus": 4}},
+    {"name": "Snoring Ogre", "desc": "Dreams of battle.", "rank": "Common", "boosts": {"xp_bonus": 5}},
+    {"name": "Puddle Mage", "desc": "Wields dampness.", "rank": "Common", "boosts": {"xp_bonus": 6}},
+    {"name": "Gremlin Cook", "desc": "Secret ingredient: chaos.", "rank": "Common", "boosts": {"xp_bonus": 7}},
+    {"name": "Rusty Bot", "desc": "Still operational... mostly.", "rank": "Common", "boosts": {"xp_bonus": 8}},
+    {"name": "Melancholy Imp", "desc": "Sighs explosively.", "rank": "Common", "boosts": {"xp_bonus": 9}},
+    {"name": "Rock Collector", "desc": "They might be magic.", "rank": "Common", "boosts": {"xp_bonus": 10}},
+    {"name": "Lantern Bug", "desc": "Buzzes with energy.", "rank": "Common", "boosts": {"xp_bonus": 11}},
+    {"name": "Mushroom Knight", "desc": "Spores of justice.", "rank": "Common", "boosts": {"xp_bonus": 12}},
+    {"name": "Sock Thief", "desc": "Where do they go?", "rank": "Common", "boosts": {"xp_bonus": 13}},
+
+    {"name": "Almond Man", "desc": "The king of nuts.", "rank": "Normal", "boosts": {"xp_bonus": 5}},
+    {"name": "Fishing Master", "desc": "I like fsh.", "rank": "Normal", "boosts": {"xp_bonus": 6}},
+    {"name": "Lesser Demon", "desc": "I'm on your side now.", "rank": "Normal", "boosts": {"xp_bonus": 7}},
+    {"name": "Tiny Champion", "desc": "Only eats moonlight.", "rank": "Normal", "boosts": {"xp_bonus": 8}},
+    {"name": "Cyber Snail", "desc": "Glows slightly.", "rank": "Normal", "boosts": {"xp_bonus": 9}},
+    {"name": "Sticky Ghost", "desc": "Built for hugs.", "rank": "Normal", "boosts": {"xp_bonus": 10}},
+    {"name": "Glass Archer", "desc": "Delicate but deadly.", "rank": "Normal", "boosts": {"xp_bonus": 11}},
+    {"name": "Moon Dancer", "desc": "Twilight twirls.", "rank": "Normal", "boosts": {"xp_bonus": 12}},
+    {"name": "Bored Dragon", "desc": "Yawn and burn.", "rank": "Normal", "boosts": {"xp_bonus": 13}},
+    {"name": "Tidy Ogre", "desc": "Neat freak bruiser.", "rank": "Normal", "boosts": {"xp_bonus": 14}},
+
+    {"name": "Jack Black", "desc": "I... Am Steeve.", "rank": "Rare", "boosts": {"xp_bonus": 11}},
+    {"name": "Big Red Rock Eater", "desc": "What's big and red and eats rocks?", "rank": "Rare",
+     "boosts": {"xp_bonus": 12}},
+    {"name": "Sentient Toaster", "desc": "I make vengeance crunchy.", "rank": "Rare", "boosts": {"xp_bonus": 13}},
+    {"name": "Quantum Ferret", "desc": "Exists in multiple states of chaos.", "rank": "Rare",
+     "boosts": {"xp_bonus": 14}},
+    {"name": "Wandering Champion", "desc": "Tastes like victory.", "rank": "Rare", "boosts": {"xp_bonus": 15}},
+    {"name": "Rust Lizard", "desc": "Crunchy scales.", "rank": "Rare", "boosts": {"xp_bonus": 16}},
+    {"name": "Jelly Oracle", "desc": "Wiggles with wisdom.", "rank": "Rare", "boosts": {"xp_bonus": 17}},
+    {"name": "Mimic Pianist", "desc": "Strikes a deadly chord.", "rank": "Rare", "boosts": {"xp_bonus": 18}},
+    {"name": "Cyber Fighter", "desc": "Built for hugs.", "rank": "Rare", "boosts": {"xp_bonus": 19}},
+    {"name": "Sticky Witch", "desc": "Glows slightly.", "rank": "Rare", "boosts": {"xp_bonus": 20}},
+
+    {"name": "Moody Knight", "desc": "Cries in plate armor.", "rank": "Super Rare", "boosts": {"xp_bonus": 21}},
+    {"name": "Broccoli Mage", "desc": "Eat your greens or else.", "rank": "Super Rare", "boosts": {"xp_bonus": 22}},
+    {"name": "Angry Librarian", "desc": "Shhh... or perish.", "rank": "Super Rare", "boosts": {"xp_bonus": 23}},
+    {"name": "Cyberpunk Slug", "desc": "Slow but digitally enhanced.", "rank": "Super Rare",
+     "boosts": {"xp_bonus": 24}},
+    {"name": "Sticky Champion", "desc": "Prefers chaos.", "rank": "Super Rare", "boosts": {"xp_bonus": 25}},
+    {"name": "Funky Snail", "desc": "Tastes like victory.", "rank": "Super Rare", "boosts": {"xp_bonus": 26}},
+    {"name": "Wandering Ghost", "desc": "Comes with a manual.", "rank": "Super Rare", "boosts": {"xp_bonus": 27}},
+    {"name": "Iron Fighter", "desc": "Built for hugs.", "rank": "Super Rare", "boosts": {"xp_bonus": 28}},
+    {"name": "Tiny Witch", "desc": "Glows slightly.", "rank": "Super Rare", "boosts": {"xp_bonus": 29}},
+    {"name": "Cyber Tank", "desc": "Screams when idle.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 30}},
+
+    {"name": "Moss Wizard", "desc": "Photosynthesis and fireballs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 31}},
+    {"name": "Tax Goblin", "desc": "You owe XP this quarter.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 32}},
+    {"name": "Haunted Barista", "desc": "Your latte is cursed.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 33}},
+    {"name": "Sticky Archer", "desc": "Hates stairs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 34}},
+    {"name": "Funky Mystic", "desc": "Tastes like victory.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 35}},
+    {"name": "Wandering Beast", "desc": "Built for hugs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 36}},
+    {"name": "Iron Agent", "desc": "Only eats moonlight.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 37}},
+
+    {"name": "Banana Paladin", "desc": "He slips... into battle.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 41}},
+    {"name": "Bird Lawyer", "desc": "Caws for justice!", "rank": "MEGA Rare", "boosts": {"xp_bonus": 42}},
+    {"name": "Bread Prophet", "desc": "Foretells gluten-based doom.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 43}},
+    {"name": "Doombot 3000", "desc": "Will explode for fun and profit.", "rank": "MEGA Rare",
+     "boosts": {"xp_bonus": 44}},
+    {"name": "Teacup Berserker", "desc": "Tiny, angry, porcelain.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 45}},
 ]
 
 # Functions
@@ -382,6 +474,21 @@ def show_stats_screen():
 
     print(Fore.CYAN + "\n--- Fishing ---")
     print(f"Fish Caught: {fishing_data.get('fish_caught', 0)} | Items Fished: {fishing_data.get('items_fished', 0)}")
+
+    print(Fore.BLUE + "\n--- Gatcha ---")
+    print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
+
+    characters = gatcha_data.get("characters_owned", [])
+    if characters:
+        for name in characters:
+            # Find the full character data from the gatcha list
+            full_data = next((char for char in gatcha if char["name"] == name), None)
+            if full_data:
+                print(f" - {full_data['name']} | {full_data['rank']} | {full_data['boosts']}")
+            else:
+                print(f" - {name} | (Unknown Data)")
+    else:
+        print("(None)")
 
     print(Fore.CYAN + "\n--- Wishing Well ---")
     print(f"Wishes Made: {well.get('wishing_coins_used', 0)}")
@@ -519,6 +626,124 @@ def show_combat_stats(): # this is the main function to show all the stats durin
     print(Style.RESET_ALL)
 
 # Minigame/Other Functions
+
+# Gatcha functions
+def start_gatcha_thread(): # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
+    global gatcha_thread, gatcha_data
+    print(Fore.GREEN +
+        f"Starting gatcha thread? thread={gatcha_thread}, alive={gatcha_thread.is_alive() if gatcha_thread else 'N/A'}, owned={gatcha_data['characters_owned']}")
+    if gatcha_thread and gatcha_thread.is_alive() and not gatcha_data["characters_owned"]:
+        return
+    gatcha_stop_event.clear()
+    def loop():
+        while gatcha_data["active"] and not gatcha_stop_event.is_set():
+            #if gatcha_data["last_update"] is not None:
+            update_gatcha()
+            time.sleep(random.uniform(5, 10)) # How long it takes for the gatcha to update
+
+    gatcha_thread = threading.Thread(target=loop, daemon=True)
+    gatcha_thread.start()
+    print("Gatcha thread started")
+
+def update_gatcha(): # The actual gatcha thread which updates your XP over time
+    # This isn't working, it is supposed to be running every 5-10 seconds from the gatcha thread then totalling all the xp boosts from the characters and giving it to the player, I am not getting an error but nothing seems to be happening
+    global player, persistentStats, gatcha_data, gatcha, gatcha_thread
+
+    if gatcha_data["active"]:
+        # Total up XP bonuses from player's active gatcha characters
+        xp_gain = 0
+        for name in gatcha_data.get("characters_owned", []):
+            for char in gatcha:
+                if char["name"] == name:
+                    xp_gain += char["boosts"]["xp_bonus"]
+                    break  # Stop after the first match
+
+        # Save the gain in the gatcha_data for reference and apply it to the player
+        time.sleep(10)
+        gatcha_data["xp_earned"] += xp_gain
+        player["xp"] += xp_gain
+
+def try_gatcha_drop(): # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
+    global gatcha_data, persistentStats
+    if persistentStats["floor"] >= 10:
+        print(Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
+        gatcha_data["gatcha_pulls_available"] += 1
+        time.sleep(1)
+    elif random.randint(0,100) <= 10: # 10% chance
+        print(Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
+        gatcha_data["gatcha_pulls_available"] += 1
+        time.sleep(1)
+
+    return
+
+def gatcha_game(): # When you type gatcha into the minigame screen this is shown
+    global persistentStats, gatcha_data, gatcha, player, persistentStats
+    clear_screen()
+    if persistentStats["floor"] < 10 or persistentStats["reborns_used"] > 0:
+        print(Fore.RED + "You can't do gatcha pulls until floor 10!")
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
+        return
+
+    gatcha_data["active"] = True
+    start_gatcha_thread() # ensures the thread is running
+
+    print(Fore.BLUE + "====Gatcha=====")
+    if gatcha_data["gatcha_pulls_available"] <= 0: # Ensures you have some gatcha passes to use
+        print(Fore.RED + "You don't have any pulls available!")
+        print(Fore.Yellow + "Go kill some monsters to get more pulls.")
+        time.sleep(3)
+        return
+
+    while True:
+        clear_screen()
+        print(Fore.BLUE + "====Gatcha=====")
+        if gatcha_data["characters_owned"]:
+            print(Fore.CYAN + "You have: " + Fore.YELLOW + str(gatcha_data["characters_owned"]))
+            print(Fore.BLACK + "|")
+            print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gatcha_data["xp_earned"]))
+
+        print(Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
+        print(Fore.BLACK + "|")
+        print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
+        choice = input()
+        if choice in ["yes","y",""]:
+            print(Fore.BLACK + "|")
+            gatcha_data["gatcha_pulls_available"] -= 1
+            gatcha_data["gatchas_pulled"] += 1
+            gatcha_chance = random.randint(0,100)
+            if gatcha_chance <= 20:
+                if set(gatcha_data["characters_owned"]) >= {c["name"] for c in gatcha}: # Tests if you have every character
+                    print(Fore.RED + "You have unlocked all characters so you can't unlock more")
+                    print(Fore.BLUE + "You can still earn xp and coins from the draws!")
+                    time.sleep(2)
+                else:
+                    unlocked = random.choice(gatcha) # chooses a random character
+                    while unlocked["name"] in gatcha_data["characters_owned"]: # Ensures the character is not a duplicate
+                        unlocked = random.choice(gatcha)
+                    gatcha_data["characters_owned"].append(unlocked["name"])
+                    print(Fore.BLUE + f"You unlocked an {unlocked["rank"]} rank! {unlocked["name"]}!")
+                    print(Fore.MAGENTA + f"{unlocked['desc']}")
+                    time.sleep(0.5)
+            elif gatcha_chance <= 40:
+                xp_earned = random.randint(100,2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                print(Fore.BLUE + f"You earned {xp_earned} xp!")
+                player["xp"] += xp_earned
+            elif gatcha_chance <= 70:
+                coins_earned = random.randint(100, 2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                print(Fore.BLUE + f"You earned {coins_earned} coins!")
+                player["coins"] += coins_earned
+            else:
+                print(Fore.RED + "You didn't earn anything...")
+            time.sleep(1)
+        elif choice in ["no","n","exit","leave"]:
+            return
+        else:
+            print(Fore.RED + "Invalid input")
+            time.sleep(1)
+    return
+
+# Reborn functions
 def reborn():
     global player, shop_data, well_data, persistentStats
 
@@ -791,7 +1016,7 @@ def gambling(): # Manages the gambling screen
     clear_screen()
     print(Style.RESET_ALL)
     print(Fore.YELLOW + "Welcome to the Gambling Den")
-    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
+    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to gamble!")
         time.sleep(1)
@@ -979,7 +1204,7 @@ def tamagatchi():
     clear_screen()
     print(Style.RESET_ALL)
 
-    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
+    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to unlock the Tamagatchi!")
         time.sleep(1)
@@ -1054,15 +1279,19 @@ def minigame_selection():
     print(Fore.BLUE + "  Complete minigames to earn boosts, XP, and more!")
     print(Fore.BLACK + "|")
     print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
-    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:
+    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Tamagatchi     → Feed a friend for passive stat boosts.")
     else:
         print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
-    if persistentStats["floor"] < 5 or persistentStats["reborns_used"] > 0:  
+    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
-    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
+    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
+    else:
+        print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
+    if persistentStats["monsters_killed"] < 250 and persistentStats["floor"] < 15:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
@@ -1085,6 +1314,8 @@ def minigame_selection():
         fishing()
     elif choice in ["wishing well", "wish", "wishingwell", "wsh", "well"]:
         wishing_well()
+    elif choice in ["gatcha", "gat", "draw"]:
+        gatcha_game()
     elif choice in ["reborn", "re", "born"]:
         reborn()
     elif choice in ["exit", "leave"]:
@@ -1096,7 +1327,7 @@ def minigame_selection():
 
 # Saving and Loading Functions
 def save_to_file(): # Saves the file
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     player["name"] = os.path.splitext(currentSaveName)[0]
 
     data = {
@@ -1110,7 +1341,8 @@ def save_to_file(): # Saves the file
         "endlessMode": endlessMode,
         "endlessKills": endlessKills,
         "monsterId": monsterId,
-        "currentMonsterHealth": currentMonsterHealth
+        "currentMonsterHealth": currentMonsterHealth,
+        "gatcha_data": gatcha_data,
     }
 
     with open(globalSavePath, "w") as f:
@@ -1142,7 +1374,7 @@ def list_saved_files(): # lists saved files
     print(Style.RESET_ALL)
 
 def load_from_file(filename): # Load data from files
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
 
     path = os.path.join(saveDirectory, filename)
@@ -1157,6 +1389,7 @@ def load_from_file(filename): # Load data from files
         tamagatchi_data.update(data.get("tamagatchi_data", {}))
         shop_data.update(data.get("shop_data", {}))
         well_data.update(data.get("well_data", {}))
+        gatcha_data.update(data.get("gatcha_data", {}))
         fishing_data.update(data.get("fishing_data", {}))
         gambling_data.update(data.get("gambling_data", {}))
         endlessMode = data.get("endlessMode", False)
@@ -1169,6 +1402,9 @@ def load_from_file(filename): # Load data from files
         # Stats the tamagatchi thread
         if tamagatchi_data.get("active"):
             start_tamagatchi_thread()
+
+        if gatcha_data.get("active"):
+            start_gatcha_thread()
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
@@ -1435,6 +1671,9 @@ def monster_death_check():
                 if tamagatchi_data["bond"] < max_bond:
                     tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
+
+        if persistentStats["floor"] >= 10:
+            try_gatcha_drop() # Tries to drop a gatcha pass/ticket
             
         persistentStats["monsters_killed"] += 1
         player["health"] += round(monster.maxHealth[monsterId]/10)
@@ -1444,6 +1683,7 @@ def monster_death_check():
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
+            try_gatcha_drop()
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
 
             # Save a backup before progressing to next floor
