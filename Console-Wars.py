@@ -751,8 +751,8 @@ def reborn():
 
     if persistentStats["floor"] <= 25:
         print(Fore.RED + "You must reach floor 25 to use Reborn.")
-        time.sleep(2)
-        combat()
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
     print(Fore.YELLOW + "--- Reborn ---")
@@ -801,8 +801,8 @@ def wishing_well():
     clear_screen()
     if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
         print(Fore.RED + "You must defeat 250 monsters and make it to floor 15 to unlock the Wishing Well.")
-        time.sleep(2)
-        combat()
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
     cost = well_data["wishing_well_cost"]
@@ -1019,7 +1019,8 @@ def gambling(): # Manages the gambling screen
     if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to gamble!")
-        time.sleep(1)
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
         return
     print(Fore.CYAN + f"You have {player['coins']} coins.")
     if persistentStats["floor"] >= 20:
@@ -1207,14 +1208,15 @@ def tamagatchi():
     if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
         print(Fore.RED + "You must reach floor 5 to unlock the Tamagatchi!")
-        time.sleep(1)
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
     if not tamagatchi_data["active"]:
         if player["xp"] < 500:
             print(Fore.RED + "It costs 500 XP to adopt a Tamagatchi, you do not have that much!")
-            time.sleep(4)
-            combat()
+            print(Fore.BLACK + "|")
+            input(Fore.BLUE + "Press Enter to return to combat.")
             return
         player["xp"] -= 500
         tamagatchi_data.update({
