@@ -630,8 +630,8 @@ def show_combat_stats(): # this is the main function to show all the stats durin
 # Gatcha functions
 def start_gatcha_thread(): # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
     global gatcha_thread, gatcha_data
-    print(Fore.GREEN +
-        f"Starting gatcha thread? thread={gatcha_thread}, alive={gatcha_thread.is_alive() if gatcha_thread else 'N/A'}, owned={gatcha_data['characters_owned']}")
+    #print(Fore.GREEN +
+    #    f"Starting gatcha thread? thread={gatcha_thread}, alive={gatcha_thread.is_alive() if gatcha_thread else 'N/A'}, owned={gatcha_data['characters_owned']}")
     if gatcha_thread and gatcha_thread.is_alive() and not gatcha_data["characters_owned"]:
         return
     gatcha_stop_event.clear()
@@ -643,7 +643,7 @@ def start_gatcha_thread(): # Starts the passive gatcha thread to earn xp based o
 
     gatcha_thread = threading.Thread(target=loop, daemon=True)
     gatcha_thread.start()
-    print("Gatcha thread started")
+    #print("Gatcha thread started")
 
 def update_gatcha(): # The actual gatcha thread which updates your XP over time
     # This isn't working, it is supposed to be running every 5-10 seconds from the gatcha thread then totalling all the xp boosts from the characters and giving it to the player, I am not getting an error but nothing seems to be happening
@@ -665,7 +665,7 @@ def update_gatcha(): # The actual gatcha thread which updates your XP over time
 
 def try_gatcha_drop(): # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
     global gatcha_data, persistentStats
-    if persistentStats["floor"] >= 10:
+    if persistentStats["floor"] == 9: # Garentees one pass on the 10th floor boss kill
         print(Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
         time.sleep(1)
@@ -686,14 +686,7 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
         return
 
     gatcha_data["active"] = True
-    start_gatcha_thread() # ensures the thread is running
-
-    print(Fore.BLUE + "====Gatcha=====")
-    if gatcha_data["gatcha_pulls_available"] <= 0: # Ensures you have some gatcha passes to use
-        print(Fore.RED + "You don't have any pulls available!")
-        print(Fore.Yellow + "Go kill some monsters to get more pulls.")
-        time.sleep(3)
-        return
+    start_gatcha_thread() # ensures the thread is running 
 
     while True:
         clear_screen()
@@ -703,39 +696,50 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
             print(Fore.BLACK + "|")
             print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gatcha_data["xp_earned"]))
 
+        if gatcha_data["gatcha_pulls_available"] <= 0: # Ensures you have some gatcha passes to use
+            print(Fore.RED + "You don't have any pulls available!")
+            print(Fore.YELLOW + "Go kill some monsters to get more pulls.")
+            print(Fore.BLACK + "|")
+            input(Fore.BLUE + "Press Enter to return to combat.")
+            return
+    
         print(Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
         if choice in ["yes","y",""]:
-            print(Fore.BLACK + "|")
-            gatcha_data["gatcha_pulls_available"] -= 1
-            gatcha_data["gatchas_pulled"] += 1
-            gatcha_chance = random.randint(0,100)
-            if gatcha_chance <= 20:
-                if set(gatcha_data["characters_owned"]) >= {c["name"] for c in gatcha}: # Tests if you have every character
-                    print(Fore.RED + "You have unlocked all characters so you can't unlock more")
-                    print(Fore.BLUE + "You can still earn xp and coins from the draws!")
-                    time.sleep(2)
+            if gatcha_data["gatcha_pulls_available"] >= 1:
+                print(Fore.BLACK + "|")
+                gatcha_data["gatcha_pulls_available"] -= 1
+                gatcha_data["gatchas_pulled"] += 1
+                gatcha_chance = random.randint(0,100)
+                if gatcha_chance <= 20:
+                    if set(gatcha_data["characters_owned"]) >= {c["name"] for c in gatcha}: # Tests if you have every character
+                        print(Fore.RED + "You have unlocked all characters so you can't unlock more")
+                        print(Fore.BLUE + "You can still earn xp and coins from the draws!")
+                        time.sleep(2)
+                    else:
+                        unlocked = random.choice(gatcha) # chooses a random character
+                        while unlocked["name"] in gatcha_data["characters_owned"]: # Ensures the character is not a duplicate
+                            unlocked = random.choice(gatcha)
+                        gatcha_data["characters_owned"].append(unlocked["name"])
+                        print(Fore.BLUE + f"You unlocked an {unlocked['rank']} rank! {unlocked['name']}!")
+                        print(Fore.MAGENTA + f"{unlocked['desc']}")
+                        time.sleep(1.5)
+                elif gatcha_chance <= 40:
+                    xp_earned = random.randint(100,2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    print(Fore.BLUE + f"You earned {xp_earned} xp!")
+                    player["xp"] += xp_earned
+                elif gatcha_chance <= 70:
+                    coins_earned = random.randint(100, 2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    print(Fore.BLUE + f"You earned {coins_earned} coins!")
+                    player["coins"] += coins_earned
                 else:
-                    unlocked = random.choice(gatcha) # chooses a random character
-                    while unlocked["name"] in gatcha_data["characters_owned"]: # Ensures the character is not a duplicate
-                        unlocked = random.choice(gatcha)
-                    gatcha_data["characters_owned"].append(unlocked["name"])
-                    print(Fore.BLUE + f"You unlocked an {unlocked['rank']} rank! {unlocked['name']}!")
-                    print(Fore.MAGENTA + f"{unlocked['desc']}")
-                    time.sleep(0.5)
-            elif gatcha_chance <= 40:
-                xp_earned = random.randint(100,2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
-                print(Fore.BLUE + f"You earned {xp_earned} xp!")
-                player["xp"] += xp_earned
-            elif gatcha_chance <= 70:
-                coins_earned = random.randint(100, 2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
-                print(Fore.BLUE + f"You earned {coins_earned} coins!")
-                player["coins"] += coins_earned
+                    print(Fore.RED + "You didn't earn anything...")
+                time.sleep(1)
             else:
-                print(Fore.RED + "You didn't earn anything...")
-            time.sleep(1)
+                print(Fore.RED + "You don't have any pulls remaining")
+                time.sleep(0.8)
         elif choice in ["no","n","exit","leave"]:
             return
         else:
@@ -1177,7 +1181,8 @@ def update_tamagatchi():
 
     # Hunger increases
     if hunger < 100:
-        tamagatchi_data["hunger"] += 1
+        if random.randint(0,100) <= 50: # only increases hunger half the time
+            tamagatchi_data["hunger"] += 1
 
     # Bond slowly increases if well-fed (under 20 hunger)
     if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
@@ -1188,7 +1193,7 @@ def update_tamagatchi():
     elif hunger >= 20:
         pass
     
-    if tamagatchi_data["bond"] >= max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)   | It doesn't work...
+    if tamagatchi_data["bond"] >= max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)
         tamagatchi_data["bond"] = max_bond
 
     # Recalculate boosts
@@ -1440,6 +1445,7 @@ def try_drop_item():
             # Duplicate item → convert to coins
             value = get_item_coin_value(dropped_item)
             player["coins"] += value
+            gambling_data["itemsSold"] += 1
             print(Fore.MAGENTA + f"You found {dropped_item['name']} again.")
             print(Fore.YELLOW + f"It was converted into {value} coins.")
         else:
