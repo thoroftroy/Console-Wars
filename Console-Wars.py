@@ -727,11 +727,11 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
                         print(Fore.MAGENTA + f"{unlocked['desc']}")
                         time.sleep(1.5)
                 elif gatcha_chance <= 40:
-                    xp_earned = random.randint(100,2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    xp_earned = random.randint(10,200) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {xp_earned} xp!")
                     player["xp"] += xp_earned
                 elif gatcha_chance <= 70:
-                    coins_earned = random.randint(100, 2000) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {coins_earned} coins!")
                     player["coins"] += coins_earned
                 else:
