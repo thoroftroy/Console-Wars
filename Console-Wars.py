@@ -119,7 +119,7 @@ shop_data = {
     "baseDropBoostCost": 10,
     
     # How much the cost goes up each time
-    "baseHealthBoostCostFactor": 1.35,
+    "baseHealthBoostCostFactor": 1.55,
     "baseDamageBoostCostFactor": 1.25,
     "baseDefenseBoostCostFactor": 1.4,
     "baseDodgeBoostCostFactor": 1.7,
@@ -722,7 +722,7 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
                     while unlocked["name"] in gatcha_data["characters_owned"]: # Ensures the character is not a duplicate
                         unlocked = random.choice(gatcha)
                     gatcha_data["characters_owned"].append(unlocked["name"])
-                    print(Fore.BLUE + f"You unlocked an {unlocked["rank"]} rank! {unlocked["name"]}!")
+                    print(Fore.BLUE + f"You unlocked an {unlocked['rank']} rank! {unlocked['name']}!")
                     print(Fore.MAGENTA + f"{unlocked['desc']}")
                     time.sleep(0.5)
             elif gatcha_chance <= 40:
@@ -1054,8 +1054,8 @@ def gambling(): # Manages the gambling screen
         else:
             for i, item in enumerate(player["inventory"]):
                 value = get_item_coin_value(item)
-                print(Fore.CYAN + f"[{i}] {item['name']} → {value} coins")
-                print(Fore.MAGENTA + f"     {item['desc']}")
+                print(Fore.MAGENTA + f"[{i}] {item['name']} → {value} coins")
+                #print(Fore.MAGENTA + f"     {item['desc']}")
 
             sel = input(Fore.GREEN + "\nChoose item number to sell or 'all': ").strip().lower()
             if sel == "all":
@@ -1076,6 +1076,9 @@ def gambling(): # Manages the gambling screen
                     print(Fore.GREEN + f"Sold {item['name']} for {value} coins.")
                 else:
                     print(Fore.RED + "Invalid item index.")
+            elif sel in ["exit","leave"]:
+                print(Fore.BLUE + "You chose to sell nothing!")
+                time.sleep(1)
             else:
                 print(Fore.RED + "Invalid input.")
         apply_boosts()
@@ -1293,7 +1296,7 @@ def minigame_selection():
         print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
     else:
         print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
-    if persistentStats["monsters_killed"] < 250 and persistentStats["floor"] < 15:
+    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
@@ -1618,13 +1621,13 @@ def level_up():
                         player[boost_key] = 1.0  # Starting point
 
                     current_boost = player[boost_key]
-                    proposed_boost = current_boost * boost_mod
+                    proposed_boost = current_boost + boost_mod
 
                     # Calculate new maxHealth
                     current_max = player["maxHealth"]
-                    proposed_max = base_health + proposed_boost
+                    proposed_max = (base_health + proposed_boost) / 5
                     increase = proposed_max - current_max
-                    max_increase = current_max * 0.05
+                    max_increase = current_max / 10
 
                     # Enforce cap
                     if increase > max_increase:
