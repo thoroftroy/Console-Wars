@@ -65,11 +65,13 @@ python3 Console-Wars.py
 py Console-Wars.py
 ```
 ---
-**Note**
-
-You will notice that there are 3 python files in the repository. Main is the original, Main2 is a slightly older version of the main game and Console-Wars is the actual game. The other two files are only there for archival purposes, you do not need to install them. 
-
 ## How to Play
+On each screen, simply type the action you want to perform. A list of valid actions will always be provided.
+
+For example, typing attack will attack a monster. You can also use abbreviations like atk. Similarly, retreat can be shortened to ret. Most actions support multiple abbreviations. Typing leave or exit will exit the current screen.
+
+Pressing Enter without typing anything will trigger the default or primary action—usually something like confirming a choice or attacking. This lets you quickly repeat common actions without retyping them every time.
+
 1. Combat
    
     Face various monsters as you climb through levels, battling them with your stats and inventory items.
