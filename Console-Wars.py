@@ -18,11 +18,23 @@ from numpy.matlib import empty
 
 # Define libraries and classes
 class monsterVariables:
-    names =     ["Slime","Goblin","Skeleton","Zombie","Vampire","Orc","Giant","Ent","Warg","Banshee","Ghoul","Bandit","Troll","Shade","Basilisk","Minotaur","Witch","Drake","Warlock","Knight","Behemoth","Chimera","Specter","Ogre","Harpy","Revenant","Lich","Manticore","Wyvern","Wyrm","Juggernaut","Hydra","Phantom","Colossus","Ifrit","Kraken","Dreadnought","Leviathan","Titan","Demon Lord"]
-    maxHealth = [10,      15,      22,        33,      50,       75,   113,    170,  256,   284,      576,    864,     1297,   1946,   2919,      4378,      6568,   9852,   14778,    22168,   33252,     49878,    74818,    112227,168341, 252511,    378767,568151,     852226,  1278340,1917510,    2876265,4314398,  6471598,   9707397,14561096,21841644,     32762466,   49143699,73715548,]
-    maxDamage = [4,        7,      10,       15,      23,       34,    51,     77,  115,   173,      259,    389,      584,    876,   1314,      1971,      2956,   4434,    6651,     9976,   14964,     22445,    33668,     50502, 75754, 113630,    170445,255668,     383502,  575253,  862880,    1294320,1941479,  2912219,   4368329, 6552493,9828740,      14743110,   22114665,33171997,]
-    minDamage = [2,        2,       3,         5,       8,       11,    17,     26,   38,    58,       86,    130,      195,    292,    438,       657,       985,   1478,    2217,     3325,    4988,      7482,    11223,     16834, 25251,  37877,     56815, 85223,     127834,  191751,  287627,     431440, 647160,   970740,   1456110, 2184164,3276247,       4914370,    7371555,11057332,]
-    defense =   [0,        1,       1,         1,       2,        3,     4,      6,   10,    14,       22,     32,       49,     73,    109,       164,       246,    369,     554,      831,    1247,      1870,     2806,      4209,  6313,   9469,     14204, 21306,      31959,   47938,   71907,     107860, 161790,   242685,    364027,  546041,819062,        1228592,    1842889,2764333,]
+    names = ["Slime", "Goblin", "Skeleton", "Zombie", "Vampire", "Orc", "Giant", "Ent", "Warg", "Banshee", "Ghoul",
+             "Bandit", "Troll", "Shade", "Basilisk", "Minotaur", "Witch", "Drake", "Warlock", "Knight", "Behemoth",
+             "Chimera", "Specter", "Ogre", "Harpy", "Revenant", "Lich", "Manticore", "Wyvern", "Wyrm", "Juggernaut",
+             "Hydra", "Phantom", "Colossus", "Ifrit", "Kraken", "Dreadnought", "Leviathan", "Titan", "Demon Lord"]
+    maxHealth = [10, 15, 22, 33, 50, 75, 113, 170, 256, 284, 576, 864, 1297, 1946, 2919, 4378, 6568, 9852, 14778, 22168,
+                 33252, 49878, 74818, 112227, 168341, 252511, 378767, 568151, 852226, 1278340, 1917510, 2876265,
+                 4314398, 6471598, 9707397, 14561096, 21841644, 32762466, 49143699, 73715548, ]
+    maxDamage = [4, 7, 10, 15, 23, 34, 51, 77, 115, 173, 259, 389, 584, 876, 1314, 1971, 2956, 4434, 6651, 9976, 14964,
+                 22445, 33668, 50502, 75754, 113630, 170445, 255668, 383502, 575253, 862880, 1294320, 1941479, 2912219,
+                 4368329, 6552493, 9828740, 14743110, 22114665, 33171997, ]
+    minDamage = [2, 2, 3, 5, 8, 11, 17, 26, 38, 58, 86, 130, 195, 292, 438, 657, 985, 1478, 2217, 3325, 4988, 7482,
+                 11223, 16834, 25251, 37877, 56815, 85223, 127834, 191751, 287627, 431440, 647160, 970740, 1456110,
+                 2184164, 3276247, 4914370, 7371555, 11057332, ]
+    defense = [0, 1, 1, 1, 2, 3, 4, 6, 10, 14, 22, 32, 49, 73, 109, 164, 246, 369, 554, 831, 1247, 1870, 2806, 4209,
+               6313, 9469, 14204, 21306, 31959, 47938, 71907, 107860, 161790, 242685, 364027, 546041, 819062, 1228592,
+               1842889, 2764333, ]
+
 
 # Classes for ease
 monster = monsterVariables()
@@ -57,7 +69,7 @@ endlessMode = False
 endlessKills = 0
 demon_lord_data = {
     "demonLordsDefeated": 0,
-    
+
     "health": monster.maxHealth[-1],
     "minDamage": monster.minDamage[-1],
     "maxDamage": monster.maxDamage[-1],
@@ -117,7 +129,7 @@ shop_data = {
     "baseDodgeBoostCost": 5,
     "baseEscapeBoostCost": 2,
     "baseDropBoostCost": 10,
-    
+
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.55,
     "baseDamageBoostCostFactor": 1.25,
@@ -125,7 +137,7 @@ shop_data = {
     "baseDodgeBoostCostFactor": 1.7,
     "baseEscapeBoostCostFactor": 1.1,
     "baseDropBoostCostFactor": 1.4,
-    
+
     # How much each boost gives you each time (This number is multiplied with the stat for exponential increases)
     "healthBoostMod": 1.05,
     "damageBoostMod": 1.13,
@@ -133,7 +145,7 @@ shop_data = {
     "dodgeBoostMod": 1.13,
     "escapeBoostMod": 1.5,
     "dropBoostMod": 1.3,
-                     #9,223,372,036,854,775,807 is the overflow number, just ensure that number is never exeeded
+    # 9,223,372,036,854,775,807 is the overflow number, just ensure that number is never exeeded
     "healthBoostCap": 8000000000000000000,
     "damageBoostCap": 8000000000000000000,
     "defenseBoostCap": 8000000000000000000,
@@ -159,7 +171,7 @@ persistentStats = {
 
 # Monster Variables
 monsterId = 0
-currentMonsterFight = monster.names[monsterId] 
+currentMonsterFight = monster.names[monsterId]
 currentMonsterHealth = monster.maxHealth[monsterId]
 currentMonsterDefense = monster.defense[monsterId]
 
@@ -180,108 +192,144 @@ gatcha_stop_event = threading.Event()
 
 # Drop Table
 drop_table = [
-    {"name": "Iron Sword",         "desc": "A basic blade. Reliable and sharp.",                         "boosts": {"damage": 5},  "weight": 12},
-    {"name": "Leather Armor",      "desc": "Worn leather armor that offers minor protection.",           "boosts": {"defense": 2}, "weight": 14},
-    {"name": "Amulet of Vigor",    "desc": "An enchanted charm that slightly improves your health.",     "boosts": {"health": 10}, "weight": 12},
-    {"name": "Steel Dagger",       "desc": "Short and fast. Hits quicker than most weapons.",            "boosts": {"damage": 3},  "weight": 13},
-    {"name": "Chainmail Vest",     "desc": "A sturdy vest of chain links.",                              "boosts": {"defense": 4}, "weight": 10},
-    {"name": "Lucky Ring",         "desc": "Makes you more likely to dodge!",                            "boosts": {"dodge": 15}, "weight": 7},
-    {"name": "Ruby Ring",          "desc": "Pulses with energy, strengthening your strikes.",            "boosts": {"damage": 7},  "weight": 8},
-    {"name": "Iron Shield",        "desc": "Heavy, but it blocks well.",                                 "boosts": {"defense": 5}, "weight": 9},
-    {"name": "Pendant of Health",  "desc": "Glows with a soft warmth.",                                  "boosts": {"health": 20}, "weight": 8},
-    {"name": "War Axe",            "desc": "Brutal and unforgiving.",                                    "boosts": {"damage": 9},  "weight": 6},
-    {"name": "Plated Boots",       "desc": "These boots make you stand strong.",                         "boosts": {"defense": 3}, "weight": 11},
-    {"name": "Gold Locket",        "desc": "Gives you a sense of strength from within.",                 "boosts": {"health": 15}, "weight": 9},
-    {"name": "Enchanted Blade",    "desc": "Magical edge hums with power.",                              "boosts": {"damage": 10}, "weight": 5},
-    {"name": "Guardian Cloak",     "desc": "It deflects incoming strikes slightly.",                     "boosts": {"defense": 6}, "weight": 6},
-    {"name": "Heartstone",         "desc": "A gem filled with life essence.",                            "boosts": {"health": 25}, "weight": 6},
-    {"name": "Spiked Mace",        "desc": "Devastating on impact.",                                     "boosts": {"damage": 11}, "weight": 4},
-    {"name": "Reinforced Helmet",  "desc": "Takes the edge off headshots.",                              "boosts": {"defense": 4}, "weight": 10},
-    {"name": "Elixir Band",        "desc": "Increases vitality just by wearing it.",                     "boosts": {"health": 30}, "weight": 5},
-    {"name": "Battle Spear",       "desc": "Longer reach and deadly force.",                             "boosts": {"damage": 12}, "weight": 4},
-    {"name": "Dragonhide Vest",    "desc": "Tough as ancient scales.",                                   "boosts": {"defense": 7}, "weight": 5},
-    {"name": "Phoenix Feather",    "desc": "Emits a life-giving aura.",                                  "boosts": {"health": 35}, "weight": 4},
-    {"name": "Silver Rapier",      "desc": "Elegant and efficient.",                                     "boosts": {"damage": 8},  "weight": 7},
-    {"name": "Knight’s Gauntlets", "desc": "Enhances arm protection and grip.",                          "boosts": {"defense": 5}, "weight": 7},
-    {"name": "Talisman of Grace",  "desc": "Blessed with ancient healing runes.",                        "boosts": {"health": 40}, "weight": 3},
-    {"name": "Greatsword",         "desc": "Two hands. One purpose.",                                    "boosts": {"damage": 14}, "weight": 3},
-    {"name": "Stoneplate Armor",   "desc": "Like wearing a wall.",                                       "boosts": {"defense": 8}, "weight": 3},
-    {"name": "Blood Orb",          "desc": "Pulses with crimson power.",                                 "boosts": {"health": 50}, "weight": 2},
-    {"name": "Venom Blade",        "desc": "Lightweight, but extremely deadly.",                         "boosts": {"damage": 13}, "weight": 3},
-    {"name": "Shield of Valor",    "desc": "A legacy of ancient kings.",                                 "boosts": {"defense": 6}, "weight": 6},
-    {"name": "Moonstone Charm",    "desc": "Gives subtle resilience under pressure.",                    "boosts": {"health": 22}, "weight": 8},
-    {"name": "Doomhammer",         "desc": "Slow but apocalyptic.",                                      "boosts": {"damage": 16}, "weight": 2},
-    {"name": "Crown of Eternity",  "desc": "Grants unmatched vitality and focus.",                       "boosts": {"health": 100, "defense": 5}, "weight": 1},
-    {"name": "Obsidian Crusher",   "desc": "Crushes foes with devastating force.",                       "boosts": {"damage": 25}, "weight": 1},
-    {"name": "Celestial Shroud",   "desc": "Whispers of protection from beyond.",                        "boosts": {"defense": 12}, "weight": 1},
-    {"name": "Ring of Titans",     "desc": "Endless power flows through it.",                            "boosts": {"damage": 20, "health": 20}, "weight": 1},
-    {"name": "Mantle of Immortals","desc": "Even death fears its wearer.",                               "boosts": {"health": 150}, "weight": 1},
-    {"name": "Abyssal Fang",       "desc": "Bleeds enemies with every strike.",                          "boosts": {"damage": 22}, "weight": 1},
-    {"name": "Plate of Aeons",     "desc": "A shield against time itself.",                              "boosts": {"defense": 15}, "weight": 1},
-    {"name": "Void Pendant",       "desc": "Grants dark resilience and twisted strength.",               "boosts": {"health": 80, "damage": 10}, "weight": 1},
-    {"name": "Sundering Greatblade","desc": "No armor can resist it.",                                   "boosts": {"damage": 30}, "weight": 1},
-    {"name": "Mythrilheart Armor", "desc": "Impossibly light, indestructible.",                          "boosts": {"defense": 18, "health": 40}, "weight": 1},
-    {"name": "Scarab Seal",        "desc": "Surrounds you in an ethereal shield.",                       "boosts": {"defense": 10}, "weight": 1},
-    {"name": "Runed Circlet",      "desc": "Glows with ancient life magic.",                             "boosts": {"health": 90}, "weight": 1},
-    {"name": "Storm Gauntlets",    "desc": "Your blows carry thunder.",                                  "boosts": {"damage": 18}, "weight": 1},
-    {"name": "Shield of Endings",   "desc": "Nullifies even the worst blows.",                           "boosts": {"defense": 20}, "weight": 1},
-    {"name": "Lifeblood Gem",      "desc": "Pulses in time with your heart.",                            "boosts": {"health": 120}, "weight": 1},
-    {"name": "Dagger of Stars",    "desc": "Swift and unstoppable.",                                     "boosts": {"damage": 15}, "weight": 1},
-    {"name": "Solar Medallion",    "desc": "Bathes you in burning resilience.",                          "boosts": {"health": 70, "defense": 8}, "weight": 1},
-    {"name": "Hammer of Glory",    "desc": "Swings with divine vengeance.",                              "boosts": {"damage": 26}, "weight": 1},
-    {"name": "Aegis of the Fallen","desc": "Shields you with lost souls.",                               "boosts": {"defense": 17}, "weight": 1},
-    {"name": "Seraph’s Band",      "desc": "Crackles with divine protection.",                           "boosts": {"health": 60, "defense": 6}, "weight": 1},
-    {"name": "Frostbrand Blade",   "desc": "Frozen and furious.",                                        "boosts": {"damage": 24}, "weight": 1},
-    {"name": "Warden’s Cuirass",   "desc": "Unbending and eternal.",                                     "boosts": {"defense": 14}, "weight": 1},
-    {"name": "Eclipse Ring",       "desc": "You feel the universe tremble.",                             "boosts": {"damage": 12, "defense": 6}, "weight": 1},
-    {"name": "Godscale Vest",      "desc": "Crafted from myth itself.",                                  "boosts": {"defense": 20}, "weight": 1},
-    {"name": "Lifeveil Charm",     "desc": "Stitches your wounds instantly.",                            "boosts": {"health": 110}, "weight": 1},
-    {"name": "Hellforge Blade",    "desc": "Forged in damnation.",                                       "boosts": {"damage": 28}, "weight": 1},
-    {"name": "Divine Anklet",      "desc": "You dodge like a shadow.",                                   "boosts": {"defense": 7}, "weight": 1},
-    {"name": "Warlock’s Fang",     "desc": "Thirsts for blood.",                                         "boosts": {"damage": 23}, "weight": 1},
-    {"name": "Tombplate",          "desc": "You feel nothing. And take nothing.",                        "boosts": {"defense": 22}, "weight": 1},
-    {"name": "Genesis Relic",      "desc": "The beginning of all things.",                               "boosts": {"health": 200, "damage": 10}, "weight": 1},
-    {"name": "Blade of Oblivion",  "desc": "Slices through reality itself.",                             "boosts": {"damage": 40}, "weight": 0.5},
-    {"name": "Titan's Heart",      "desc": "Massive vitality from a fallen giant.",                      "boosts": {"health": 250}, "weight": 0.5},
-    {"name": "Aethercloak",        "desc": "Phase through danger unharmed.",                             "boosts": {"defense": 25}, "weight": 0.5},
-    {"name": "Crown of Stars",     "desc": "Intelligence beyond comprehension.",                         "boosts": {"health": 100, "defense": 10}, "weight": 0.5},
-    {"name": "Ruinblade",          "desc": "Every swing leaves devastation behind.",                     "boosts": {"damage": 38}, "weight": 0.5},
-    {"name": "Stoneblood Aegis",   "desc": "Even gods struggle to crack it.",                            "boosts": {"defense": 30}, "weight": 0.5},
-    {"name": "Crimson Mantle",     "desc": "Burns the weak who dare strike you.",                        "boosts": {"health": 80, "defense": 15}, "weight": 0.5},
-    {"name": "Thunder King's Rod", "desc": "Bolts crackle with each blow.",                              "boosts": {"damage": 34}, "weight": 0.5},
-    {"name": "Godsbane",           "desc": "Meant to slay immortals.",                                   "boosts": {"damage": 50}, "weight": 0.25},
-    {"name": "Soulforge Mail",     "desc": "Made from lost souls and steel.",                            "boosts": {"defense": 28, "health": 60}, "weight": 0.5},
-    {"name": "Ankh of Resurrection","desc": "Refuses to let you die easily.",                            "boosts": {"health": 300}, "weight": 0.25},
-    {"name": "Void Hammer",        "desc": "Leaves nothing where it strikes.",                           "boosts": {"damage": 45}, "weight": 0.25},
-    {"name": "Eternal Bulwark",    "desc": "Shields passed down by titans.",                             "boosts": {"defense": 35}, "weight": 0.25},
-    {"name": "Helm of the Last King","desc": "A relic of the age of giants.",                            "boosts": {"defense": 20, "health": 100}, "weight": 0.5},
-    {"name": "Flametongue Sigil",  "desc": "Burns through both body and soul.",                          "boosts": {"damage": 37}, "weight": 0.5},
-    {"name": "Gilded Halo",        "desc": "Angelic grace sustains you.",                                "boosts": {"health": 150}, "weight": 0.5},
-    {"name": "Nightmare Edge",     "desc": "Fears made manifest in a blade.",                            "boosts": {"damage": 42}, "weight": 0.25},
-    {"name": "Runebound Shell",    "desc": "Arcane script reinforces its structure.",                    "boosts": {"defense": 33}, "weight": 0.25},
-    {"name": "Oathkeeper Ring",    "desc": "Binds you to invincible resolve.",                           "boosts": {"damage": 15, "defense": 15}, "weight": 0.25},
-    {"name": "Eclipse Mantle",     "desc": "Draws shadows to protect you.",                              "boosts": {"defense": 24, "health": 70}, "weight": 0.25},
-    {"name": "Heart of Infinity",  "desc": "Pumps endless life into your veins.",                        "boosts": {"health": 1000}, "weight": 0.05},
-    {"name": "Worldrender Blade",  "desc": "Sunder the world with a single swing.",                      "boosts": {"damage": 500}, "weight": 0.05},
-    {"name": "Aegis of Creation",  "desc": "The origin of all protection.",                              "boosts": {"defense": 300}, "weight": 0.05},
-    {"name": "Core of the Cosmos", "desc": "A fragment of the universe itself.",                         "boosts": {"health": 500, "damage": 200, "defense": 150}, "weight": 0.05},
-    {"name": "Eternal Warplate",   "desc": "Forged from eternity, never fails.",                         "boosts": {"defense": 500}, "weight": 0.05},
-    {"name": "Annihilation Fang",  "desc": "Each strike devours existence.",                             "boosts": {"damage": 1000}, "weight": 0.05},
-    {"name": "Veil of the End",    "desc": "Shields its bearer from death itself.",                      "boosts": {"health": 700, "defense": 200}, "weight": 0.05},
-    {"name": "Godbreaker",         "desc": "Crafted to kill the divine.",                                "boosts": {"damage": 750}, "weight": 0.05},
-    {"name": "Bloodmoon Relic",    "desc": "Hungers for endless battle.",                                "boosts": {"health": 400, "damage": 300}, "weight": 0.05},
-    {"name": "Shield of Eternity", "desc": "No force may breach its guard.",                             "boosts": {"defense": 600}, "weight": 0.05},
-    {"name": "Infinity Gauntlet",  "desc": "I am inevitable",                                            "boosts": {"damage":1000, "defense": 600}, "weight": 0.05},
+    {"name": "Iron Sword", "desc": "A basic blade. Reliable and sharp.", "boosts": {"damage": 5}, "weight": 12},
+    {"name": "Leather Armor", "desc": "Worn leather armor that offers minor protection.", "boosts": {"defense": 2},
+     "weight": 14},
+    {"name": "Amulet of Vigor", "desc": "An enchanted charm that slightly improves your health.",
+     "boosts": {"health": 10}, "weight": 12},
+    {"name": "Steel Dagger", "desc": "Short and fast. Hits quicker than most weapons.", "boosts": {"damage": 3},
+     "weight": 13},
+    {"name": "Chainmail Vest", "desc": "A sturdy vest of chain links.", "boosts": {"defense": 4}, "weight": 10},
+    {"name": "Lucky Ring", "desc": "Makes you more likely to dodge!", "boosts": {"dodge": 15}, "weight": 7},
+    {"name": "Ruby Ring", "desc": "Pulses with energy, strengthening your strikes.", "boosts": {"damage": 7},
+     "weight": 8},
+    {"name": "Iron Shield", "desc": "Heavy, but it blocks well.", "boosts": {"defense": 5}, "weight": 9},
+    {"name": "Pendant of Health", "desc": "Glows with a soft warmth.", "boosts": {"health": 20}, "weight": 8},
+    {"name": "War Axe", "desc": "Brutal and unforgiving.", "boosts": {"damage": 9}, "weight": 6},
+    {"name": "Plated Boots", "desc": "These boots make you stand strong.", "boosts": {"defense": 3}, "weight": 11},
+    {"name": "Gold Locket", "desc": "Gives you a sense of strength from within.", "boosts": {"health": 15},
+     "weight": 9},
+    {"name": "Enchanted Blade", "desc": "Magical edge hums with power.", "boosts": {"damage": 10}, "weight": 5},
+    {"name": "Guardian Cloak", "desc": "It deflects incoming strikes slightly.", "boosts": {"defense": 6}, "weight": 6},
+    {"name": "Heartstone", "desc": "A gem filled with life essence.", "boosts": {"health": 25}, "weight": 6},
+    {"name": "Spiked Mace", "desc": "Devastating on impact.", "boosts": {"damage": 11}, "weight": 4},
+    {"name": "Reinforced Helmet", "desc": "Takes the edge off headshots.", "boosts": {"defense": 4}, "weight": 10},
+    {"name": "Elixir Band", "desc": "Increases vitality just by wearing it.", "boosts": {"health": 30}, "weight": 5},
+    {"name": "Battle Spear", "desc": "Longer reach and deadly force.", "boosts": {"damage": 12}, "weight": 4},
+    {"name": "Dragonhide Vest", "desc": "Tough as ancient scales.", "boosts": {"defense": 7}, "weight": 5},
+    {"name": "Phoenix Feather", "desc": "Emits a life-giving aura.", "boosts": {"health": 35}, "weight": 4},
+    {"name": "Silver Rapier", "desc": "Elegant and efficient.", "boosts": {"damage": 8}, "weight": 7},
+    {"name": "Knight’s Gauntlets", "desc": "Enhances arm protection and grip.", "boosts": {"defense": 5}, "weight": 7},
+    {"name": "Talisman of Grace", "desc": "Blessed with ancient healing runes.", "boosts": {"health": 40}, "weight": 3},
+    {"name": "Greatsword", "desc": "Two hands. One purpose.", "boosts": {"damage": 14}, "weight": 3},
+    {"name": "Stoneplate Armor", "desc": "Like wearing a wall.", "boosts": {"defense": 8}, "weight": 3},
+    {"name": "Blood Orb", "desc": "Pulses with crimson power.", "boosts": {"health": 50}, "weight": 2},
+    {"name": "Venom Blade", "desc": "Lightweight, but extremely deadly.", "boosts": {"damage": 13}, "weight": 3},
+    {"name": "Shield of Valor", "desc": "A legacy of ancient kings.", "boosts": {"defense": 6}, "weight": 6},
+    {"name": "Moonstone Charm", "desc": "Gives subtle resilience under pressure.", "boosts": {"health": 22},
+     "weight": 8},
+    {"name": "Doomhammer", "desc": "Slow but apocalyptic.", "boosts": {"damage": 16}, "weight": 2},
+    {"name": "Crown of Eternity", "desc": "Grants unmatched vitality and focus.",
+     "boosts": {"health": 100, "defense": 5}, "weight": 1},
+    {"name": "Obsidian Crusher", "desc": "Crushes foes with devastating force.", "boosts": {"damage": 25}, "weight": 1},
+    {"name": "Celestial Shroud", "desc": "Whispers of protection from beyond.", "boosts": {"defense": 12}, "weight": 1},
+    {"name": "Ring of Titans", "desc": "Endless power flows through it.", "boosts": {"damage": 20, "health": 20},
+     "weight": 1},
+    {"name": "Mantle of Immortals", "desc": "Even death fears its wearer.", "boosts": {"health": 150}, "weight": 1},
+    {"name": "Abyssal Fang", "desc": "Bleeds enemies with every strike.", "boosts": {"damage": 22}, "weight": 1},
+    {"name": "Plate of Aeons", "desc": "A shield against time itself.", "boosts": {"defense": 15}, "weight": 1},
+    {"name": "Void Pendant", "desc": "Grants dark resilience and twisted strength.",
+     "boosts": {"health": 80, "damage": 10}, "weight": 1},
+    {"name": "Sundering Greatblade", "desc": "No armor can resist it.", "boosts": {"damage": 30}, "weight": 1},
+    {"name": "Mythrilheart Armor", "desc": "Impossibly light, indestructible.", "boosts": {"defense": 18, "health": 40},
+     "weight": 1},
+    {"name": "Scarab Seal", "desc": "Surrounds you in an ethereal shield.", "boosts": {"defense": 10}, "weight": 1},
+    {"name": "Runed Circlet", "desc": "Glows with ancient life magic.", "boosts": {"health": 90}, "weight": 1},
+    {"name": "Storm Gauntlets", "desc": "Your blows carry thunder.", "boosts": {"damage": 18}, "weight": 1},
+    {"name": "Shield of Endings", "desc": "Nullifies even the worst blows.", "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeblood Gem", "desc": "Pulses in time with your heart.", "boosts": {"health": 120}, "weight": 1},
+    {"name": "Dagger of Stars", "desc": "Swift and unstoppable.", "boosts": {"damage": 15}, "weight": 1},
+    {"name": "Solar Medallion", "desc": "Bathes you in burning resilience.", "boosts": {"health": 70, "defense": 8},
+     "weight": 1},
+    {"name": "Hammer of Glory", "desc": "Swings with divine vengeance.", "boosts": {"damage": 26}, "weight": 1},
+    {"name": "Aegis of the Fallen", "desc": "Shields you with lost souls.", "boosts": {"defense": 17}, "weight": 1},
+    {"name": "Seraph’s Band", "desc": "Crackles with divine protection.", "boosts": {"health": 60, "defense": 6},
+     "weight": 1},
+    {"name": "Frostbrand Blade", "desc": "Frozen and furious.", "boosts": {"damage": 24}, "weight": 1},
+    {"name": "Warden’s Cuirass", "desc": "Unbending and eternal.", "boosts": {"defense": 14}, "weight": 1},
+    {"name": "Eclipse Ring", "desc": "You feel the universe tremble.", "boosts": {"damage": 12, "defense": 6},
+     "weight": 1},
+    {"name": "Godscale Vest", "desc": "Crafted from myth itself.", "boosts": {"defense": 20}, "weight": 1},
+    {"name": "Lifeveil Charm", "desc": "Stitches your wounds instantly.", "boosts": {"health": 110}, "weight": 1},
+    {"name": "Hellforge Blade", "desc": "Forged in damnation.", "boosts": {"damage": 28}, "weight": 1},
+    {"name": "Divine Anklet", "desc": "You dodge like a shadow.", "boosts": {"defense": 7}, "weight": 1},
+    {"name": "Warlock’s Fang", "desc": "Thirsts for blood.", "boosts": {"damage": 23}, "weight": 1},
+    {"name": "Tombplate", "desc": "You feel nothing. And take nothing.", "boosts": {"defense": 22}, "weight": 1},
+    {"name": "Genesis Relic", "desc": "The beginning of all things.", "boosts": {"health": 200, "damage": 10},
+     "weight": 1},
+    {"name": "Blade of Oblivion", "desc": "Slices through reality itself.", "boosts": {"damage": 40}, "weight": 0.5},
+    {"name": "Titan's Heart", "desc": "Massive vitality from a fallen giant.", "boosts": {"health": 250},
+     "weight": 0.5},
+    {"name": "Aethercloak", "desc": "Phase through danger unharmed.", "boosts": {"defense": 25}, "weight": 0.5},
+    {"name": "Crown of Stars", "desc": "Intelligence beyond comprehension.", "boosts": {"health": 100, "defense": 10},
+     "weight": 0.5},
+    {"name": "Ruinblade", "desc": "Every swing leaves devastation behind.", "boosts": {"damage": 38}, "weight": 0.5},
+    {"name": "Stoneblood Aegis", "desc": "Even gods struggle to crack it.", "boosts": {"defense": 30}, "weight": 0.5},
+    {"name": "Crimson Mantle", "desc": "Burns the weak who dare strike you.", "boosts": {"health": 80, "defense": 15},
+     "weight": 0.5},
+    {"name": "Thunder King's Rod", "desc": "Bolts crackle with each blow.", "boosts": {"damage": 34}, "weight": 0.5},
+    {"name": "Godsbane", "desc": "Meant to slay immortals.", "boosts": {"damage": 50}, "weight": 0.25},
+    {"name": "Soulforge Mail", "desc": "Made from lost souls and steel.", "boosts": {"defense": 28, "health": 60},
+     "weight": 0.5},
+    {"name": "Ankh of Resurrection", "desc": "Refuses to let you die easily.", "boosts": {"health": 300},
+     "weight": 0.25},
+    {"name": "Void Hammer", "desc": "Leaves nothing where it strikes.", "boosts": {"damage": 45}, "weight": 0.25},
+    {"name": "Eternal Bulwark", "desc": "Shields passed down by titans.", "boosts": {"defense": 35}, "weight": 0.25},
+    {"name": "Helm of the Last King", "desc": "A relic of the age of giants.", "boosts": {"defense": 20, "health": 100},
+     "weight": 0.5},
+    {"name": "Flametongue Sigil", "desc": "Burns through both body and soul.", "boosts": {"damage": 37}, "weight": 0.5},
+    {"name": "Gilded Halo", "desc": "Angelic grace sustains you.", "boosts": {"health": 150}, "weight": 0.5},
+    {"name": "Nightmare Edge", "desc": "Fears made manifest in a blade.", "boosts": {"damage": 42}, "weight": 0.25},
+    {"name": "Runebound Shell", "desc": "Arcane script reinforces its structure.", "boosts": {"defense": 33},
+     "weight": 0.25},
+    {"name": "Oathkeeper Ring", "desc": "Binds you to invincible resolve.", "boosts": {"damage": 15, "defense": 15},
+     "weight": 0.25},
+    {"name": "Eclipse Mantle", "desc": "Draws shadows to protect you.", "boosts": {"defense": 24, "health": 70},
+     "weight": 0.25},
+    {"name": "Heart of Infinity", "desc": "Pumps endless life into your veins.", "boosts": {"health": 1000},
+     "weight": 0.05},
+    {"name": "Worldrender Blade", "desc": "Sunder the world with a single swing.", "boosts": {"damage": 500},
+     "weight": 0.05},
+    {"name": "Aegis of Creation", "desc": "The origin of all protection.", "boosts": {"defense": 300}, "weight": 0.05},
+    {"name": "Core of the Cosmos", "desc": "A fragment of the universe itself.",
+     "boosts": {"health": 500, "damage": 200, "defense": 150}, "weight": 0.05},
+    {"name": "Eternal Warplate", "desc": "Forged from eternity, never fails.", "boosts": {"defense": 500},
+     "weight": 0.05},
+    {"name": "Annihilation Fang", "desc": "Each strike devours existence.", "boosts": {"damage": 1000}, "weight": 0.05},
+    {"name": "Veil of the End", "desc": "Shields its bearer from death itself.",
+     "boosts": {"health": 700, "defense": 200}, "weight": 0.05},
+    {"name": "Godbreaker", "desc": "Crafted to kill the divine.", "boosts": {"damage": 750}, "weight": 0.05},
+    {"name": "Bloodmoon Relic", "desc": "Hungers for endless battle.", "boosts": {"health": 400, "damage": 300},
+     "weight": 0.05},
+    {"name": "Shield of Eternity", "desc": "No force may breach its guard.", "boosts": {"defense": 600},
+     "weight": 0.05},
+    {"name": "Infinity Gauntlet", "desc": "I am inevitable", "boosts": {"damage": 1000, "defense": 600},
+     "weight": 0.05},
 ]
 
 # Wishing well buffs and nerfs
-blessings = [ # Massive bonuses from the wishing well
-    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health. (+500 health)", "boosts": {"health": 500}},
+blessings = [  # Massive bonuses from the wishing well
+    {"name": "Blessing of Vitality", "desc": "Greatly increases your max health. (+500 health)",
+     "boosts": {"health": 500}},
     {"name": "Blessing of Power", "desc": "Greatly increases your damage. (+200 damage)", "boosts": {"damage": 200}},
-    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense. (+200 defense)", "boosts": {"defense": 200}},
-    {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health. (+500 health)", "boosts": {"health": 500}},
-    {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage. (+200 damage)", "boosts": {"damage": 200}},
-    {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense. (+2000 defense)", "boosts": {"defense": 2000}},
+    {"name": "Blessing of Fortitude", "desc": "Greatly increases your defense. (+200 defense)",
+     "boosts": {"defense": 200}},
+    {"name": "Powerful Blessing of Vitality", "desc": "Massively boosts your max health. (+500 health)",
+     "boosts": {"health": 500}},
+    {"name": "Powerful Blessing of Power", "desc": "Massively boosts your damage. (+200 damage)",
+     "boosts": {"damage": 200}},
+    {"name": "Powerful Blessing of Fortitude", "desc": "Massively boosts your defense. (+2000 defense)",
+     "boosts": {"defense": 2000}},
     {"name": "Divine Spark", "desc": "Doubles XP gain from next 5 fights. (+5 sparks)", "boosts": {"divine_spark": 5}},
     {"name": "Gift of Giants", "desc": "Grants incredible health. (+200 health)", "boosts": {"health": 200}},
     {"name": "Fury Unleashed", "desc": "Unleashes devastating power. (+100 damage)", "boosts": {"damage": 100}},
@@ -305,19 +353,29 @@ blessings = [ # Massive bonuses from the wishing well
     {"name": "Hyper Health", "desc": "Extreme vitality granted. (+50000 health)", "boosts": {"health": 50000}},
     {"name": "Overclocked Power", "desc": "Inhuman strength surge. (+10000 damage)", "boosts": {"damage": 10000}},
     {"name": "Ancient Plate", "desc": "Timeless defense boost. (+10000 defense)", "boosts": {"defense": 10000}},
-    {"name": "Sacred Surge", "desc": "Holy boost to health and defense. (+1500 health, +3000 defense)", "boosts": {"health": 1500, "defense": 3000}},
-    {"name": "Storm Rage", "desc": "Storm-born speed and power. (+1200 damage, +10 dodge chance)", "boosts": {"damage": 1200, "dodge": 10}},
+    {"name": "Sacred Surge", "desc": "Holy boost to health and defense. (+1500 health, +3000 defense)",
+     "boosts": {"health": 1500, "defense": 3000}},
+    {"name": "Storm Rage", "desc": "Storm-born speed and power. (+1200 damage, +10 dodge chance)",
+     "boosts": {"damage": 1200, "dodge": 10}},
     {"name": "Radiant Core", "desc": "Heals you to full.", "boosts": {"heal": "full"}},
     {"name": "Essence of Time", "desc": "XP gain doubled forever. (+99999 spark)", "boosts": {"divine_spark": 99999}},
-    {"name": "Bloodlust", "desc": "Massive damage at health cost. (+15000 damage, -1000 health)", "boosts": {"damage": 15000, "health": -1000}},
-    {"name": "Armor of Fate", "desc": "Boosts defense and health. (+15000, +10000 health)", "boosts": {"defense": 15000, "health": 10000}},
-    {"name": "Wish of Kings", "desc": "XP and coin surge. (+5000 xp, coins 50000)", "boosts": {"xp": 5000, "coins": 50000}},
-    {"name": "Ultimate Form", "desc": "Ascend to greatness. (+200000 health, +200000 damage, +20000 defense)", "boosts": {"health": 200000, "damage": 200000, "defense": 20000}},
-    {"name": "Ultimate Soul", "desc": "Above all else. (+1500000 health, +2000 damage, +2000 defense)", "boosts": {"health": 1500000, "damage": 2000, "defense": 2000}},
-    {"name": "Ultimate Hammer", "desc": "Let the judgment of god strike. (+1000 health, +200000 damage, +20000 defense)", "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
-    {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+10000000 health, damage, and defense)", "boosts": {"health": 10000000, "damage": 10000000, "defense": 10000000}},
+    {"name": "Bloodlust", "desc": "Massive damage at health cost. (+15000 damage, -1000 health)",
+     "boosts": {"damage": 15000, "health": -1000}},
+    {"name": "Armor of Fate", "desc": "Boosts defense and health. (+15000, +10000 health)",
+     "boosts": {"defense": 15000, "health": 10000}},
+    {"name": "Wish of Kings", "desc": "XP and coin surge. (+5000 xp, coins 50000)",
+     "boosts": {"xp": 5000, "coins": 50000}},
+    {"name": "Ultimate Form", "desc": "Ascend to greatness. (+200000 health, +200000 damage, +20000 defense)",
+     "boosts": {"health": 200000, "damage": 200000, "defense": 20000}},
+    {"name": "Ultimate Soul", "desc": "Above all else. (+1500000 health, +2000 damage, +2000 defense)",
+     "boosts": {"health": 1500000, "damage": 2000, "defense": 2000}},
+    {"name": "Ultimate Hammer",
+     "desc": "Let the judgment of god strike. (+1000 health, +200000 damage, +20000 defense)",
+     "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
+    {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+10000000 health, damage, and defense)",
+     "boosts": {"health": 10000000, "damage": 10000000, "defense": 10000000}},
 ]
-curses = [ # Small rare penalties from the wishing well
+curses = [  # Small rare penalties from the wishing well
     {"name": "Curse of Weakness", "desc": "Your strength fades. (-10 damage)", "boosts": {"damage": -10}},
     {"name": "Curse of Fragility", "desc": "You feel frail. (-30 health)", "boosts": {"health": -30}},
     {"name": "Curse of Vulnerability", "desc": "Your armor fails you (-10 defense).", "boosts": {"defense": -10}},
@@ -328,7 +386,8 @@ curses = [ # Small rare penalties from the wishing well
     {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-100 defense)", "boosts": {"defense": -100}},
     {"name": "Broken Blade", "desc": "Your weapon weakens. (-150 damage)", "boosts": {"damage": -150}},
     {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divine_spark": -3}},
-    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health and defense)", "boosts": {"health": -10, "defense": -10}},
+    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health and defense)",
+     "boosts": {"health": -10, "defense": -10}},
     {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
     {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
     {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divine_spark": -5}}
@@ -408,11 +467,13 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Teacup Berserker", "desc": "Tiny, angry, porcelain.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 45}},
 ]
 
+
 # Functions
 
 # Helper Functions
 def timed_input(timeout=1.0):
     result = []
+
     def read_input():
         try:
             result.append(input())
@@ -428,6 +489,7 @@ def timed_input(timeout=1.0):
         return None  # Timeout
     return result[0] if result else ''
 
+
 # Define the current os and clear screen properly
 def clear_screen():
     print(Style.RESET_ALL)
@@ -435,6 +497,7 @@ def clear_screen():
         os.system('clear')
     elif platform.system() == 'Windows':
         os.system('cls')
+
 
 # Stats Functions
 def show_stats_screen():
@@ -452,13 +515,16 @@ def show_stats_screen():
     tama = data.get("tamagatchi_data", tamagatchi_data)
     well = data.get("well_data", well_data)
 
-    print(Fore.RED + ("===== PLAYER IS DECEASED =====\n" if stats.get("is_dead", False) else "===== PLAYER STATISTICS =====\n"))
+    print(Fore.RED + (
+        "===== PLAYER IS DECEASED =====\n" if stats.get("is_dead", False) else "===== PLAYER STATISTICS =====\n"))
 
     print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}")
     print(Fore.CYAN + f"Current Floor: {stats.get('floor', 0)}.{stats.get('room', 0)}")
     print(f"XP: {round(player_data.get('xp', 0), 1)}  |  Coins: {round(player_data.get('coins', 0), 1)}")
-    print(f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
-    print(f"Dodge Chance: {round(player_data.get('dodge', 0), 1)}%  |  Retreat Chance: {round(player_data.get('escape', 0), 1)}%  |  Drop Chance: {round(player_data.get('drop', 0), 1)}%")
+    print(
+        f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
+    print(
+        f"Dodge Chance: {round(player_data.get('dodge', 0), 1)}%  |  Retreat Chance: {round(player_data.get('escape', 0), 1)}%  |  Drop Chance: {round(player_data.get('drop', 0), 1)}%")
     print(f"Reborns Used: {stats.get('reborns_used', 0)}")
 
     print(Fore.MAGENTA + "\n--- Combat Stats ---")
@@ -468,8 +534,10 @@ def show_stats_screen():
 
     print(Fore.MAGENTA + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
-    print(f"Coins Gambled: {gambling_data.get('gamblingCoinsSpent', 0)} | Coins Won: {gambling_data.get('gamblingCoinsWon', 0)}")
-    print(f"Items Sold: {gambling_data.get('itemsSold', 0)} | Coins from Selling: {gambling_data.get('coinsFromSelling', 0)}")
+    print(
+        f"Coins Gambled: {gambling_data.get('gamblingCoinsSpent', 0)} | Coins Won: {gambling_data.get('gamblingCoinsWon', 0)}")
+    print(
+        f"Items Sold: {gambling_data.get('itemsSold', 0)} | Coins from Selling: {gambling_data.get('coinsFromSelling', 0)}")
     print(f"Coins Converted to XP: {gambling_data.get('coinsConvertedToXP', 0)}")
 
     print(Fore.CYAN + "\n--- Fishing ---")
@@ -512,15 +580,16 @@ def show_stats_screen():
         print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
         print(Style.RESET_ALL)
         sys.exit()
-        
+
     print(Fore.BLUE + "\n(Press Enter to return to combat...)")
     input(Fore.GREEN + "> ")
-    
+
     combat()
-    
+
+
 def get_item_coin_value(item):
-    #Calculate the coin value of an item based on its boosts and rarity.
-    #Heuristic:
+    # Calculate the coin value of an item based on its boosts and rarity.
+    # Heuristic:
     #    - Each point of boost contributes some coins depending on stat type.
     #    - Extremely rare items (lower weight) are worth significantly more.
 
@@ -545,7 +614,7 @@ def get_item_coin_value(item):
             value += amount * 13.5
         elif stat == "coins":
             value += amount
-        elif stat == "divine_spark": # I don't think this or the coins/xp are being used
+        elif stat == "divine_spark":  # I don't think this or the coins/xp are being used
             value += amount * 30
         elif stat == "heal" and amount == "full":
             value += 500
@@ -555,11 +624,12 @@ def get_item_coin_value(item):
     floorBonus = persistentStats["floor"] / 1.2
     if floorBonus <= 1:
         floorBonus = 1
-    value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["reborns_used"] * 10) + 1 )) + 100
+    value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["reborns_used"] * 10) + 1)) + 100
 
     return max(1, int(value))  # Ensure at least 1 coin
 
-def show_inventory(): # Shows the inventory
+
+def show_inventory():  # Shows the inventory
     clear_screen()
     print(Fore.BLACK + "|")
     print(Fore.BLUE + "Inventory Overview")
@@ -592,14 +662,16 @@ def show_inventory(): # Shows the inventory
     input(Fore.GREEN + "> ")
     combat()
 
-def show_combat_stats(): # this is the main function to show all the stats during combat, it runs after each turn (or when coming back to combat after playing a minigame or something else) to refresh the page and show what the current stats of all enemies and players are. 
+
+def show_combat_stats():  # this is the main function to show all the stats during combat, it runs after each turn (or when coming back to combat after playing a minigame or something else) to refresh the page and show what the current stats of all enemies and players are.
     global currentMonsterFight, currentMonsterHealth, monsterId, player, monster, persistentStats
     clear_screen()
-    print(Fore.BLACK+"|")
-    monsterHealthPercentage = round((currentMonsterHealth / monster.maxHealth[monsterId]) * 100,2)
-    print(Fore.WHITE +"You are currently fighting a",currentMonsterFight,"  (Floor:"+str(persistentStats["floor"])+"."+str(persistentStats["room"])+")")
-    print(Fore.BLACK +"|")
-    print(Fore.RED+currentMonsterFight,"Health:")
+    print(Fore.BLACK + "|")
+    monsterHealthPercentage = round((currentMonsterHealth / monster.maxHealth[monsterId]) * 100, 2)
+    print(Fore.WHITE + "You are currently fighting a", currentMonsterFight,
+          "  (Floor:" + str(persistentStats["floor"]) + "." + str(persistentStats["room"]) + ")")
+    print(Fore.BLACK + "|")
+    print(Fore.RED + currentMonsterFight, "Health:")
     print(Fore.BLACK + "|", end='')
     # Cap health bar
     bar_length = min(round(monsterHealthPercentage / 2), 1000)
@@ -608,44 +680,50 @@ def show_combat_stats(): # this is the main function to show all the stats durin
         print(Fore.RED + " (HP: " + str(int(currentMonsterHealth)) + ")")
     else:
         print(Fore.RED + f" {monsterHealthPercentage}%")
-    print(Fore.BLACK +"|")
-    print(Fore.BLACK +"|")
-    currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100,2)
-    print(Fore.GREEN+"Player Stats:")
-    print(Fore.GREEN+" Health: ",end='')
-    for i in range(round(currentHealthPercentage/2.4)): print(Fore.GREEN +'=',end='')
-    print("",str(currentHealthPercentage)+"%  ("+str(round(player["health"],1))+")")
-    print(Fore.GREEN +" Damage:",round(player["damage"],1), " |  Defense:",round(player["defense"],1)," |  Xp:",round(player["xp"],1))
-    print(Fore.GREEN +" Dodge Chance:",str(round(player["dodge"],1))+"% |  Retreat Chance:",str(round(player["escape"],1))+"%"," |  Item Drop Chance:",str(round(player["drop"],1))+"%")
-    print(Fore.BLACK +"|")
+    print(Fore.BLACK + "|")
+    print(Fore.BLACK + "|")
+    currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100, 2)
+    print(Fore.GREEN + "Player Stats:")
+    print(Fore.GREEN + " Health: ", end='')
+    for i in range(round(currentHealthPercentage / 2.4)): print(Fore.GREEN + '=', end='')
+    print("", str(currentHealthPercentage) + "%  (" + str(round(player["health"], 1)) + ")")
+    print(Fore.GREEN + " Damage:", round(player["damage"], 1), " |  Defense:", round(player["defense"], 1), " |  Xp:",
+          round(player["xp"], 1))
+    print(Fore.GREEN + " Dodge Chance:", str(round(player["dodge"], 1)) + "% |  Retreat Chance:",
+          str(round(player["escape"], 1)) + "%", " |  Item Drop Chance:", str(round(player["drop"], 1)) + "%")
+    print(Fore.BLACK + "|")
     if tamagatchi_data["active"]:
-        print(Fore.CYAN + f"Tamagatchi → Bond: {tamagatchi_data['bond']} | Hunger: {tamagatchi_data['hunger']} | Boosts: {tamagatchi_data['boosts']}")
-        print(Fore.BLACK +"|")
-    print(Fore.BLACK +"|")
-    print(Fore.BLUE +"Actions:",player["actionList"])
+        print(
+            Fore.CYAN + f"Tamagatchi → Bond: {tamagatchi_data['bond']} | Hunger: {tamagatchi_data['hunger']} | Boosts: {tamagatchi_data['boosts']}")
+        print(Fore.BLACK + "|")
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Actions:", player["actionList"])
     print(Style.RESET_ALL)
+
 
 # Minigame/Other Functions
 
 # Gatcha functions
-def start_gatcha_thread(): # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
+def start_gatcha_thread():  # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
     global gatcha_thread, gatcha_data
-    #print(Fore.GREEN +
+    # print(Fore.GREEN +
     #    f"Starting gatcha thread? thread={gatcha_thread}, alive={gatcha_thread.is_alive() if gatcha_thread else 'N/A'}, owned={gatcha_data['characters_owned']}")
     if gatcha_thread and gatcha_thread.is_alive() and not gatcha_data["characters_owned"]:
         return
     gatcha_stop_event.clear()
+
     def loop():
         while gatcha_data["active"] and not gatcha_stop_event.is_set():
-            #if gatcha_data["last_update"] is not None:
+            # if gatcha_data["last_update"] is not None:
             update_gatcha()
-            time.sleep(random.uniform(5, 10)) # How long it takes for the gatcha to update
+            time.sleep(random.uniform(5, 10))  # How long it takes for the gatcha to update
 
     gatcha_thread = threading.Thread(target=loop, daemon=True)
     gatcha_thread.start()
-    #print("Gatcha thread started")
+    # print("Gatcha thread started")
 
-def update_gatcha(): # The actual gatcha thread which updates your XP over time
+
+def update_gatcha():  # The actual gatcha thread which updates your XP over time
     # This isn't working, it is supposed to be running every 5-10 seconds from the gatcha thread then totalling all the xp boosts from the characters and giving it to the player, I am not getting an error but nothing seems to be happening
     global player, persistentStats, gatcha_data, gatcha, gatcha_thread
 
@@ -663,20 +741,24 @@ def update_gatcha(): # The actual gatcha thread which updates your XP over time
         gatcha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
 
-def try_gatcha_drop(): # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
+
+def try_gatcha_drop():  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
     global gatcha_data, persistentStats
-    if persistentStats["floor"] == 9: # Garentees one pass on the 10th floor boss kill
-        print(Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
+    if persistentStats["floor"] == 9:  # Garentees one pass on the 10th floor boss kill
+        print(
+            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
         time.sleep(1)
-    elif random.randint(0,100) <= 10: # 10% chance
-        print(Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
+    elif random.randint(0, 100) <= 10:  # 10% chance
+        print(
+            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
         time.sleep(1)
 
     return
 
-def gatcha_game(): # When you type gatcha into the minigame screen this is shown
+
+def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
     clear_screen()
     if persistentStats["floor"] < 10 or persistentStats["reborns_used"] > 0:
@@ -686,7 +768,7 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
         return
 
     gatcha_data["active"] = True
-    start_gatcha_thread() # ensures the thread is running 
+    start_gatcha_thread()  # ensures the thread is running
 
     while True:
         clear_screen()
@@ -696,42 +778,47 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
             print(Fore.BLACK + "|")
             print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gatcha_data["xp_earned"]))
 
-        if gatcha_data["gatcha_pulls_available"] <= 0: # Ensures you have some gatcha passes to use
+        if gatcha_data["gatcha_pulls_available"] <= 0:  # Ensures you have some gatcha passes to use
             print(Fore.RED + "You don't have any pulls available!")
             print(Fore.YELLOW + "Go kill some monsters to get more pulls.")
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
-    
-        print(Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
+
+        print(
+            Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
-        if choice in ["yes","y",""]:
+        if choice in ["yes", "y", ""]:
             if gatcha_data["gatcha_pulls_available"] >= 1:
                 print(Fore.BLACK + "|")
                 gatcha_data["gatcha_pulls_available"] -= 1
                 gatcha_data["gatchas_pulled"] += 1
-                gatcha_chance = random.randint(0,100)
+                gatcha_chance = random.randint(0, 100)
                 if gatcha_chance <= 20:
-                    if set(gatcha_data["characters_owned"]) >= {c["name"] for c in gatcha}: # Tests if you have every character
+                    if set(gatcha_data["characters_owned"]) >= {c["name"] for c in
+                                                                gatcha}:  # Tests if you have every character
                         print(Fore.RED + "You have unlocked all characters so you can't unlock more")
                         print(Fore.BLUE + "You can still earn xp and coins from the draws!")
                         time.sleep(2)
                     else:
-                        unlocked = random.choice(gatcha) # chooses a random character
-                        while unlocked["name"] in gatcha_data["characters_owned"]: # Ensures the character is not a duplicate
+                        unlocked = random.choice(gatcha)  # chooses a random character
+                        while unlocked["name"] in gatcha_data[
+                            "characters_owned"]:  # Ensures the character is not a duplicate
                             unlocked = random.choice(gatcha)
                         gatcha_data["characters_owned"].append(unlocked["name"])
                         print(Fore.BLUE + f"You unlocked an {unlocked['rank']} rank! {unlocked['name']}!")
                         print(Fore.MAGENTA + f"{unlocked['desc']}")
                         time.sleep(1.5)
                 elif gatcha_chance <= 40:
-                    xp_earned = random.randint(10,200) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    xp_earned = random.randint(10, 200) * (persistentStats["floor"] + 1) * (
+                                persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {xp_earned} xp!")
                     player["xp"] += xp_earned
                 elif gatcha_chance <= 70:
-                    coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
+                    coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (
+                                persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {coins_earned} coins!")
                     player["coins"] += coins_earned
                 else:
@@ -740,12 +827,13 @@ def gatcha_game(): # When you type gatcha into the minigame screen this is shown
             else:
                 print(Fore.RED + "You don't have any pulls remaining")
                 time.sleep(0.8)
-        elif choice in ["no","n","exit","leave"]:
+        elif choice in ["no", "n", "exit", "leave"]:
             return
         else:
             print(Fore.RED + "Invalid input")
             time.sleep(1)
     return
+
 
 # Reborn functions
 def reborn():
@@ -798,6 +886,7 @@ def reborn():
         time.sleep(1.5)
         combat()
 
+
 # Section for managing the wishing well
 def wishing_well():
     global player, well_data, persistentStats
@@ -813,9 +902,10 @@ def wishing_well():
     print(Fore.CYAN + "--- The Wishing Well ---")
     print(Fore.YELLOW + f"Cost to Wish: {cost} coins")
     print(f"You have: {player['coins']} coins")
-    print(Fore.BLACK+"|")
-    print(Fore.YELLOW+"Health:",str(round(player["maxHealth"])),"  | Damage:",str(round(player["damage"])),"  | Defense:",str(round(player["defense"])))
-    print(Fore.BLACK+"|")  
+    print(Fore.BLACK + "|")
+    print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
+          "  | Defense:", str(round(player["defense"])))
+    print(Fore.BLACK + "|")
     print(Fore.MAGENTA + "Make a wish? (yes / no)")
 
     choice = input(Fore.GREEN + "> ").strip().lower()
@@ -840,7 +930,7 @@ def wishing_well():
         print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
         well_data["divine_spark"] += 1
         time.sleep(2)
-        #combat()
+        # combat()
         return
 
     elif result_type == "blessing":
@@ -869,7 +959,9 @@ def wishing_well():
     time.sleep(3)
     wishing_well()
 
-def apply_boost(boost_dict): # This is for the well specifically, not to be confused with the apply boost(s) function down below
+
+def apply_boost(
+        boost_dict):  # This is for the well specifically, not to be confused with the apply boost(s) function down below
     for key, value in boost_dict.items():
         if key == "heal" and value == "full":
             player["health"] = player["maxHealth"]
@@ -888,6 +980,7 @@ def apply_boost(boost_dict): # This is for the well specifically, not to be conf
                 player[key] += value
         elif key in player:
             player[key] += value
+
 
 # Section for managing the fishing minigame
 def fishing():
@@ -917,7 +1010,7 @@ def fishing():
                 break
             fish_ready = True
             print(Fore.YELLOW + "\nA fish is on the line! Press Enter quickly!")
-            
+
             response = timed_input(timeout=1.0)
             fish_ready = False
 
@@ -928,7 +1021,7 @@ def fishing():
 
             fish_ready = False
 
-            #if reaction_time > 1.0:
+            # if reaction_time > 1.0:
             #    print(Fore.RED + "Too slow! The fish got away.")
             #    cooldown_until = time.time() + 3
             #    continue
@@ -998,8 +1091,9 @@ def fishing():
             idle_enter_count = 0
     combat()
 
+
 # Section for managing the gambling minigame
-def gamble_stat_change(amount): # Returns how much the stats change when doing a high risk gamble
+def gamble_stat_change(amount):  # Returns how much the stats change when doing a high risk gamble
     global persistentStats
     roll = random.randint(1, 100)
     if roll <= 10:
@@ -1013,9 +1107,11 @@ def gamble_stat_change(amount): # Returns how much the stats change when doing a
     elif roll <= 90:
         return amount
     else:
-        return amount * 2 * (persistentStats ["floor"] / 7.5) # Lets the big wins and big losses scale with the floor slightly
+        return amount * 2 * (
+                    persistentStats["floor"] / 7.5)  # Lets the big wins and big losses scale with the floor slightly
 
-def gambling(): # Manages the gambling screen
+
+def gambling():  # Manages the gambling screen
     global player, persistentStats
     clear_screen()
     print(Style.RESET_ALL)
@@ -1028,9 +1124,10 @@ def gambling(): # Manages the gambling screen
         return
     print(Fore.CYAN + f"You have {player['coins']} coins.")
     if persistentStats["floor"] >= 20:
-        print(Fore.BLACK+"|")
-        print(Fore.YELLOW+"Health:",str(round(player["maxHealth"])),"  | Damage:",str(round(player["damage"])),"  | Defense:",str(round(player["defense"])))
-    print(Fore.BLACK,"|")
+        print(Fore.BLACK + "|")
+        print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
+              "  | Defense:", str(round(player["defense"])))
+    print(Fore.BLACK, "|")
 
     if player["coins"] == 0 and not player["inventory"]:
         print(Fore.RED + "\nYou have no coins or items to interact with.")
@@ -1048,7 +1145,7 @@ def gambling(): # Manages the gambling screen
     else:
         print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
-    print(Fore.BLACK,"|")
+    print(Fore.BLACK, "|")
 
     choice = input(Fore.CYAN + "\nYour choice: ").strip().lower()
 
@@ -1059,7 +1156,7 @@ def gambling(): # Manages the gambling screen
             for i, item in enumerate(player["inventory"]):
                 value = get_item_coin_value(item)
                 print(Fore.MAGENTA + f"[{i}] {item['name']} → {value} coins")
-                #print(Fore.MAGENTA + f"     {item['desc']}")
+                # print(Fore.MAGENTA + f"     {item['desc']}")
 
             sel = input(Fore.GREEN + "\nChoose item number to sell or 'all': ").strip().lower()
             if sel == "all":
@@ -1080,7 +1177,7 @@ def gambling(): # Manages the gambling screen
                     print(Fore.GREEN + f"Sold {item['name']} for {value} coins.")
                 else:
                     print(Fore.RED + "Invalid item index.")
-            elif sel in ["exit","leave"]:
+            elif sel in ["exit", "leave"]:
                 print(Fore.BLUE + "You chose to sell nothing!")
                 time.sleep(1)
             else:
@@ -1159,19 +1256,23 @@ def gambling(): # Manages the gambling screen
     time.sleep(2)
     gambling()
 
+
 # Tamagachi stuff
 def start_tamagatchi_thread():
     global tamagatchi_thread
     if tamagatchi_thread and tamagatchi_thread.is_alive():
         return
     tamagatchi_stop_event.clear()
+
     def loop():
         while tamagatchi_data["active"] and not tamagatchi_stop_event.is_set():
             if tamagatchi_data["last_update"] is not None:
                 update_tamagatchi()
-            time.sleep(random.uniform(30, 200)) # How long it takes for the tamagatchi to update (30 - 200)
+            time.sleep(random.uniform(30, 200))  # How long it takes for the tamagatchi to update (30 - 200)
+
     tamagatchi_thread = threading.Thread(target=loop, daemon=True)
     tamagatchi_thread.start()
+
 
 def update_tamagatchi():
     hunger = tamagatchi_data["hunger"]
@@ -1181,19 +1282,20 @@ def update_tamagatchi():
 
     # Hunger increases
     if hunger < 100:
-        if random.randint(0,100) <= 50: # only increases hunger half the time
+        if random.randint(0, 100) <= 50:  # only increases hunger half the time
             tamagatchi_data["hunger"] += 1
 
     # Bond slowly increases if well-fed (under 20 hunger)
-    if hunger < 20 and random.random() < 0.5: # 50% chance to gain a bond each update if the hunger is low enough
+    if hunger < 20 and random.random() < 0.5:  # 50% chance to gain a bond each update if the hunger is low enough
         if tamagatchi_data["bond"] < max_bond:
             tamagatchi_data["bond"] += 1
         else:
             tamagatchi_data["bond"] = max_bond
     elif hunger >= 20:
         pass
-    
-    if tamagatchi_data["bond"] >= max_bond: # Ensure the cap is enforced (maybe like actually, please work please work please work)
+
+    if tamagatchi_data[
+        "bond"] >= max_bond:  # Ensure the cap is enforced (maybe like actually, please work please work please work)
         tamagatchi_data["bond"] = max_bond
 
     # Recalculate boosts
@@ -1201,11 +1303,12 @@ def update_tamagatchi():
         scale = 1 * (persistentStats["reborns_used"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/20) * 0.2))
-        tamagatchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/21) * 0.005))
-        tamagatchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills/22) * 0.0005))
-    
+        tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
+        tamagatchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 21) * 0.005))
+        tamagatchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 22) * 0.0005))
+
     apply_boosts()
+
 
 def tamagatchi():
     global player, persistentStats
@@ -1248,9 +1351,9 @@ def tamagatchi():
         print(Fore.MAGENTA + f"Bond: {bond} / {max_bond}")
         print(Fore.GREEN + f"Boosts: {boosts}")
         print(Fore.YELLOW + f"XP: {round(player['xp'], 1)}")
-        print(Fore.BLACK+"|")
-        print(Fore.YELLOW+"Tamagatchi will be much happier if hunger is kept under 20")
-        print(Fore.BLACK+"|")
+        print(Fore.BLACK + "|")
+        print(Fore.YELLOW + "Tamagatchi will be much happier if hunger is kept under 20")
+        print(Fore.BLACK + "|")
 
         if hunger <= 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
@@ -1267,10 +1370,10 @@ def tamagatchi():
         elif choice == "feed":
             if hunger <= 5:
                 print(Fore.YELLOW + "It's not hungry enough to feed.")
-            elif player["xp"] >= cost: # type: ignore
+            elif player["xp"] >= cost:  # type: ignore
                 tamagatchi_data["hunger"] = max(hunger - 4, 0)
                 tamagatchi_data["bond"] = min(bond + 1, max_bond)
-                player["xp"] -= cost # type: ignore
+                player["xp"] -= cost  # type: ignore
                 tamagatchi_data["tamagatchiFeeds"] += 1
                 print(Fore.GREEN + "You feed your companion! It looks happier.")
             else:
@@ -1279,6 +1382,7 @@ def tamagatchi():
             print(Fore.RED + "Invalid command.")
         apply_boosts()
         time.sleep(1.5)
+
 
 # The screen for selecting minigames
 def minigame_selection():
@@ -1335,8 +1439,9 @@ def minigame_selection():
         time.sleep(1)
         minigame_selection()
 
+
 # Saving and Loading Functions
-def save_to_file(): # Saves the file
+def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     player["name"] = os.path.splitext(currentSaveName)[0]
 
@@ -1357,8 +1462,9 @@ def save_to_file(): # Saves the file
 
     with open(globalSavePath, "w") as f:
         json.dump(data, f, indent=4)
-    
-def list_saved_files(): # lists saved files
+
+
+def list_saved_files():  # lists saved files
     files = os.listdir(saveDirectory)
     json_files = [f for f in files if f.endswith('.json')]
     active = []
@@ -1383,7 +1489,8 @@ def list_saved_files(): # lists saved files
         print("  " + f)
     print(Style.RESET_ALL)
 
-def load_from_file(filename): # Load data from files
+
+def load_from_file(filename):  # Load data from files
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
 
@@ -1393,7 +1500,7 @@ def load_from_file(filename): # Load data from files
     try:
         with open(path, "r") as f:
             data = json.load(f)
-        
+
         player.update(data.get("player", {}))
         persistentStats.update(data.get("persistentStats", {}))
         tamagatchi_data.update(data.get("tamagatchi_data", {}))
@@ -1418,7 +1525,7 @@ def load_from_file(filename): # Load data from files
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
-    
+
     except Exception as e:
         print(Fore.RED + f"\nError loading save '{filename}': {e}")
         print(Fore.RED + "Your save may be corrupted.")
@@ -1428,12 +1535,13 @@ def load_from_file(filename): # Load data from files
         print(Style.RESET_ALL)
         sys.exit(1)
 
+
 # Other Main Functions
 def try_drop_item():
-    #Attempts to drop an item after combat or fishing, based on player's drop chance.
-    #If an item is already in inventory, it is auto-sold for coins instead.
-    #Applies item boosts immediately if obtained.
-    
+    # Attempts to drop an item after combat or fishing, based on player's drop chance.
+    # If an item is already in inventory, it is auto-sold for coins instead.
+    # Applies item boosts immediately if obtained.
+
     drop_chance = player["drop"]
     if random.uniform(0, 100) <= drop_chance:
         # Get weights and choose one item
@@ -1459,10 +1567,10 @@ def try_drop_item():
 
 
 def apply_boosts():
-    #Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
-    #This function resets stats to base values and then adds all applicable bonuses.
+    # Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
+    # This function resets stats to base values and then adds all applicable bonuses.
 
-    # Base stats 
+    # Base stats
     base_health = 25.0
     base_damage = 3.5
     base_defense = 0.0
@@ -1476,7 +1584,7 @@ def apply_boosts():
     player["defense"] = base_defense + player["defenseBoost"]
     player["dodge"] = base_dodge + player["dodgeBoost"]
     player["escape"] = base_escape + player["escapeBoost"]
-    player["drop"] = base_drop + player["dropBoost"] 
+    player["drop"] = base_drop + player["dropBoost"]
 
     # Add item boosts
     for item in player["inventory"]:
@@ -1512,28 +1620,28 @@ def reset_monster():
     if persistentStats["boss_fight_ready"]:
         boss_index = min(monsterId + 1, len(monster.names) - 1)
         monsterId = boss_index
-        #persistentStats["boss_fight_ready"] = False
+        # persistentStats["boss_fight_ready"] = False
 
     if endlessMode:
-            # Endless mode: demon lord keeps getting stronger
-            demon_lord_data["demonLordsDefeated"] += 1
-            multiplier = 2 ** demon_lord_data["demonLordsDefeated"]
+        # Endless mode: demon lord keeps getting stronger
+        demon_lord_data["demonLordsDefeated"] += 1
+        multiplier = 2 ** demon_lord_data["demonLordsDefeated"]
 
-            demon_lord_data["health"] = monster.maxHealth[-1] * multiplier
-            demon_lord_data["minDamage"] = monster.minDamage[-1] * multiplier
-            demon_lord_data["maxDamage"] = monster.maxDamage[-1] * multiplier
-            demon_lord_data["defense"] = monster.defense[-1] * multiplier
+        demon_lord_data["health"] = monster.maxHealth[-1] * multiplier
+        demon_lord_data["minDamage"] = monster.minDamage[-1] * multiplier
+        demon_lord_data["maxDamage"] = monster.maxDamage[-1] * multiplier
+        demon_lord_data["defense"] = monster.defense[-1] * multiplier
 
-            currentMonsterFight = f"Demon Lord x{demon_lord_data['demonLordsDefeated']}"
-            currentMonsterHealth = demon_lord_data["health"]
-            currentMonsterDefense = demon_lord_data["defense"]
-            return
+        currentMonsterFight = f"Demon Lord x{demon_lord_data['demonLordsDefeated']}"
+        currentMonsterHealth = demon_lord_data["health"]
+        currentMonsterDefense = demon_lord_data["defense"]
+        return
     else:
         weights = manage_floors()
         tier_indices = [i for i, w in enumerate(weights) if w > 0]
 
         if persistentStats["boss_fight_ready"] and persistentStats["room"] == 10:
-            print(Fore.RED+"A boss monster approaches... defeat this enemy to move on to the next floor")
+            print(Fore.RED + "A boss monster approaches... defeat this enemy to move on to the next floor")
             time.sleep(1.5)
             # Boss is the monster immediately to the right of the strongest in the tier
             boss_index = tier_indices[-1] + 1
@@ -1548,6 +1656,7 @@ def reset_monster():
         currentMonsterHealth = monster.maxHealth[monsterId]
         currentMonsterDefense = monster.defense[monsterId]
 
+
 def manage_floors():
     # Calculates spawn weights for current floor based on 3 rotating monsters
     global persistentStats, monster
@@ -1561,7 +1670,7 @@ def manage_floors():
     tier_end = tier_start + tier_size
 
     # Determine if boss is available
-    #if persistentStats["room"] >= 10:
+    # if persistentStats["room"] >= 10:
     #    persistentStats["boss_fight_ready"] = True
 
     # Weights: [common, uncommon, rare]
@@ -1569,30 +1678,52 @@ def manage_floors():
     weights = [base_weights[i - tier_start] if tier_start <= i < tier_end else 0 for i in range(total_monsters)]
     return weights
 
+
 # The level up screen
 def level_up():
     while True:
         clear_screen()
         print(Fore.BLACK + "|")
         print(Fore.GREEN + f"Upgrade Costs (Current XP: {round(player['xp'], 1)})")
-        print(Fore.GREEN +
-            f" Health: {shop_data['baseHealthBoostCost']} |" +
-            f" Damage: {shop_data['baseDamageBoostCost']} |" +
-            f" Defense: {shop_data['baseDefenseBoostCost']}\n" +
-            f" Dodge: {shop_data['baseDodgeBoostCost']} |" +
-            f" Escape: {shop_data['baseEscapeBoostCost']} |" +
-            f" Drop: {shop_data['baseDropBoostCost']}")
+        print(Fore.BLACK + "|")
+
+        # Define all boost types
+        boosts = ["Health", "Damage", "Defense", "Dodge", "Escape", "Drop"]
+
+        # Build the output string with individual coloring
+        output_parts = []
+
+        for i, boost in enumerate(boosts):  # Use enumerate to get index i
+            base_cost = shop_data[f'base{boost}BoostCost']
+            current_mod = shop_data[f'{boost.lower()}BoostMod']
+            cap = shop_data[f'{boost.lower()}BoostCap']
+
+            can_buy = player["xp"] >= base_cost and current_mod < cap
+            color = Fore.GREEN if can_buy else Fore.RED
+
+            output_parts.append(f"{color} {boost}: {base_cost}")
+
+            # Add newline after each entry
+            output_parts.append("\n")
+
+        # Join and print everything
+        print("".join(output_parts) + Style.RESET_ALL)
+
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
 
         upgrade_map = {
-            "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod", "healthBoostCap"),
-            "damage": ("damageBoost", "baseDamageBoostCost", "baseDamageBoostCostFactor", "damageBoostMod", "damageBoostCap"),
-            "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod", "defenseBoostCap"),
+            "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod",
+                       "healthBoostCap"),
+            "damage": ("damageBoost", "baseDamageBoostCost", "baseDamageBoostCostFactor", "damageBoostMod",
+                       "damageBoostCap"),
+            "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod",
+                        "defenseBoostCap"),
             "dodge": ("dodgeBoost", "baseDodgeBoostCost", "baseDodgeBoostCostFactor", "dodgeBoostMod", "dodgeBoostCap"),
-            "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod", "escapeBoostCap"),
+            "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod",
+                       "escapeBoostCap"),
             "drop": ("dropBoost", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
         }
 
@@ -1665,17 +1796,18 @@ def level_up():
             print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
+
 def monster_death_check():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
     if currentMonsterHealth <= 0:
-    # Activate Endless Mode when Demon Lord dies
+        # Activate Endless Mode when Demon Lord dies
         if currentMonsterFight == "Demon Lord" and not endlessMode:
             endlessMode = True
             endlessKills = 0
             print(Fore.RED + "\n--- ENDLESS MODE UNLOCKED ---")
             print(Fore.MAGENTA + "Demon Lords will now respawn stronger each time.")
             time.sleep(5)
-            
+
         if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
             if random.random() < 0.2:
                 max_bond = 20 * (persistentStats["reborns_used"] + 1)
@@ -1684,10 +1816,10 @@ def monster_death_check():
         print(Fore.GREEN + "You defeated the monster!")
 
         if persistentStats["floor"] >= 10:
-            try_gatcha_drop() # Tries to drop a gatcha pass/ticket
-            
+            try_gatcha_drop()  # Tries to drop a gatcha pass/ticket
+
         persistentStats["monsters_killed"] += 1
-        player["health"] += round(monster.maxHealth[monsterId]/10)
+        player["health"] += round(monster.maxHealth[monsterId] / 10)
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
@@ -1703,7 +1835,7 @@ def monster_death_check():
                 backup_path = globalSavePath + ".bak"
                 save_to_file()  # Save current state
                 shutil.copy(globalSavePath, backup_path)
-                #print(Fore.CYAN + f"Backup saved to {backup_path}")
+                # print(Fore.CYAN + f"Backup saved to {backup_path}")
             except Exception as e:
                 print(Fore.RED + f"Failed to create backup: {e}")
                 time.sleep(2)
@@ -1733,6 +1865,7 @@ def monster_death_check():
     else:
         monster_turn()
 
+
 def monster_turn():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
     if random.randint(0, 100) < player["dodge"]:
@@ -1741,14 +1874,18 @@ def monster_turn():
         print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
         if endlessMode:
             scale = 2 ** endlessKills
-            dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"], 2)
+            dmg = round(
+                random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"],
+                2)
         else:
-            dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"], 2)
+            dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"],
+                        2)
 
         dmg = max(1, dmg)
         player["health"] -= dmg
         print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
         time.sleep(0.8)
+
 
 # Main Functions
 def combat():
@@ -1759,7 +1896,7 @@ def combat():
         save_to_file()
 
         # Handle boss prompt if room is at 10 and not already in a boss fight
-        if persistentStats["room"] >= 10 and persistentStats["boss_fight_ready"] is False: 
+        if persistentStats["room"] >= 10 and persistentStats["boss_fight_ready"] is False:
             print(Fore.YELLOW + "A powerful presence blocks your path... Boss fight?")
             choice = input(Fore.GREEN + "Do you wish to challenge it? (yes/no) > ").strip().lower()
             if persistentStats["loop_times"] >= 3:
@@ -1771,15 +1908,15 @@ def combat():
                 if choice in ["yes", "y"]:
                     persistentStats["boss_fight_ready"] = True
                     reset_monster()
-                    #continue
+                    # continue
                 else:
                     print(Fore.RED + "You chose to wait and reset the floor.")
-                    print(Fore.YELLOW + "You may reset",str(2-persistentStats["loop_times"]),"more times!")
+                    print(Fore.YELLOW + "You may reset", str(2 - persistentStats["loop_times"]), "more times!")
                     persistentStats["room"] = 1
                     persistentStats["loop_times"] += 1
                     reset_monster()
                     time.sleep(1.5)
-                    #continue
+                    # continue
         else:
             choice = input(Fore.BLUE + "What will you do? ").strip().lower()
             print()
@@ -1836,7 +1973,7 @@ def combat():
             else:
                 print(Fore.RED + "Invalid input.")
                 time.sleep(0.8)
-                continue 
+                continue
 
             time.sleep(0.5)
 
@@ -1846,9 +1983,11 @@ def combat():
                     print(Fore.YELLOW + f"You defeated {endlessKills} Demon Lords!")
                 persistentStats["is_dead"] = True
                 save_to_file()
-                show_stats_screen()  
+                show_stats_screen()
 
-# Stat up code
+            # Stat up code
+
+
 def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
@@ -1887,15 +2026,16 @@ def startup():
         if choice == "easy":
             player["difficulty"] = 25
         elif choice == "normal":
-            player["difficulty"] = 15 
+            player["difficulty"] = 15
         elif choice == "hard":
             player["difficulty"] = 10
         else:
-            player["difficulty"] = 15   # Default to normal
+            player["difficulty"] = 15  # Default to normal
 
         player["xp"] += player["difficulty"]
 
     combat()
+
 
 if __name__ == "__main__":
     startup() 
