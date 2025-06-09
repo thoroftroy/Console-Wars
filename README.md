@@ -97,5 +97,13 @@ You will notice that there are 3 python files in the repository. Main is the ori
 7. Reborn
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
+
+## Note for Cheaters
+Cheating in this game is extremely easy—just open the save file in any text editor and change the values. It's stored in JSON format, so it’s readable and editable by anyone.
+
+So why bother with things like idle timeouts or anti-spam detection in fishing? The answer is simple: I want to prevent *accidental* cheating. The game is designed so that playing it fairly is the default and requires no extra effort.
+
+If you choose to cheat, that's entirely up to you. It's a single-player game, and I won’t waste development time trying to stop something I ultimately can’t control. Just play the game however you enjoy it.
+
 ## Known Issue(s)
 None atm (this doens't mean the program is perfect or has no bugs, it just means that I haven't tested well enough yet)
