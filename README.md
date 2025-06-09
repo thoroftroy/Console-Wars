@@ -143,6 +143,14 @@ Minigames
 Reborn
 - When you reach a certain level, you can choose to reset your progress for better rewards.
 
+## Note on Releases vs. Source Code
+
+The **Releases** tab contains major versions that are considered relatively stable. However, these releases may be slightly outdated compared to the latest version in the repository.
+
+The main `.py` file in the repository is a **rolling release** used for active testing and development. It will always contain the most up-to-date features, but may be less stable or partially unfinished.
+
+If you want the newest features, clone or download the source directly. If you prefer a more stable experience, use the latest tagged release.
+
 ## Note for Cheaters
 Cheating in this game is extremely easy—just open the save file in any text editor and change the values. It's stored in JSON format, so it’s readable and editable by anyone.
 
