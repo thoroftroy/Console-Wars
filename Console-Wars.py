@@ -64,7 +64,6 @@ endlessMode = False
 endlessKills = 0
 demon_lord_data = {
     "demonLordsDefeated": 0,
-
     "health": monster.maxHealth[-1],
     "minDamage": monster.minDamage[-1],
     "maxDamage": monster.maxDamage[-1],
@@ -167,6 +166,9 @@ persistentStats = {
 # Idle management
 last_user_action = time.time()
 idle_lock = threading.Lock()
+
+# Startup
+startup_grace_period = True
 
 # Monster Variables
 monsterId = 0
@@ -503,9 +505,10 @@ def clear_screen():
 
 # Idle Checker functions
 def idle_checker_thread():
-    IDLE_TIMEOUT = 3
+    global last_user_action
+    IDLE_TIMEOUT = 30 # The number of seconds before a timeout
     while True:
-        time.sleep(30)
+        time.sleep(1)
         with idle_lock:
             if time.time() - last_user_action >= IDLE_TIMEOUT:
                 save_to_file()
@@ -515,6 +518,12 @@ def idle_checker_thread():
                 time.sleep(0.1)
                 print(Style.RESET_ALL)
                 os._exit(0) # Should exit the entire program
+
+# Grace period timer: During the start of the program don't allow the tamagatchi or the gatcha to do anything
+def grace_period_timer():
+    global startup_grace_period
+    time.sleep(30)
+    startup_grace_period = False
 
 # Stats Functions
 def show_stats_screen():
@@ -742,9 +751,9 @@ def start_gatcha_thread():  # Starts the passive gatcha thread to earn xp based 
 
 def update_gatcha():  # The actual gatcha thread which updates your XP over time
     # This isn't working, it is supposed to be running every 5-10 seconds from the gatcha thread then totalling all the xp boosts from the characters and giving it to the player, I am not getting an error but nothing seems to be happening
-    global player, persistentStats, gatcha_data, gatcha, gatcha_thread
+    global player, persistentStats, gatcha_data, gatcha, gatcha_thread, startup_grace_period
 
-    if gatcha_data["active"]:
+    if gatcha_data["active"] and startup_grace_period == False: # Don't do it if its during startup
         # Total up XP bonuses from player's active gatcha characters
         xp_gain = 0
         for name in gatcha_data.get("characters_owned", []):
@@ -1301,6 +1310,7 @@ def start_tamagatchi_thread():
 
 
 def update_tamagatchi():
+    global startup_grace_period
     hunger = tamagatchi_data["hunger"]
     bond = tamagatchi_data["bond"]
     kills = persistentStats.get("monsters_killed", 0)
@@ -1312,7 +1322,7 @@ def update_tamagatchi():
             tamagatchi_data["hunger"] += 1
 
     # Bond slowly increases if well-fed (under 20 hunger)
-    if hunger < 20 and random.random() < 0.5:  # 50% chance to gain a bond each update if the hunger is low enough
+    if hunger < 20 and random.random() < 0.5 and startup_grace_period == False:  # 50% chance to gain a bond each update if the hunger is low enough (also don't update during the start of the progam)
         if tamagatchi_data["bond"] < max_bond:
             tamagatchi_data["bond"] += 1
         else:
@@ -1555,6 +1565,9 @@ def load_from_file(filename):  # Load data from files
         # Starts the idle checker
         idle_thread = threading.Thread(target=idle_checker_thread, daemon=True)
         idle_thread.start()
+
+        # Grace period
+        threading.Thread(target=grace_period_timer, daemon=True).start()
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
