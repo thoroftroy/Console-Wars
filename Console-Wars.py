@@ -571,16 +571,21 @@ def show_stats_screen():
 
     print(Fore.BLUE + "\n--- Gatcha ---")
     print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
+    print(Fore.BLACK + "|" + Fore.BLUE)
 
     characters = gatcha_data.get("characters_owned", [])
     if characters:
-        for name in characters:
+        for i, name in enumerate(characters, 1):
             # Find the full character data from the gatcha list
             full_data = next((char for char in gatcha if char["name"] == name), None)
             if full_data:
-                print(f" - {full_data['name']} | {full_data['rank']} | {full_data['boosts']}")
+                print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
             else:
-                print(f" - {name} | (Unknown Data)")
+                print(f"-{name}  (Unknown Data)", end='     ')
+            if i % 2 == 0:
+                print()  # Newline after every 2 items
+        if len(characters) % 2 != 0:
+            print()  # Ensure final line ends properly
     else:
         print("(None)")
 
@@ -597,7 +602,7 @@ def show_stats_screen():
             print(f"-{item['name']}   ", end='  ')
             if i % 5 == 0:
                 print()  # Newline after every 5 items
-        if len(inventory) % 4 != 0:
+        if len(inventory) % 5 != 0:
             print()  # Ensure final line ends properly
     else:
         print("(Empty)")
