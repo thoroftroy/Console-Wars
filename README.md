@@ -98,5 +98,4 @@ You will notice that there are 3 python files in the repository. Main is the ori
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
 ## Known Issue(s)
-Loading a save file then exiting over and over while a tamagatchi is active will cuase its hunger to go up far too quickly, likewise the gatcha xp will increase from reloading a save file many times
-My proposed fix is to create some sort of extra thread that runs for the first 20 seconds of the game them starts the other threads instead of starting them instantly but that is quite a bit of work and most people won't be reloading a save over and over, this is only a problem for me beaucse I am testing things so I do frequently reload the save. I might fix it eventually, I might not. 
+None atm
