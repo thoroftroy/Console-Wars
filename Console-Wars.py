@@ -876,7 +876,7 @@ def reborn():
 
     print(Fore.YELLOW + "--- Reborn ---")
     print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
-    print(Fore.CYAN + "Shop prices are lowered, Tamagatchi improves, and well cost resets.")
+    print(Fore.CYAN + "All minigames improve, and well cost resets.")
     print(Fore.CYAN + "Cost: All XP  →  Reward: 100,000 coins")
     print(Fore.YELLOW + "\nReborn? (yes/no)")
 
@@ -895,14 +895,6 @@ def reborn():
         persistentStats["floor"] = 0
         persistentStats["room"] = 0
         persistentStats["reborns_used"] += 1
-
-        # Reset shop costs to base values with a minimum value
-        shop_data["baseHealthBoostCost"] -= max(1000, int(shop_data["baseHealthBoostCost"] / 10))
-        shop_data["baseDamageBoostCost"] -= max(1000, int(shop_data["baseDamageBoostCost"] / 10))
-        shop_data["baseDefenseBoostCost"] -= max(1000, int(shop_data["baseDefenseBoostCost"] / 10))
-        shop_data["baseDodgeBoostCost"] -= max(100, int(shop_data["baseDodgeBoostCost"] / 10))
-        shop_data["baseEscapeBoostCost"] -= max(10, int(shop_data["baseEscapeBoostCost"] / 10))
-        shop_data["baseDropBoostCost"] -= max(10, int(shop_data["baseDropBoostCost"] / 10))
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
         time.sleep(3)
