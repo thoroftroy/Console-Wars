@@ -945,42 +945,43 @@ def wishing_well():
             time.sleep(0.8)
             return
         if choice in ["yes", "y",""]:
-            player["coins"] -= cost
-            well_data["wishing_well_cost"] = int(cost * 1.25)
-            well_data["wishing_coins_used"] += 1
+            if player["coins"] < cost:
+                print(Fore.RED + "Not enough coins!")
+            else:
+                player["coins"] -= cost
+                well_data["wishing_well_cost"] = int(cost * 1.25)
+                well_data["wishing_coins_used"] += 1
 
-            roll = random.randint(1, 100)
-            result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
+                roll = random.randint(1, 100)
+                result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
 
-            if result_type == "spark":
-                print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
-                well_data["divine_spark"] += 1
-                time.sleep(2)
+                if result_type == "spark":
+                    print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
+                    well_data["divine_spark"] += 1
+                    time.sleep(2)
 
-            elif result_type == "blessing":
-                blessing = random.choice(blessings)
-                if blessing["name"] in well_data["obtained_blessings"]:
-                    print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
-                    player["coins"] += cost // 2
-                else:
-                    apply_boost(blessing["boosts"])
-                    well_data["obtained_blessings"].append(blessing["name"])
-                    well_data["blessings_received"] += 1
-                    print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
-            else:  # curse
-                curse = random.choice(curses)
-                if curse["name"] in well_data["obtained_curses"]:
-                    print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
-                    player["coins"] += cost // 2
-                else:
-                    apply_boost(curse["boosts"])
-                    well_data["obtained_curses"].append(curse["name"])
-                    well_data["curses_received"] += 1
-                    print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
+                elif result_type == "blessing":
+                    blessing = random.choice(blessings)
+                    if blessing["name"] in well_data["obtained_blessings"]:
+                        print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
+                        player["coins"] += cost // 2
+                    else:
+                        apply_boost(blessing["boosts"])
+                        well_data["obtained_blessings"].append(blessing["name"])
+                        well_data["blessings_received"] += 1
+                        print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
+                else:  # curse
+                    curse = random.choice(curses)
+                    if curse["name"] in well_data["obtained_curses"]:
+                        print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
+                        player["coins"] += cost // 2
+                    else:
+                        apply_boost(curse["boosts"])
+                        well_data["obtained_curses"].append(curse["name"])
+                        well_data["curses_received"] += 1
+                        print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
         else:
             print(Fore.RED + "Invalid Input")
-        if player["coins"] < cost:
-            print(Fore.RED + "Not enough coins!")
 
         apply_boosts()
         time.sleep(1)
