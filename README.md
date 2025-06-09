@@ -89,7 +89,18 @@ If you do need to install it change the dnf to apt or pacman or whatever your pa
    python3 --version
    ```
 
-After installing Python, use `pip` or `pip3` to install the required module:
+### Installing Pip
+On Linux or Mac
+```
+python get-pip.py
+```
+And on windows
+```
+py get-pip.py
+```
+Go to https://pip.pypa.io/en/stable/installation/ for more information
+
+After installing Pip, use `pip` or `pip3` to install the required module:
 
 ```bash
 pip install colorama
