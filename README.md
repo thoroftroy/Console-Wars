@@ -60,6 +60,7 @@ pip install colorama
 4. After installation, open Command Prompt and type `python --version` to verify it works.
 
 ### macOS
+I don't generally use a mac so it hasn't been tested as much (I don't own one) so if this doesn't work then follow the tutorial on this website: https://docs.python.org/3/using/mac.html
 
 1. Install Homebrew if you don’t already have it:  
    ```bash
