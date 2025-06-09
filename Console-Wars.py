@@ -506,7 +506,7 @@ def clear_screen():
 # Idle Checker functions
 def idle_checker_thread():
     global last_user_action
-    IDLE_TIMEOUT = 300000 # (30 is default) # The number of seconds before a timeout
+    IDLE_TIMEOUT = 30 # The number of seconds before a timeout
     while True:
         time.sleep(1)
         with idle_lock:
@@ -1421,7 +1421,6 @@ def tamagatchi():
         apply_boosts()
         time.sleep(1.5)
 
-
 # The screen for selecting minigames
 def minigame_selection():
     global persistentStats
@@ -2022,7 +2021,7 @@ def combat():
                 print(Fore.RED + "Exiting...")
                 time.sleep(0.1)
                 print(Style.RESET_ALL)
-                sys.exit()
+                os._exit(0)
 
             else:
                 update_last_action()
