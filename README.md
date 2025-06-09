@@ -37,12 +37,62 @@ project_root/
 ```
 ## Requirements
 
-- Python 3.6+
-- `colorama` module (for colored terminal output [This is NOT optional])
+- Python 3.3 or higher  
+- The `colorama` module (for colored terminal output — **this is NOT optional**)
 
-Install with:
+Install `colorama` with:
+
 ```bash
 pip install colorama
+```
+
+---
+
+## Installing Python
+
+### Windows
+
+1. Download the latest version of Python from the official site: https://www.python.org/downloads/windows/
+2. Run the installer.
+3. **Important:** Make sure to check the box that says **"Add Python to PATH"** during installation.
+4. After installation, open Command Prompt and type `python --version` to verify it works.
+
+### macOS
+
+1. Install Homebrew if you don’t already have it:  
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+2. Install Python:  
+   ```bash
+   brew install python
+   ```
+3. Confirm installation:  
+   ```bash
+   python3 --version
+   ```
+
+### Linux
+Generally doing anyhting here is unnessisary as python is installed by default, just check what version you have and ensure it works.
+
+If you do need to install it change the dnf to apt or pacman or whatever your package installer is. 
+
+1. Update package list and install Python:
+   ```bash
+   sudo dnf update
+   sudo dnf install python3 python3-pip
+   ```
+2. Confirm installation:
+   ```bash
+   python3 --version
+   ```
+
+After installing Python, use `pip` or `pip3` to install the required module:
+
+```bash
+pip install colorama
+# or
+pip3 install colorama
 ```
 
 ## Launching The Game
