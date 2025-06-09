@@ -506,7 +506,7 @@ def clear_screen():
 # Idle Checker functions
 def idle_checker_thread():
     global last_user_action
-    IDLE_TIMEOUT = 30 # The number of seconds before a timeout
+    IDLE_TIMEOUT = 300000 # (30 is default) # The number of seconds before a timeout
     while True:
         time.sleep(1)
         with idle_lock:
@@ -1317,7 +1317,7 @@ def update_tamagatchi():
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
 
     # Hunger increases
-    if hunger < 100:
+    if hunger < 100 and startup_grace_period == False:
         if random.randint(0, 100) <= 50:  # only increases hunger half the time
             tamagatchi_data["hunger"] += 1
 
