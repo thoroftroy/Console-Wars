@@ -112,12 +112,7 @@ pip3 install colorama
 
 YOU MUST RUN THE GAME FROM THE TERMINAL FOR IT TO WORK
 
-This game should work on Linux, Windows, or macOS. Choose the command that works with your system and the way you installed Python. You can check which one will work by typing:
-```
-python --version
-python3 --version
-py --version
-```
+This game should work on Linux, Windows, or macOS. Choose the command that works with your system and the way you installed Python.
 ```
 python Console-Wars.py
 ```
