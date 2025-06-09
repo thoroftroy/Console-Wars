@@ -77,21 +77,15 @@ The goal of the game is to kill as many demon lords as possible, they will be un
 1. Combat
 
 - Face various monsters as you climb through levels, battling them with your stats and inventory items.
-- 
 - Use your health, damage, defense, and dodge to survive and defeat enemies.
-- 
 - Items found during battles can be sold or used for their stat boosts.
 
 3. Minigames
    
 - Tamagatchi: Adopt a pet and feed it to increase stats.
-- 
 - Fishing: Catch fish or rare items for XP and bonuses.
-- 
 - Gambling: Place bets with your coins for the chance of big rewards.
-- 
 - Gatcha: Collect chracters for passive xp gain.
-- 
 - Wishing Well: Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
    
 7. Reborn
