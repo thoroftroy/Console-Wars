@@ -593,8 +593,12 @@ def show_stats_screen():
     print(Fore.GREEN + "\n--- Inventory ---")
     inventory = player_data.get("inventory", [])
     if inventory:
-        for item in inventory:
-            print(f"- {item['name']} | {item['boosts']}")
+        for i, item in enumerate(inventory, 1):
+            print(f"-{item['name']}   ", end='  ')
+            if i % 5 == 0:
+                print()  # Newline after every 5 items
+        if len(inventory) % 4 != 0:
+            print()  # Ensure final line ends properly
     else:
         print("(Empty)")
 
