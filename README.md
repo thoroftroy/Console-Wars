@@ -72,22 +72,24 @@ For example, typing attack will attack a monster. You can also use abbreviations
 
 Pressing Enter without typing anything will trigger the default or primary action—usually something like confirming a choice or attacking. This lets you quickly repeat common actions without retyping them every time.
 
+The goal of the game is to kill as many demon lords as possible, they will be unlocked once you make it far enough into the game. 
+
 1. Combat
-   
-    -Face various monsters as you climb through levels, battling them with your stats and inventory items.
-    -Use your health, damage, defense, and dodge to survive and defeat enemies.
-    -Items found during battles can be sold or used for their stat boosts.
+
+- Face various monsters as you climb through levels, battling them with your stats and inventory items.
+- Use your health, damage, defense, and dodge to survive and defeat enemies.
+- Items found during battles can be sold or used for their stat boosts.
 
 3. Minigames
    
-    -Tamagatchi: Adopt a pet and feed it to increase stats.
-    -Fishing: Catch fish or rare items for XP and bonuses.
-    -Gambling: Place bets with your coins for the chance of big rewards.
-    -Gatcha: Collect chracters for passive xp gain.
-    -Wishing Well: Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
+- Tamagatchi: Adopt a pet and feed it to increase stats.
+- Fishing: Catch fish or rare items for XP and bonuses.
+- Gambling: Place bets with your coins for the chance of big rewards.
+- Gatcha: Collect chracters for passive xp gain.
+- Wishing Well: Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
    
 7. Reborn
-    When you reach a certain level, you can choose to reset your progress for better rewards.
+- When you reach a certain level, you can choose to reset your progress for better rewards.
 
 ## Note for Cheaters
 Cheating in this game is extremely easy—just open the save file in any text editor and change the values. It's stored in JSON format, so it’s readable and editable by anyone.
