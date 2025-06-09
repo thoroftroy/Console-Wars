@@ -71,18 +71,25 @@ You will notice that there are 3 python files in the repository. Main is the ori
 
 ## How to Play
 1. Combat
+   
     Face various monsters as you climb through levels, battling them with your stats and inventory items.
     Use your health, damage, defense, and dodge to survive and defeat enemies.
     Items found during battles can be sold, used for stat boosts, or used to heal.
 
 3. Minigames
+   
     Tamagatchi: Adopt a pet and feed it to increase stats.
+   
     Fishing: Catch fish or rare items for XP and bonuses.
+   
     Gambling: Place bets with your coins for the chance of big rewards.
+   
     Gatcha: Collect chracters for passive xp gain.
+   
     Wishing Well: Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
    
 7. Reborn
+   
     When you reach a certain level, you can choose to reset your progress for better rewards.
 
 ## Note for Cheaters
