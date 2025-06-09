@@ -98,4 +98,4 @@ You will notice that there are 3 python files in the repository. Main is the ori
    
     When you reach a certain level, you can choose to reset your progress for better rewards.
 ## Known Issue(s)
-None atm
+None atm (this doens't mean the program is perfect or has no bugs, it just means that I haven't tested well enough yet)
