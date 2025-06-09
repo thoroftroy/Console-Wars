@@ -9,12 +9,7 @@ from datetime import datetime
 import threading
 import shutil
 from collections import Counter
-
 from numpy.matlib import empty
-
-
-# Notes/Things to do
-# Add in the gatcha game threads for passive xp
 
 # Define libraries and classes
 class monsterVariables:
@@ -516,8 +511,7 @@ def idle_checker_thread():
                 save_to_file()
                 print(Fore.BLACK + "|")
                 print(Fore.RED + "\nYou have been idle for too long!")
-                print(Fore.GREEN + "Saving game...")
-                print(Fore.RED + "Exiting...")
+                print(Fore.GREEN + "Saving game...\n" + Fore.RED + "Exiting...")
                 time.sleep(0.1)
                 print(Style.RESET_ALL)
                 os._exit(0) # Should exit the entire program
