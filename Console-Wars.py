@@ -768,9 +768,9 @@ def update_gatcha():  # The actual gatcha thread which updates your XP over time
         player["xp"] += xp_gain
 
 
-def try_gatcha_drop():  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
+def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
     global gatcha_data, persistentStats
-    if persistentStats["floor"] == 9:  # Garentees one pass on the 10th floor boss kill
+    if garentee == 0:  # Garentees a gatach drop
         print(
             Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
@@ -926,68 +926,64 @@ def wishing_well():
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
-    cost = well_data["wishing_well_cost"]
-    print(Fore.CYAN + "--- The Wishing Well ---")
-    print(Fore.YELLOW + f"Cost to Wish: {cost} coins")
-    print(f"You have: {player['coins']} coins")
-    print(Fore.BLACK + "|")
-    print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
-          "  | Defense:", str(round(player["defense"])))
-    print(Fore.BLACK + "|")
-    print(Fore.MAGENTA + "Make a wish? (yes / no)")
+    while True:
+        clear_screen()
+        cost = well_data["wishing_well_cost"]
+        print(Fore.CYAN + "--- The Wishing Well ---")
+        print(Fore.YELLOW + f"Cost to Wish: {cost} coins")
+        print(f"You have: {player['coins']} coins")
+        print(Fore.BLACK + "|")
+        print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
+              "  | Defense:", str(round(player["defense"])))
+        print(Fore.BLACK + "|")
+        print(Fore.MAGENTA + "Make a wish? (ENTER -> Yes   |  Exit -> No)")
 
-    choice = input(Fore.GREEN + "> ").strip().lower()
-    update_last_action()
-    if choice not in ["yes", "y"]:
-        combat()
-        return
+        choice = input(Fore.GREEN + "> ").strip().lower()
+        update_last_action()
+        if choice in ["no","n","exit","leave"]:
+            print(Fore.CYAN + "Returning to combat..")
+            time.sleep(0.8)
+            return
+        if choice in ["yes", "y",""]:
+            player["coins"] -= cost
+            well_data["wishing_well_cost"] = int(cost * 1.25)
+            well_data["wishing_coins_used"] += 1
 
-    if player["coins"] < cost:
-        print(Fore.RED + "Not enough coins!")
-        time.sleep(2)
-        combat()
-        return
+            roll = random.randint(1, 100)
+            result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
 
-    player["coins"] -= cost
-    well_data["wishing_well_cost"] = int(cost * 1.25)
-    well_data["wishing_coins_used"] += 1
+            if result_type == "spark":
+                print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
+                well_data["divine_spark"] += 1
+                time.sleep(2)
 
-    roll = random.randint(1, 100)
-    result_type = "blessing" if roll <= 60 else "curse" if roll <= 95 else "spark"
-
-    if result_type == "spark":
-        print(Fore.CYAN + "A Divine Spark ignites within you. +1 charge!")
-        well_data["divine_spark"] += 1
-        time.sleep(2)
-        # combat()
-        return
-
-    elif result_type == "blessing":
-        blessing = random.choice(blessings)
-        if blessing["name"] in well_data["obtained_blessings"]:
-            print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
-            player["coins"] += cost // 2
+            elif result_type == "blessing":
+                blessing = random.choice(blessings)
+                if blessing["name"] in well_data["obtained_blessings"]:
+                    print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2} coins.")
+                    player["coins"] += cost // 2
+                else:
+                    apply_boost(blessing["boosts"])
+                    well_data["obtained_blessings"].append(blessing["name"])
+                    well_data["blessings_received"] += 1
+                    print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
+            else:  # curse
+                curse = random.choice(curses)
+                if curse["name"] in well_data["obtained_curses"]:
+                    print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
+                    player["coins"] += cost // 2
+                else:
+                    apply_boost(curse["boosts"])
+                    well_data["obtained_curses"].append(curse["name"])
+                    well_data["curses_received"] += 1
+                    print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
         else:
-            apply_boost(blessing["boosts"])
-            well_data["obtained_blessings"].append(blessing["name"])
-            well_data["blessings_received"] += 1
-            print(Fore.GREEN + f"Blessing: {blessing['name']} → {blessing['desc']}")
+            print(Fore.RED + "Invalid Input")
+        if player["coins"] < cost:
+            print(Fore.RED + "Not enough coins!")
 
-    else:  # curse
-        curse = random.choice(curses)
-        if curse["name"] in well_data["obtained_curses"]:
-            print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2} coins.")
-            player["coins"] += cost // 2
-        else:
-            apply_boost(curse["boosts"])
-            well_data["obtained_curses"].append(curse["name"])
-            well_data["curses_received"] += 1
-            print(Fore.RED + f"Curse: {curse['name']} → {curse['desc']}")
-
-    apply_boosts()
-    time.sleep(3)
-    wishing_well()
-
+        apply_boosts()
+        time.sleep(1)
 
 def apply_boost(
         boost_dict):  # This is for the well specifically, not to be confused with the apply boost(s) function down below
@@ -1866,7 +1862,7 @@ def monster_death_check():
         print(Fore.GREEN + "You defeated the monster!")
 
         if persistentStats["floor"] >= 10:
-            try_gatcha_drop()  # Tries to drop a gatcha pass/ticket
+            try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
         player["health"] += round(monster.maxHealth[monsterId] / 10)
@@ -1876,7 +1872,8 @@ def monster_death_check():
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
-            try_gatcha_drop()
+            if persistentStats["floor"] >= 10:
+                try_gatcha_drop(0)
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
 
             # Save a backup before progressing to next floor
