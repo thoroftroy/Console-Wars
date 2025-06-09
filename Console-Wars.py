@@ -582,9 +582,9 @@ def show_stats_screen():
                 print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
             else:
                 print(f"-{name}  (Unknown Data)", end='     ')
-            if i % 2 == 0:
-                print()  # Newline after every 2 items
-        if len(characters) % 2 != 0:
+            if i % 3 == 0:
+                print()  # Newline after every 3 items
+        if len(characters) % 3 != 0:
             print()  # Ensure final line ends properly
     else:
         print("(None)")
