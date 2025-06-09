@@ -92,11 +92,11 @@ If you do need to install it change the dnf to apt or pacman or whatever your pa
 ### Installing Pip
 On Linux or Mac
 ```
-python get-pip.py
+python -m ensurepip --upgrade
 ```
 And on windows
 ```
-py get-pip.py
+py -m ensurepip --upgrade
 ```
 Go to https://pip.pypa.io/en/stable/installation/ for more information
 
