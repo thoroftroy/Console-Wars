@@ -169,6 +169,10 @@ persistentStats = {
 
 # Global Variables
 
+# Idle management
+last_user_action = time.time()
+idle_lock = threading.Lock()
+
 # Monster Variables
 monsterId = 0
 currentMonsterFight = monster.names[monsterId]
@@ -489,6 +493,10 @@ def timed_input(timeout=1.0):
         return None  # Timeout
     return result[0] if result else ''
 
+def update_last_action():
+    with idle_lock:
+        global last_user_action
+        last_user_action = time.time()
 
 # Define the current os and clear screen properly
 def clear_screen():
@@ -498,6 +506,21 @@ def clear_screen():
     elif platform.system() == 'Windows':
         os.system('cls')
 
+# Idle Checker functions
+def idle_checker_thread():
+    IDLE_TIMEOUT = 3
+    while True:
+        time.sleep(30)
+        with idle_lock:
+            if time.time() - last_user_action >= IDLE_TIMEOUT:
+                save_to_file()
+                print(Fore.BLACK + "|")
+                print(Fore.RED + "\nYou have been idle for too long!")
+                print(Fore.GREEN + "Saving game...")
+                print(Fore.RED + "Exiting...")
+                time.sleep(0.1)
+                print(Style.RESET_ALL)
+                os._exit(0) # Should exit the entire program
 
 # Stats Functions
 def show_stats_screen():
@@ -790,6 +813,7 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
+        update_last_action()
         if choice in ["yes", "y", ""]:
             if gatcha_data["gatcha_pulls_available"] >= 1:
                 print(Fore.BLACK + "|")
@@ -854,6 +878,7 @@ def reborn():
     print(Fore.YELLOW + "\nReborn? (yes/no)")
 
     choice = input(Fore.GREEN + "> ").strip().lower()
+    update_last_action()
     if choice in ["yes", "y"]:
         if player["xp"] <= 1000:
             print(Fore.RED + "You don't have enough XP, requires at least 1000")
@@ -909,6 +934,7 @@ def wishing_well():
     print(Fore.MAGENTA + "Make a wish? (yes / no)")
 
     choice = input(Fore.GREEN + "> ").strip().lower()
+    update_last_action()
     if choice not in ["yes", "y"]:
         combat()
         return
@@ -1030,6 +1056,7 @@ def fishing():
                 continue
 
             if random.random() < 0.8:
+                update_last_action()
                 scale = 1 + (persistentStats["floor"] * 2)
                 mult = 10 * int(persistentStats["floor"] * 2.5) if persistentStats["floor"] >= 15 else 1
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
@@ -1037,6 +1064,7 @@ def fishing():
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
                 fishing_data["fish_caught"] += 1
             else:
+                update_last_action()
                 item = random.choices(drop_table, weights=[i["weight"] for i in drop_table], k=1)[0]
                 owned_names = [i["name"] for i in player["inventory"]]
                 if item["name"] in owned_names:
@@ -1075,12 +1103,14 @@ def fishing():
 
         cmd = input()
         if cmd.strip().lower() in ["leave", "exit"]:
+            update_last_action()
             fishing_active = False
             fishing_stop_event.set()
             print(Fore.GREEN + "You pack up and return to combat...")
             time.sleep(1)
             break
         if cmd.strip() == "" and not fish_ready:
+            update_last_action()
             idle_enter_count += 1
             if idle_enter_count > 2:
                 print(Fore.RED + "Stop yanking! Line tangled.")
@@ -1148,6 +1178,8 @@ def gambling():  # Manages the gambling screen
     print(Fore.BLACK, "|")
 
     choice = input(Fore.CYAN + "\nYour choice: ").strip().lower()
+
+    update_last_action()
 
     if choice in ["sell"]:
         if not player["inventory"]:
@@ -1364,6 +1396,8 @@ def tamagatchi():
         print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
         choice = input().strip().lower()
 
+        update_last_action()
+
         if choice in ["exit", "leave"]:
             combat()
             return
@@ -1419,6 +1453,7 @@ def minigame_selection():
     print(Style.RESET_ALL)
 
     choice = input(Fore.GREEN + "> ").strip().lower()
+    update_last_action()
 
     if choice in ["tamagatchi", "tama"]:
         tamagatchi()
@@ -1522,6 +1557,10 @@ def load_from_file(filename):  # Load data from files
 
         if gatcha_data.get("active"):
             start_gatcha_thread()
+
+        # Starts the idle checker
+        idle_thread = threading.Thread(target=idle_checker_thread, daemon=True)
+        idle_thread.start()
 
         print(Fore.GREEN + f"Loaded from {filename}")
         return True
@@ -1745,10 +1784,13 @@ def level_up():
             cap = shop_data[cap_key]
 
             if player["xp"] < current_cost:
+                update_last_action()
                 print(Fore.RED + "Not enough XP!")
             elif player[boost_key] >= cap:
+                update_last_action()
                 print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
             else:  # applies stat boosts
+                update_last_action()
                 player["xp"] -= current_cost
 
                 if choice == "health":
@@ -1791,8 +1833,10 @@ def level_up():
                 print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
 
         elif choice in ["exit", "leave"]:
+            update_last_action()
             return
         else:
+            update_last_action()
             print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
@@ -1886,7 +1930,6 @@ def monster_turn():
         print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
         time.sleep(0.8)
 
-
 # Main Functions
 def combat():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
@@ -1908,7 +1951,6 @@ def combat():
                 if choice in ["yes", "y"]:
                     persistentStats["boss_fight_ready"] = True
                     reset_monster()
-                    # continue
                 else:
                     print(Fore.RED + "You chose to wait and reset the floor.")
                     print(Fore.YELLOW + "You may reset", str(2 - persistentStats["loop_times"]), "more times!")
@@ -1916,12 +1958,12 @@ def combat():
                     persistentStats["loop_times"] += 1
                     reset_monster()
                     time.sleep(1.5)
-                    # continue
         else:
             choice = input(Fore.BLUE + "What will you do? ").strip().lower()
             print()
 
             if choice in ["attack", "atk", ""]:
+                update_last_action()
                 print(Fore.YELLOW + "You attack!")
                 damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2))
                 currentMonsterHealth -= damage
@@ -1930,6 +1972,7 @@ def combat():
                 monster_death_check()
 
             elif choice in ["retreat", "ret", "escape", "esc"]:
+                update_last_action()
                 if persistentStats.get("boss_fight_ready", False):
                     print(Fore.RED + "You cannot retreat from a boss fight!")
                     time.sleep(1)
@@ -1951,15 +1994,19 @@ def combat():
                     monster_turn()
 
             elif choice in ["level", "lvl"]:
+                update_last_action()
                 level_up()
 
             elif choice in ["inventory", "inv"]:
+                update_last_action()
                 show_inventory()
 
             elif choice in ["minigames", "mini", "games", "min", "other"]:
+                update_last_action()
                 minigame_selection()
 
             elif choice in ["stats", "st"]:
+                update_last_action()
                 show_stats_screen()
 
             elif choice in ["exit", "leave"]:
@@ -1971,6 +2018,7 @@ def combat():
                 sys.exit()
 
             else:
+                update_last_action()
                 print(Fore.RED + "Invalid input.")
                 time.sleep(0.8)
                 continue
@@ -1985,9 +2033,7 @@ def combat():
                 save_to_file()
                 show_stats_screen()
 
-            # Stat up code
-
-
+# Startup code
 def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
