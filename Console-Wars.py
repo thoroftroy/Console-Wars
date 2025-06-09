@@ -864,7 +864,7 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
 
 # Reborn functions
 def reborn():
-    global player, shop_data, well_data, persistentStats
+    global player, shop_data, well_data, persistentStats, endlessMode
 
     clear_screen()
 
@@ -897,6 +897,8 @@ def reborn():
         persistentStats["reborns_used"] += 1
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
+        if endlessMode:
+            print(Fore.RED + "You thought you could escape me????")
         time.sleep(3)
 
         reset_monster()
