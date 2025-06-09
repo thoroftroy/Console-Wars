@@ -6,16 +6,18 @@
 
 ## Gameplay Features
 
-- Fight through 40+ increasingly powerful monster types
-- Scale through endless floors with dynamically scaling enemies
-- Gain XP and spend it on **Health**, **Damage**, **Defense**, **Dodge**, **Escape Chance**, and **Item Drop Rate**
-- Collect 75+ unique **items** with passive boosts and rarity weights
-- Rare duplicate items are **auto-sold for coins**
-- Coins can be used to **gamble**, **convert into XP**, or **purchase upgrades**
-- Adopt a Tamagatchi companion that grows stronger over time and grants **bonus stats**
-- Play **minigames** like **Fishing**, **Tamagatchi**, and **Gambling** for side rewards
-- Full **save/load system** with automatic file creation and dead save file viewer
-- **Permadeath system** — when you die, you can only view stats and inventory
+- Battle through 40+ unique and scaling monster types across endless floors
+- Fight stronger monsters and bosses as you progress through the infinite tower
+- Earn XP and spend it to permanently upgrade **Health**, **Damage**, **Defense**, **Dodge Chance**, **Retreat Chance**, and **Item Drop Rate**
+- Play minigames like:
+  - **Fishing**: Timed reaction-based item/XP minigame with anti-spam logic
+  - **Gambling**: Risk coins for greater rewards, sell items, or convert coins to XP
+  - **Gatcha**: Unlock passive XP-earning characters who fight in the background
+  - **Wishing Well**: Spend coins for powerful blessings or dangerous curses
+  - **Reborn**: Reset progress after Floor 25 for massive rewards and improved scaling
+- Dynamic scaling system for **XP gain**, **coin value**, and **combat difficulty**
+- Fully integrated **save/load system** with automatic saving and a detailed dead-player stats screen
+- **Permadeath**: If you die, your run ends — you can view your stats but must start a new game
 
 ---
 
@@ -73,7 +75,7 @@ pip install colorama
    ```
 
 ### Linux
-Generally doing anyhting here is unnessisary as python is installed by default, just check what version you have and ensure it works.
+Generally doing anything here is unnessisary as python is installed by default, just check what version you have and ensure it works.
 
 If you do need to install it change the dnf to apt or pacman or whatever your package installer is. 
 
