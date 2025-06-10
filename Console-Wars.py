@@ -723,7 +723,7 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     bar_length = min(round(monsterHealthPercentage / 2), 1000)
     print(Fore.RED + '=' * bar_length, end='')
     if monsterHealthPercentage > 2000 or player["eye_purchased"] == True:
-        print(Fore.RED + f"{monsterHealthPercentage}%" + Fore.YELLOW + " |  HP: " + str(int(currentMonsterHealth)) + f"  |  Defense: {monster.defense[monsterId]}")
+        print(Fore.RED + f" {monsterHealthPercentage}%" + Fore.YELLOW + " |  HP: " + str(int(currentMonsterHealth)) + f"  |  Defense: {monster.defense[monsterId]}")
     else:
         print(Fore.RED + f" {monsterHealthPercentage}%")
     print(Fore.BLACK + "|")
