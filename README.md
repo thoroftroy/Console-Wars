@@ -166,4 +166,4 @@ So why bother with things like idle timeouts or anti-spam detection in fishing? 
 If you choose to cheat, that's entirely up to you. It's a single-player game, and I won’t waste development time trying to stop something I ultimately can’t control. Just play the game however you enjoy it.
 
 ## Known Issue(s)
-None atm (this doens't mean the program is perfect or has no bugs, it just means that I haven't tested well enough yet)
+On some devices the fishing minigame will simply not work, when hitting enter quickly to catch a fish nothing will happen
