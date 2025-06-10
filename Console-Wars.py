@@ -810,7 +810,7 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
 def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
     clear_screen()
-    if persistentStats["floor"] < 10 or persistentStats["reborns_used"] > 0:
+    if persistentStats["floor"] < 10 or persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "You can't do gatcha pulls until floor 10!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
