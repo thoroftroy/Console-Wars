@@ -723,7 +723,7 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     bar_length = min(round(monsterHealthPercentage / 2), 1000)
     print(Fore.RED + '=' * bar_length, end='')
     if monsterHealthPercentage > 2000 or player["eye_purchased"] == True:
-        print(Fore.RED + f"{monsterHealthPercentage}%" + Fore.YELLOW + " (HP: " + str(int(currentMonsterHealth)) + ")")
+        print(Fore.RED + f"{monsterHealthPercentage}%" + Fore.YELLOW + " |  HP: " + str(int(currentMonsterHealth)) + f"  |  Defense: {monster.defense[monsterId]}")
     else:
         print(Fore.RED + f" {monsterHealthPercentage}%")
     print(Fore.BLACK + "|")
@@ -2047,7 +2047,7 @@ def combat():
                 print(Fore.YELLOW + "Attempting to retreat...")
                 if random.randint(0, 100) < player["escape"]:
                     print(Fore.GREEN + "You successfully escaped!")
-                    loot_gain = random.randint(5, (currentMonsterHealth * (persistentStats["reborns_used"] + 1)))
+                    loot_gain = round(random.uniform(5, (currentMonsterHealth * (persistentStats["reborns_used"] + 1))))
                     print(Fore.CYAN + f"You loot the room on the way out and gain {loot_gain} coins!")
                     player["coins"] += loot_gain
                     persistentStats["escapes_used"] += 1
