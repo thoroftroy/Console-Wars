@@ -810,7 +810,7 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
 def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
     clear_screen()
-    if persistentStats["floor"] < 10 or persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "You can't do gatcha pulls until floor 10!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
@@ -1241,7 +1241,7 @@ def gambling():  # Manages the gambling screen
         apply_boosts()
 
     elif choice in ["gamble", "gam"]:
-        if gambling_data["gamblingCoinsWon"] >= 10000 * (persistentStats["floor"] + 1):
+        if gambling_data["gamblingCoinsWon"] >= 10000 * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1):
             print(Fore.BLACK + "|")
             print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
             print(Fore.BLUE + "(You can try to gamble again next floor)")
@@ -1368,7 +1368,9 @@ def update_tamagatchi():
 
     # Recalculate boosts
     if bond > 0:
-        scale = 1 * (persistentStats["reborns_used"] + 1)
+        scale = 1
+        if persistentStats["reborns_used"] >= 1:
+            scale = 10 * (persistentStats["reborns_used"] + 1)
         floorBoost = persistentStats["floor"] + 1
 
         tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
@@ -1818,9 +1820,7 @@ def level_up():
                 player["weighted_dice_purchased"] = True
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-
         else:
-
             upgrade_map = {
                 "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod",
                            "healthBoostCap"),
@@ -1833,7 +1833,6 @@ def level_up():
                            "escapeBoostCap"),
                 "drop": ("dropBoost", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
             }
-
             aliases = {
                 "hp": "health", "hlth": "health",
                 "dmg": "damage",
@@ -1842,7 +1841,6 @@ def level_up():
                 "ret": "escape", "esc": "escape", "retreat": "escape",
                 "drp": "drop", "drop chance": "drop", "dropchance": "drop"
             }
-
             choice = aliases.get(choice, choice)
 
             if choice in upgrade_map:
@@ -1900,8 +1898,9 @@ def level_up():
                     apply_boosts()
                     print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
 
-            elif choice in ["exit", "leave"]:
+            elif choice in ["exit", "leave", ""]:
                 update_last_action()
+                print(Fore.CYAN + "Returning to combat...")
                 return
             else:
                 update_last_action()
