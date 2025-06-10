@@ -891,7 +891,7 @@ def reborn():
 
     clear_screen()
 
-    if persistentStats["floor"] <= 25:
+    if persistentStats["floor"] < 25:
         print(Fore.RED + "You must reach floor 25 to use Reborn.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
@@ -937,8 +937,8 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
-        print(Fore.RED + "You must defeat 250 monsters and make it to floor 15 to unlock the Wishing Well.")
+    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 or persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "You must defeat 350 monsters or make it to floor 15 to unlock the Wishing Well.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1474,11 +1474,11 @@ def minigame_selection():
         print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
     else:
         print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
-    if persistentStats["monsters_killed"] < 250 or persistentStats["floor"] < 15:
+    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15  or persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
-    if persistentStats["floor"] <= 25:
+    if persistentStats["floor"] < 25:
         print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
     else:
         print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
@@ -1927,7 +1927,7 @@ def monster_death_check():
                     tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
 
-        if persistentStats["floor"] >= 10:
+        if persistentStats["floor"] >= 10 or persistentStats["reborns_used"] >= 1:
             try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
@@ -1938,7 +1938,7 @@ def monster_death_check():
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
-            if persistentStats["floor"] >= 10:
+            if persistentStats["floor"] >= 10 or persistentStats["reborns_used"] >= 1:
                 try_gatcha_drop(0)
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
 
