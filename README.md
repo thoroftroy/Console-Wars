@@ -168,3 +168,6 @@ If you choose to cheat, that's entirely up to you. It's a single-player game, an
 ## Known Issue(s)
 On some devices the fishing minigame will simply not work, when hitting enter quickly to catch a fish nothing will happen
 Sometimes after a rebirth the shop will not let you purchase things even when you should be able to afford them
+
+## Disclaimer
+This program was my first python program in a while, it was originaly just supposed to be a practice program to relearn python but it kept getting more complicated beacuse it ended up being really fun. I would like to make other games at some point as well but this won't ever really be big, it was never even supposed to get a full release. 
