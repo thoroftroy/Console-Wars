@@ -1779,7 +1779,7 @@ def level_up():
                 player["xp"] -= shop_data["eyeCost"]
                 player["eye_purchased"] = True
             else:
-                print(Fore.RED + f"Too expensive!")
+                print(Fore.RED + f"Not Enough Xp!")
         else:
 
             upgrade_map = {
