@@ -1138,7 +1138,6 @@ def fishing():
             idle_enter_count = 0
     combat()
 
-
 # Section for managing the gambling minigame
 def gamble_stat_change(amount):  # Returns how much the stats change when doing a high risk gamble
     global persistentStats, player
@@ -1155,6 +1154,7 @@ def gamble_stat_change(amount):  # Returns how much the stats change when doing 
         return amount
     else:
         if player["weighted_dice_purchsed"] == True:
+            print(Fore.YELLOW + "The weighted dice twists your fate")
             return amount * 3 * (persistentStats["floor"] / 7.5)
         else:
             return amount * 2 * (persistentStats["floor"] / 7.5)  # Lets the big wins and big losses scale with the floor slightly
@@ -1206,7 +1206,6 @@ def gambling():  # Manages the gambling screen
             for i, item in enumerate(player["inventory"]):
                 value = get_item_coin_value(item)
                 print(Fore.MAGENTA + f"[{i}] {item['name']} → {value} coins")
-                # print(Fore.MAGENTA + f"     {item['desc']}")
 
             sel = input(Fore.GREEN + "\nChoose item number to sell or 'all': ").strip().lower()
             if sel == "all":
@@ -1264,6 +1263,8 @@ def gambling():  # Manages the gambling screen
                     elif result < amt:
                         print(Fore.YELLOW + f"You lost some. You got {result} coins back.")
                     else:
+                        if player["weighted_dice_purchased"] == True:
+                            print(Fore.YELLOW + "Your weighted dice twists your fate")
                         print(Fore.GREEN + f"You won! You now have {result} more coins.")
                         player["coins"] += amt
             except:
@@ -1979,14 +1980,18 @@ def monster_turn():
         print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
         if endlessMode:
             scale = 2 ** endlessKills
-            dmg = round(
-                random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"],
-                2)
+            dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"],2)
         else:
-            dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"],
-                        2)
+            dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"],2)
 
-        dmg = max(1, dmg)
+        if dmg <= 1:
+            damagechance = random.randint(0,100)
+            if damagechance >= 50: # 50% Chance to not take damage
+                dmg = 0
+                print(Fore.CYAN + f"The {currentMonsterFight}'s attack glances off of you!")
+            else:
+                dmg = 1
+        #dmg = max(1, dmg)
         player["health"] -= dmg
         print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
         time.sleep(0.8)
