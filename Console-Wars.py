@@ -37,6 +37,7 @@ monster = monsterVariables()
 # The Player Library
 player = {
     "name": "placeHolderName",
+
     "maxHealth": 25.0,
     "health": 25.0,
     "damage": 3.5,
@@ -44,20 +45,26 @@ player = {
     "dodge": 5.0,
     "escape": 50.0,
     "drop": 7.0,
+
     "difficulty": 0,
+
     "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
     "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
     "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn"],
+
     "xp": 0.0,
     "coins": 0,
     "inventory": [],
+
     "healthBoost": 0,
     "damageBoost": 0,
     "defenseBoost": 0,
     "dodgeBoost": 0,
     "escapeBoost": 0,
     "dropBoost": 0,
-    "eye_purchased": False
+
+    "eye_purchased": False,
+    "weighted_dice_purchased": False,
 }
 
 # Endless mode
@@ -126,6 +133,7 @@ shop_data = {
     "baseDropBoostCost": 10,
 
     "eyeCost": 1000,
+    "weightedDiceCost" : 10000,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.55,
@@ -1133,7 +1141,7 @@ def fishing():
 
 # Section for managing the gambling minigame
 def gamble_stat_change(amount):  # Returns how much the stats change when doing a high risk gamble
-    global persistentStats
+    global persistentStats, player
     roll = random.randint(1, 100)
     if roll <= 10:
         return -amount
@@ -1146,9 +1154,10 @@ def gamble_stat_change(amount):  # Returns how much the stats change when doing 
     elif roll <= 90:
         return amount
     else:
-        return amount * 2 * (
-                    persistentStats["floor"] / 7.5)  # Lets the big wins and big losses scale with the floor slightly
-
+        if player["weighted_dice_purchsed"] == True:
+            return amount * 3 * (persistentStats["floor"] / 7.5)
+        else:
+            return amount * 2 * (persistentStats["floor"] / 7.5)  # Lets the big wins and big losses scale with the floor slightly
 
 def gambling():  # Manages the gambling screen
     global player, persistentStats
@@ -1226,30 +1235,39 @@ def gambling():  # Manages the gambling screen
         apply_boosts()
 
     elif choice in ["gamble", "gam"]:
-        try:
-            amt = int(input(Fore.YELLOW + "Enter coin amount to bet: ").strip())
-            if amt <= 0 or amt > player["coins"]:
-                print(Fore.RED + "Invalid bet amount.")
-            else:
-                mults = [0, 0.3, 0.4, 0.5, 1.0, 1.1, 1.2, 1.3, 1.4]
-                weights = [10, 20, 10, 7, 12, 10, 20, 5, 2]
-                scale = 1 + (persistentStats["floor"] / 10)
-                mult = random.choices(mults, weights)[0] * scale
-                result = int(amt * mult)
-                player["coins"] -= amt
-                player["coins"] += result + 1
-                gambling_data["gamblingBets"] += 1
-                gambling_data["gamblingCoinsSpent"] += amt
-                gambling_data["gamblingCoinsWon"] += result
-                if result == 0:
-                    print(Fore.RED + "You lost everything!")
-                elif result < amt:
-                    print(Fore.YELLOW + f"You lost some. You got {result} coins back.")
+        if gambling_data["gamblingCoinsWon"] >= 10000 * (persistentStats["floor"] + 1):
+            print(Fore.BLACK + "|")
+            print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
+            print(Fore.BLUE + "(You can try to gamble again next floor)")
+            time.sleep(2)
+        else:
+            try:
+                amt = int(input(Fore.YELLOW + "Enter coin amount to bet: ").strip())
+                if amt <= 0 or amt > player["coins"]:
+                    print(Fore.RED + "Invalid bet amount.")
                 else:
-                    print(Fore.GREEN + f"You won! You now have {result} more coins.")
-                    player["coins"] += amt
-        except:
-            print(Fore.RED + "Invalid number.")
+                    if player["weighted_dice_purchased"] == True:
+                        mults = [0.5, 0.6, 0.7, 0.8, 1.1, 1.2, 1.3, 1.4, 1.5]
+                    else:
+                        mults = [0, 0.3, 0.4, 0.5, 1.0, 1.1, 1.2, 1.3, 1.4]
+                    weights = [10, 20, 10, 7, 12, 10, 20, 5, 2]
+                    scale = 1 + (persistentStats["floor"] / 10)
+                    mult = random.choices(mults, weights)[0] * scale
+                    result = int(amt * mult)
+                    player["coins"] -= amt
+                    player["coins"] += result + 1
+                    gambling_data["gamblingBets"] += 1
+                    gambling_data["gamblingCoinsSpent"] += amt
+                    gambling_data["gamblingCoinsWon"] += result
+                    if result == 0:
+                        print(Fore.RED + "You lost everything!")
+                    elif result < amt:
+                        print(Fore.YELLOW + f"You lost some. You got {result} coins back.")
+                    else:
+                        print(Fore.GREEN + f"You won! You now have {result} more coins.")
+                        player["coins"] += amt
+            except:
+                print(Fore.RED + "Invalid number.")
 
     elif choice in ["convert"]:
         try:
@@ -1760,19 +1778,24 @@ def level_up():
         # Join and print everything
         print("".join(output_parts) + Style.RESET_ALL)
 
-        # Manage the eye
-        if player["eye_purchased"] == False:
+        # Manage upgrades like the eye and weighted dice
+        if player["eye_purchased"] == False and persistentStats["floor"] >= 2:
             if player["xp"] >= shop_data["eyeCost"]:
                 print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']}")
             else:
                 print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']}")
+        elif player["weighted_dice_purchased"] == False and persistentStats["floor"] >= 5:
+            if player["xp"] >= shop_data["weightedDiceCost"]:
+                print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}")
+            else:
+                print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}")
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
 
-        # More eye management
+        # More upgrade management
         if player["eye_purchased"] == False and choice in ["eye", "hacker", "hack", "hackerseye", "hackers"]:
             if player["xp"] >= shop_data["eyeCost"]:
                 print(Fore.GREEN + f"Hackers Eye Purchased! You can now see extra monster stats during battle.")
@@ -1780,6 +1803,14 @@ def level_up():
                 player["eye_purchased"] = True
             else:
                 print(Fore.RED + f"Not Enough Xp!")
+        elif player["weighted_dice_purchased"] == False and choice in ["weight", "weighted", "dice", "die", "weighteddice"]:
+            if player["xp"] >= shop_data["weightedDiceCost"]:
+                print(Fore.GREEN + f"Weighted Dice Purchased! Gambling is tipped in your favor!")
+                player["xp"] -= shop_data["weightedDiceCost"]
+                player["weighted_dice_purchased"] = True
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+
         else:
 
             upgrade_map = {
