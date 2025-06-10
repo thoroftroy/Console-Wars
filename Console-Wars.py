@@ -458,26 +458,26 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Cyberpunk Slug", "desc": "Slow but digitally enhanced.", "rank": "Super Rare",
      "boosts": {"xp_bonus": 24}},
     {"name": "Sticky Champion", "desc": "Prefers chaos.", "rank": "Super Rare", "boosts": {"xp_bonus": 25}},
-    {"name": "Funky Snail", "desc": "Tastes like victory.", "rank": "Super Rare", "boosts": {"xp_bonus": 26}},
-    {"name": "Wandering Ghost", "desc": "Comes with a manual.", "rank": "Super Rare", "boosts": {"xp_bonus": 27}},
-    {"name": "Iron Fighter", "desc": "Built for hugs.", "rank": "Super Rare", "boosts": {"xp_bonus": 28}},
-    {"name": "Tiny Witch", "desc": "Glows slightly.", "rank": "Super Rare", "boosts": {"xp_bonus": 29}},
-    {"name": "Cyber Tank", "desc": "Screams when idle.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 30}},
+    {"name": "Funky Snail", "desc": "Tastes like victory.", "rank": "Super Rare", "boosts": {"xp_bonus": 30}},
+    {"name": "Wandering Ghost", "desc": "Comes with a manual.", "rank": "Super Rare", "boosts": {"xp_bonus": 35}},
+    {"name": "Iron Fighter", "desc": "Built for hugs.", "rank": "Super Rare", "boosts": {"xp_bonus": 45}},
+    {"name": "Tiny Witch", "desc": "Glows slightly.", "rank": "Super Rare", "boosts": {"xp_bonus": 40}},
+    {"name": "Cyber Tank", "desc": "Screams when idle.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 50}},
 
-    {"name": "Moss Wizard", "desc": "Photosynthesis and fireballs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 31}},
-    {"name": "Tax Goblin", "desc": "You owe XP this quarter.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 32}},
-    {"name": "Haunted Barista", "desc": "Your latte is cursed.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 33}},
-    {"name": "Sticky Archer", "desc": "Hates stairs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 34}},
-    {"name": "Funky Mystic", "desc": "Tastes like victory.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 35}},
-    {"name": "Wandering Beast", "desc": "Built for hugs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 36}},
-    {"name": "Iron Agent", "desc": "Only eats moonlight.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 37}},
+    {"name": "Moss Wizard", "desc": "Photosynthesis and fireballs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 110}},
+    {"name": "Tax Goblin", "desc": "You owe XP this quarter.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 120}},
+    {"name": "Haunted Barista", "desc": "Your latte is cursed.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 130}},
+    {"name": "Sticky Archer", "desc": "Hates stairs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 140}},
+    {"name": "Funky Mystic", "desc": "Tastes like victory.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 150}},
+    {"name": "Wandering Beast", "desc": "Built for hugs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 160}},
+    {"name": "Iron Agent", "desc": "Only eats moonlight.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 170}},
 
-    {"name": "Banana Paladin", "desc": "He slips... into battle.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 41}},
-    {"name": "Bird Lawyer", "desc": "Caws for justice!", "rank": "MEGA Rare", "boosts": {"xp_bonus": 42}},
-    {"name": "Bread Prophet", "desc": "Foretells gluten-based doom.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 43}},
+    {"name": "Banana Paladin", "desc": "He slips... into battle.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 410}},
+    {"name": "Bird Lawyer", "desc": "Caws for justice!", "rank": "MEGA Rare", "boosts": {"xp_bonus": 420}},
+    {"name": "Bread Prophet", "desc": "Foretells gluten-based doom.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 430}},
     {"name": "Doombot 3000", "desc": "Will explode for fun and profit.", "rank": "MEGA Rare",
      "boosts": {"xp_bonus": 44}},
-    {"name": "Teacup Berserker", "desc": "Tiny, angry, porcelain.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 45}},
+    {"name": "Teacup Berserker", "desc": "Tiny, angry, porcelain.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 450}},
 ]
 
 
@@ -953,6 +953,13 @@ def wishing_well():
         print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
               "  | Defense:", str(round(player["defense"])))
         print(Fore.BLACK + "|")
+
+        if player["coins"] <= well_data["wishing_well_cost"]:  # Ensures you have some coins
+            print(Fore.RED + "You don't have enough coins!")
+            print(Fore.BLACK + "|")
+            input(Fore.BLUE + "Press Enter to return to combat.")
+            return
+
         print(Fore.MAGENTA + "Make a wish? (ENTER -> Yes   |  Exit -> No)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
