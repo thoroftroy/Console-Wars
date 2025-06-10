@@ -937,7 +937,7 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 or persistentStats["reborns_used"] <= 0:
+    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "You must defeat 350 monsters or make it to floor 15 to unlock the Wishing Well.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
@@ -1474,7 +1474,7 @@ def minigame_selection():
         print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
     else:
         print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
-    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15  or persistentStats["reborns_used"] <= 0:
+    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
