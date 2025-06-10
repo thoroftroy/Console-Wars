@@ -57,6 +57,7 @@ player = {
     "dodgeBoost": 0,
     "escapeBoost": 0,
     "dropBoost": 0,
+    "eye_purchased": False
 }
 
 # Endless mode
@@ -124,6 +125,8 @@ shop_data = {
     "baseEscapeBoostCost": 2,
     "baseDropBoostCost": 10,
 
+    "eyeCost": 1000,
+
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.55,
     "baseDamageBoostCostFactor": 1.25,
@@ -139,6 +142,7 @@ shop_data = {
     "dodgeBoostMod": 1.13,
     "escapeBoostMod": 1.5,
     "dropBoostMod": 1.3,
+
     # 9,223,372,036,854,775,807 is the overflow number, just ensure that number is never exeeded
     "healthBoostCap": 8000000000000000000,
     "damageBoostCap": 8000000000000000000,
@@ -703,19 +707,21 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     clear_screen()
     print(Fore.BLACK + "|")
     monsterHealthPercentage = round((currentMonsterHealth / monster.maxHealth[monsterId]) * 100, 2)
-    print(Fore.WHITE + "You are currently fighting a", currentMonsterFight,
-          "  (Floor:" + str(persistentStats["floor"]) + "." + str(persistentStats["room"]) + ")")
+    print(Fore.WHITE + "You are currently fighting a", currentMonsterFight,"  (Floor:" + str(persistentStats["floor"]) + "." + str(persistentStats["room"]) + ")")
     print(Fore.BLACK + "|")
     print(Fore.RED + currentMonsterFight, "Health:")
     print(Fore.BLACK + "|", end='')
     # Cap health bar
     bar_length = min(round(monsterHealthPercentage / 2), 1000)
     print(Fore.RED + '=' * bar_length, end='')
-    if monsterHealthPercentage > 2000:
-        print(Fore.RED + " (HP: " + str(int(currentMonsterHealth)) + ")")
+    if monsterHealthPercentage > 2000 or player["eye_purchased"] == True:
+        print(Fore.RED + f"{monsterHealthPercentage}%" + Fore.YELLOW + " (HP: " + str(int(currentMonsterHealth)) + ")")
     else:
         print(Fore.RED + f" {monsterHealthPercentage}%")
     print(Fore.BLACK + "|")
+    if player["eye_purchased"] == True:
+        damageAverage = round((monster.minDamage[monsterId] + monster.maxDamage[monsterId]) / 2,1)
+        print(Fore.YELLOW + f"{currentMonsterFight} deals an average of {damageAverage} damage per attack!")
     print(Fore.BLACK + "|")
     currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100, 2)
     print(Fore.GREEN + "Player Stats:")
@@ -1754,96 +1760,113 @@ def level_up():
         # Join and print everything
         print("".join(output_parts) + Style.RESET_ALL)
 
+        # Manage the eye
+        if player["eye_purchased"] == False:
+            if player["xp"] >= shop_data["eyeCost"]:
+                print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']}")
+            else:
+                print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']}")
+
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
 
-        upgrade_map = {
-            "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod",
-                       "healthBoostCap"),
-            "damage": ("damageBoost", "baseDamageBoostCost", "baseDamageBoostCostFactor", "damageBoostMod",
-                       "damageBoostCap"),
-            "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod",
-                        "defenseBoostCap"),
-            "dodge": ("dodgeBoost", "baseDodgeBoostCost", "baseDodgeBoostCostFactor", "dodgeBoostMod", "dodgeBoostCap"),
-            "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod",
-                       "escapeBoostCap"),
-            "drop": ("dropBoost", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
-        }
+        # More eye management
+        if player["eye_purchased"] == False and choice in ["eye", "hacker", "hack", "hackerseye", "hackers"]:
+            if player["xp"] >= shop_data["eyeCost"]:
+                print(Fore.GREEN + f"Hackers Eye Purchased! You can now see extra monster stats during battle.")
+                player["xp"] -= shop_data["eyeCost"]
+                player["eye_purchased"] = True
+            else:
+                print(Fore.RED + f"Too expensive!")
+        else:
 
-        aliases = {
-            "hp": "health", "hlth": "health",
-            "dmg": "damage",
-            "def": "defense",
-            "dod": "dodge", "dodge chance": "dodge", "dodgechance": "dodge",
-            "ret": "escape", "esc": "escape", "retreat": "escape",
-            "drp": "drop", "drop chance": "drop", "dropchance": "drop"
-        }
+            upgrade_map = {
+                "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod",
+                           "healthBoostCap"),
+                "damage": ("damageBoost", "baseDamageBoostCost", "baseDamageBoostCostFactor", "damageBoostMod",
+                           "damageBoostCap"),
+                "defense": ("defenseBoost", "baseDefenseBoostCost", "baseDefenseBoostCostFactor", "defenseBoostMod",
+                            "defenseBoostCap"),
+                "dodge": ("dodgeBoost", "baseDodgeBoostCost", "baseDodgeBoostCostFactor", "dodgeBoostMod", "dodgeBoostCap"),
+                "escape": ("escapeBoost", "baseEscapeBoostCost", "baseEscapeBoostCostFactor", "escapeBoostMod",
+                           "escapeBoostCap"),
+                "drop": ("dropBoost", "baseDropBoostCost", "baseDropBoostCostFactor", "dropBoostMod", "dropBoostCap"),
+            }
 
-        choice = aliases.get(choice, choice)
+            aliases = {
+                "hp": "health", "hlth": "health",
+                "dmg": "damage",
+                "def": "defense",
+                "dod": "dodge", "dodge chance": "dodge", "dodgechance": "dodge",
+                "ret": "escape", "esc": "escape", "retreat": "escape",
+                "drp": "drop", "drop chance": "drop", "dropchance": "drop"
+            }
 
-        if choice in upgrade_map:
-            boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
-            current_cost = (shop_data[cost_key] * (persistentStats["reborns_used"] + 1))
-            boost_mod = shop_data[mod_key]
-            cap = shop_data[cap_key]
+            choice = aliases.get(choice, choice)
 
-            if player["xp"] < current_cost:
-                update_last_action()
-                print(Fore.RED + "Not enough XP!")
-            elif player[boost_key] >= cap:
-                update_last_action()
-                print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
-            else:  # applies stat boosts
-                update_last_action()
-                player["xp"] -= current_cost
+            if choice in upgrade_map:
+                boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
+                current_cost = (shop_data[cost_key] * (persistentStats["reborns_used"] + 1))
+                boost_mod = shop_data[mod_key]
+                cap = shop_data[cap_key]
 
-                if choice == "health":
-                    base_health = 25.0
+                if player["xp"] < current_cost:
+                    update_last_action()
+                    print(Fore.RED + "Not enough XP!")
+                elif player[boost_key] >= cap:
+                    update_last_action()
+                    print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
+                else:  # applies stat boosts
+                    update_last_action()
+                    player["xp"] -= current_cost
 
-                    if player[boost_key] <= 0:
-                        player[boost_key] = 1.0  # Starting point
+                    if choice == "health":
+                        base_health = 25.0
 
-                    current_boost = player[boost_key]
-                    proposed_boost = current_boost + boost_mod
+                        if player[boost_key] <= 0:
+                            player[boost_key] = 1.0  # Starting point
 
-                    # Calculate new maxHealth
-                    current_max = player["maxHealth"]
-                    proposed_max = (base_health + proposed_boost) / 5
-                    increase = proposed_max - current_max
-                    max_increase = current_max / 10
+                        current_boost = player[boost_key]
+                        proposed_boost = current_boost + boost_mod
 
-                    # Enforce cap
-                    if increase > max_increase:
-                        proposed_max = current_max + max_increase
-                        proposed_boost = proposed_max - base_health
+                        # Calculate new maxHealth
+                        current_max = player["maxHealth"]
+                        proposed_max = (base_health + proposed_boost) / 5
+                        increase = proposed_max - current_max
+                        max_increase = current_max / 10
 
-                    player[boost_key] = min(proposed_boost, cap)
+                        # Enforce cap
+                        if increase > max_increase:
+                            proposed_max = current_max + max_increase
+                            proposed_boost = proposed_max - base_health
+
+                        player[boost_key] = min(proposed_boost, cap)
+
+                        apply_boosts()
+                        heal_amount = player["maxHealth"] * 0.5
+                        player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
+                    else:
+                        player[boost_key] += boost_mod
+                        player[boost_key] = min(player[boost_key], cap)  # Clamp all boosts
+
+                    # Apply scaling multipliers only to linear boosts
+                    if choice not in ["dodge", "escape", "drop"]:
+                        shop_data[mod_key] *= shop_data[factor_key]
+
+                    # Always scale price
+                    shop_data[cost_key] = round(shop_data[cost_key] * shop_data[factor_key], 1)
 
                     apply_boosts()
-                    heal_amount = player["maxHealth"] * 0.5
-                    player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
-                else:
-                    player[boost_key] += boost_mod
-                    player[boost_key] = min(player[boost_key], cap)  # Clamp all boosts
+                    print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
 
-                # Apply scaling multipliers only to linear boosts
-                if choice not in ["dodge", "escape", "drop"]:
-                    shop_data[mod_key] *= shop_data[factor_key]
-
-                # Always scale price
-                shop_data[cost_key] = round(shop_data[cost_key] * shop_data[factor_key], 1)
-
-                apply_boosts()
-                print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2)}")
-
-        elif choice in ["exit", "leave"]:
-            update_last_action()
-            return
-        else:
-            update_last_action()
-            print(Fore.RED + "Invalid input.")
+            elif choice in ["exit", "leave"]:
+                update_last_action()
+                return
+            else:
+                update_last_action()
+                print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
 
