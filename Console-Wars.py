@@ -729,7 +729,7 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     print(Fore.BLACK + "|")
     if player["eye_purchased"] == True:
         damageAverage = round((monster.minDamage[monsterId] + monster.maxDamage[monsterId]) / 2,1)
-        print(Fore.YELLOW + f"{currentMonsterFight} deals an average of {damageAverage} damage per attack! (Min: {monster.minDamage[monsterId]} - Max: {monster.maxDamage[monsterId]})")
+        print(Fore.YELLOW + f"Hacker Eye Info |  Average Damage: {damageAverage} (Min: {monster.minDamage[monsterId]} - Max: {monster.maxDamage[monsterId]})")
     print(Fore.BLACK + "|")
     currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100, 2)
     print(Fore.GREEN + "Player Stats:")
