@@ -167,3 +167,4 @@ If you choose to cheat, that's entirely up to you. It's a single-player game, an
 
 ## Known Issue(s)
 On some devices the fishing minigame will simply not work, when hitting enter quickly to catch a fish nothing will happen
+Sometimes after a rebirth the shop will not let you purchase things even when you should be able to afford them
