@@ -49,7 +49,7 @@ Install `colorama` with:
 pip install colorama
 ```
 And Install 
-```bash `numpy`
+```bash
 pip install numpy
 ```
 
