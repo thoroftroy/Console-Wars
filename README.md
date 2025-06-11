@@ -39,13 +39,18 @@ project_root/
 ```
 ## Requirements
 
-- Python 3.3 or higher  
+- Python 3.3 or higher
+- The `Numpy` module
 - The `colorama` module (for colored terminal output — **this is NOT optional**)
 
 Install `colorama` with:
 
 ```bash
 pip install colorama
+```
+And Install 
+```bash `numpy`
+pip install numpy
 ```
 
 ---
