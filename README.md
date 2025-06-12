@@ -48,7 +48,7 @@ Install `colorama` with:
 ```bash
 pip install colorama
 ```
-And Install 
+And Install `Numpy` with
 ```bash
 pip install numpy
 ```
