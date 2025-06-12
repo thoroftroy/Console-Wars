@@ -759,7 +759,7 @@ def portal_travel(): # The idea of this is to let you travel to any floor (50-ma
         clear_screen()
         print(Fore.BLUE + "===Portal Travel===")
         print(Fore.BLACK + "|")
-        print(Fore.BLUE + f"You can access floors 50 to {persistentStats['highest_floor']}")
+        print(Fore.BLUE + f"You can access floors " + Fore.YELLOW + f"50 to {persistentStats['highest_floor']}")
         print(Fore.BLUE + "What floor would you like to go to? (or type 'exit')")
         choice = input(Fore.GREEN + "> ").lower()
 
@@ -773,7 +773,9 @@ def portal_travel(): # The idea of this is to let you travel to any floor (50-ma
             if 50 <= floor_num <= persistentStats['highest_floor']:
                 print(Fore.MAGENTA + f"You enter the portal and travel to floor {floor_num}")
                 time.sleep(0.8)
-                persistentStats["floor"] = floor_num  # optional: set the new floor
+                persistentStats["floor"] = floor_num
+                persistentStats["room"] = 1
+                reset_monster() # This makes it a free retreat butttt I don't care
                 return
             else:
                 print(Fore.RED + "You cannot enter this floor")
