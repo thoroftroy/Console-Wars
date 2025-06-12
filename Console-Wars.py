@@ -1925,7 +1925,7 @@ def level_up():
 
 def try_portal():
     global persistentStats
-    if random.randint(1, 100) <= 500 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
+    if random.randint(1, 100) <= 5 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
         print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
         print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
         print(Fore.BLACK + "|")
