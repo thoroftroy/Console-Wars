@@ -65,6 +65,8 @@ player = {
 
     "eye_purchased": False,
     "weighted_dice_purchased": False,
+    "monster_bait_purchased": False,
+    "dog_house_purhcased": False,
 }
 
 # Endless mode
@@ -132,8 +134,10 @@ shop_data = {
     "baseEscapeBoostCost": 2,
     "baseDropBoostCost": 10,
 
-    "eyeCost": 1000,
-    "weightedDiceCost" : 10000,
+    "eyeCost": 500,
+    "weightedDiceCost": 5000,
+    "monsterBaitCost": 2500,
+    "dogHouseCost": 7500,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.55,
@@ -1055,7 +1059,10 @@ def fishing():
                 time.sleep(0.2)
                 continue
             print(Fore.BLUE + "Waiting for a bite...")
-            time.sleep(random.uniform(3, 8))
+            if player["monster_bait_purchased"] == True:
+                time.sleep(random.uniform(2, 4))
+            else:
+                time.sleep(random.uniform(3, 8))
             if not fishing_active or fishing_stop_event.is_set():
                 break
             fish_ready = True
@@ -1066,15 +1073,11 @@ def fishing():
 
             if response is None:
                 print(Fore.RED + "Too slow! The fish got away.")
-                cooldown_until = time.time() + 3
+                cooldown_until = time.time() + 2
                 continue
 
             fish_ready = False
 
-            # if reaction_time > 1.0:
-            #    print(Fore.RED + "Too slow! The fish got away.")
-            #    cooldown_until = time.time() + 3
-            #    continue
             if fishing_penalty:
                 print(Fore.RED + "Rod tangled from spam. No reward.")
                 continue
@@ -1347,6 +1350,8 @@ def update_tamagatchi():
     bond = tamagatchi_data["bond"]
     kills = persistentStats.get("monsters_killed", 0)
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
+    if player["dog_house_purhcased"] == True:
+        max_bond = (max_bond * 2)
 
     # Hunger increases
     if hunger < 100 and startup_grace_period == False:
@@ -1383,6 +1388,8 @@ def update_tamagatchi():
 def tamagatchi():
     global player, persistentStats
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
+    if player["dog_house_purhcased"] == True:
+        max_bond = (max_bond * 2)
     clear_screen()
     print(Style.RESET_ALL)
 
@@ -1799,6 +1806,16 @@ def level_up():
                 print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}")
             else:
                 print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}")
+        elif player["dog_house_purhcased"] == False and persistentStats["floor"] >= 10:
+            if player["xp"] >= shop_data["dogHouseCost"]:
+                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']}")
+            else:
+                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']}")
+        elif player["monster_bait_purchased"] == False and persistentStats["floor"] >= 3:
+            if player["xp"] >= shop_data["monsterBaitCost"]:
+                print(Fore.GREEN + f" Monster Bait: {shop_data['monsterBaitCost']}")
+            else:
+                print(Fore.RED + f" Monster Bait: {shop_data['monsterBaitCost']}")
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
@@ -1818,6 +1835,20 @@ def level_up():
                 print(Fore.GREEN + f"Weighted Dice Purchased! Gambling is tipped in your favor!")
                 player["xp"] -= shop_data["weightedDiceCost"]
                 player["weighted_dice_purchased"] = True
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["dog_house_purhcased"] == False and choice in ["dog", "doghouse","house"]:
+            if player["xp"] >= shop_data["dogHouseCost"]:
+                print(Fore.GREEN + f"Dog(?) House Purchased! Tamagatchi has a higher max bond!")
+                player["xp"] -= shop_data["dogHouseCost"]
+                player["dog_house_purhcased"] = True
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["monster_bait_purchased"] == False and choice in ["monster","bait","monsterbait"]:
+            if player["xp"] >= shop_data["monsterBaitCost"]:
+                print(Fore.GREEN + f"Monster Bait Purchased! Fishing is faster!")
+                player["xp"] -= shop_data["monsterBaitCost"]
+                player["monster_bait_purchased"] = True
             else:
                 print(Fore.RED + f"Not Enough Xp!")
         else:
