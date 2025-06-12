@@ -1658,21 +1658,21 @@ def load_from_file(filename):  # Load data from files
 
         # Ensures some old variables are set correctly
         if player["difficulty"] not in ["easy", "normal", "hard", "impossible"]:
-            player["difficulty"] = "Unknown"
+            player["difficulty"] = "Unknown" # This is needed beacuse difficulty used to save as an int when creating a save file and was never initialized anywhere else
+
         # Version check
         if "currentVersion" not in persistentStats:
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file does not have a version number.")
             print(Fore.RED + "It may be from an old version of the game and may not load correctly.")
-            print(Fore.RED + "Expect to have some compatability issues")
+            print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
         elif persistentStats["currentVersion"] != "2.3.1":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
-            print(Fore.RED + "Expect to have some compatability issues")
-            print(Fore.RED + "These issues can be totally GAMEBREAKING")
+            print(Fore.RED + "Expect to have some minor compatability issues")
             input(Fore.BLUE + "Press ENTER to continue...")
 
         return True
@@ -1685,7 +1685,6 @@ def load_from_file(filename):  # Load data from files
         print(Fore.YELLOW + "Then restart the game.")
         print(Style.RESET_ALL)
         sys.exit(1)
-
 
 # Other Main Functions
 def try_drop_item():
