@@ -1656,6 +1656,9 @@ def load_from_file(filename):  # Load data from files
 
         print(Fore.GREEN + f"Loaded from {filename}")
 
+        # Ensures some old variables are set correctly
+        if player["difficulty"] not in ["easy", "normal", "hard", "impossible"]:
+            player["difficulty"] = "Unknown"
         # Version check
         if "currentVersion" not in persistentStats:
             print(Fore.RED + "WARNING")
