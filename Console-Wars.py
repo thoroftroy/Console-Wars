@@ -12,14 +12,14 @@ from collections import Counter
 from numpy.matlib import empty
 
 # Define libraries and classes
+
+# Monster Stuff
 class monsterVariables:
     names = ["Rat", "Maggot", "Bat", "Spider", "Ant Swarm", "Beetle", "Moss Imp", "Cave Mite", "Slime", "Goblin", "Skeleton", "Zombie", "Wasp Fiend", "Carrion Crow", "Feral Dog", "Bog Rat", "Dustling", "Gremlin", "Gnoll", "Lizardman", "Bone Whelp", "Murkstain", "Shade", "Bandit", "Orc", "Warg", "Ghoul", "Drowned One", "Banshee", "Dire Wolf", "Witch", "Harpy", "Troll", "Mire Hag", "Ent", "Ogre", "Swamp Horror", "Cave Troll", "Wight", "Stone Golem", "Barrow Fiend", "Gnoll Shaman", "Hill Giant", "Brute", "Minotaur", "Forest Guardian", "Ice Wraith", "Fire Beetle", "Mud Serpent", "Ravager", "Grave Knight", "Bone Construct", "Warlock", "Cursed Beast", "Blood Bat", "Venomfang", "Chimera Cub", "Cave Basilisk", "Corrupted Treant", "Stormling", "Vile Sorcerer", "Razorbeak", "Flesh Eater", "Wyrmling", "Lava Golem", "Specter", "Flayed Stalker", "Thorn Fiend", "Ash Walker", "Drake", "Frost Giant", "Hell Hound", "Screechling", "Bogmire Shambler", "Maggot Queen", "Ironbound", "Shard Serpent", "Darkfang", "Pyre Warden", "Ice Revenant", "Blood Mage", "Sunken Horror", "Blackscale", "Manticore", "Vampire", "Runebound Knight", "Skull Crawler", "Hexslinger", "Sand Wyrm", "Plague Bearer", "Fungal Horror", "Brimstone Fiend", "Wyrm", "Shadow Reaver", "Crystal Guardian", "Hellfire Drake", "Soulstealer", "Twilight Howler", "Arcane Shade", "Bone Hydra", "Tempest Djinn", "Doomcaller", "Obsidian Giant", "Iron Tyrant", "Void Spawn", "Behemoth", "Abyss Crawler", "Crimson Moth", "Storm Revenant", "Warped Templar", "Nether Hound", "Blackthorn Beast", "Sunbreaker", "Rift Warden", "Lich", "Scourge Knight", "Chaos Imp", "Runescarred", "Flame Serpent", "Ancient Treant", "Doom Serpent", "Wailing Horror", "Night Gaunt", "Blight Witch", "Crystal Serpent", "Ashbound Giant", "Stone Colossus", "Flayer Lord", "Infernal Hound", "Chasm Horror", "Dark Herald", "Sky Terror", "Aether Drake", "Vortex Golem", "Witherfang", "Bloodroot Horror", "Ash Tyrant", "Gloom Crawler", "Void Knight", "Eclipse Wraith", "Thunder Wyrm", "Lurking Terror", "Frost Revenant", "Brine Lord", "Elder Hydra", "Oblivion Fiend", "Arcane Horror", "Nethermancer", "Cursed Juggernaut", "Shatter Golem", "Stormcaller", "Venom Hydra", "Phantom King", "Dire Revenant", "Soul Warden", "Hollow Knight", "Elder Wyrm", "Abyss Knight", "Crag Behemoth", "Pyre Lord", "Nether Shade", "Corruption Spawn", "Ash Wyrm", "Flesh Colossus", "Titanborn", "Wretched Seer", "Blood Wyrm", "Skull Titan", "Skybreaker", "Maw Serpent", "Bone Titan", "Flame Reaper", "Frost Tyrant", "Iron Juggernaut", "Storm Sovereign", "Oblivion Beast", "Warping Horror", "Celestial Reaver", "Flesh Tyrant", "Void Reaver", "Shadow Sovereign", "Titan of Cinders", "Storm Wyrm", "Blackfire Colossus", "Abyss Tyrant", "Soul Flayer", "Dread Revenant", "Flesh Reaver", "Elder Horror", "Titan Wraith", "Lord of Ruin", "Doom Sovereign", "Nether Titan", "Ember Wyrm", "Shattered Titan", "Cinder Reaver", "Ruinborn Horror", "Blood Sovereign", "Demon Lord"]
     maxHealth = [11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589, 2906462504527, 3342431880206, 3843796662236, 4420366161571, 5083421085806, 5845934248676, 6722824385977, 7731248043873]
     maxDamage = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589, 2906462504527, 3342431880206]
     minDamage = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589]
     defense = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682]
-
-# Classes for ease
 monster = monsterVariables()
 
 # The Player Library
@@ -164,6 +164,8 @@ persistentStats = {
     "is_dead": False,
     "escapes_used": 0,
     "coins_from_escapes": 0,
+
+    "currentVersion": "Unknown",
 }
 
 # Global Variables
@@ -549,7 +551,7 @@ def show_stats_screen():
     print(Fore.RED + (
         "===== PLAYER IS DECEASED =====\n" if stats.get("is_dead", False) else "===== PLAYER STATISTICS =====\n"))
 
-    print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}")
+    print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}  |  Difficulty: {player['difficulty']}")
     print(Fore.GREEN + f"Current Floor: {stats.get('floor', 0)}.{stats.get('room', 0)}")
     print(f"XP: {round(player_data.get('xp', 0), 1)}  |  Coins: {round(player_data.get('coins', 0), 1)}")
     print(
@@ -591,7 +593,7 @@ def show_stats_screen():
     print(Fore.CYAN + "\n--- Gatcha ---")
     print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
     print(Fore.BLACK + "|" + Fore.BLUE)
-    
+
     characters = gatcha_data.get("characters_owned", [])
     if characters:
         for i, name in enumerate(characters, 1):
@@ -1566,6 +1568,8 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     player["name"] = os.path.splitext(currentSaveName)[0]
 
+    persistentStats["currentVersion"] = "2.3.1"
+
     data = {
         "player": player,
         "persistentStats": persistentStats,
@@ -1610,7 +1614,6 @@ def list_saved_files():  # lists saved files
         print("  " + f)
     print(Style.RESET_ALL)
 
-
 def load_from_file(filename):  # Load data from files
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
     global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
@@ -1652,6 +1655,23 @@ def load_from_file(filename):  # Load data from files
         threading.Thread(target=grace_period_timer, daemon=True).start()
 
         print(Fore.GREEN + f"Loaded from {filename}")
+
+        # Version check
+        if "currentVersion" not in persistentStats:
+            print(Fore.RED + "WARNING")
+            print(Fore.RED + "This save file does not have a version number.")
+            print(Fore.RED + "It may be from an old version of the game and may not load correctly.")
+            print(Fore.RED + "Expect to have some compatability issues")
+            print(Fore.RED + "These issues can be totally GAMEBREAKING")
+            input(Fore.BLUE + "Press ENTER to continue...")
+        elif persistentStats["currentVersion"] != "2.3.1":
+            print(Fore.RED + "WARNING")
+            print(Fore.RED + "This save file is not from the current version of the game")
+            print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
+            print(Fore.RED + "Expect to have some compatability issues")
+            print(Fore.RED + "These issues can be totally GAMEBREAKING")
+            input(Fore.BLUE + "Press ENTER to continue...")
+
         return True
 
     except Exception as e:
@@ -1796,10 +1816,6 @@ def manage_floors():
     floor = persistentStats["floor"]
     tier_start = min(floor % (total_monsters - tier_size + 1), total_monsters - tier_size)
     tier_end = tier_start + tier_size
-
-    # Determine if boss is available
-    # if persistentStats["room"] >= 10:
-    #    persistentStats["boss_fight_ready"] = True
 
     # Weights: [common, uncommon, rare]
     base_weights = [1.0, 0.75, 0.5]
@@ -2233,23 +2249,27 @@ def startup():
         print(Fore.YELLOW + f"Creating new save file: {currentSaveName}")
 
     if currentSaveName not in savedGames:
-        print(Fore.YELLOW + "Choose difficulty: Easy / Normal / Hard")
+        print(Fore.YELLOW + "Choose difficulty: Easy / Normal / Hard / Impossible")
         print(Fore.CYAN + "(Easy gives bonus XP; Hard gives less)")
         choice = input(Fore.GREEN + "> ").strip().lower()
 
-        if choice == "easy":
-            player["difficulty"] = 25
-        elif choice == "normal":
-            player["difficulty"] = 15
-        elif choice == "hard":
-            player["difficulty"] = 10
+        if choice in ["easy","eas"]:
+            player["difficulty"] = "easy"
+            startingXp = 30
+        elif choice in ["normal", "norm"]:
+            player["difficulty"] = "normal"
+            startingXp = 20
+        elif choice in ["hard", "drd"]:
+            player["difficulty"] = "hard"
+            startingXp = 10
+        elif choice in ["impossible", "imp"]:
+            player["difficulty"] = "impossible"
+            startingXp = 0
         else:
-            player["difficulty"] = 15  # Default to normal
-
-        player["xp"] += player["difficulty"]
-
+            player["difficulty"] = 1  # Default to normal
+            startingXp = 20
+        player["xp"] += startingXp
     combat()
-
 
 if __name__ == "__main__":
     startup() 
