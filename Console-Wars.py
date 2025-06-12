@@ -1923,6 +1923,23 @@ def level_up():
                 print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
+def try_portal():
+    global persistentStats
+    if random.randint(1, 100) <= 500 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
+        print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
+        print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
+        print(Fore.BLACK + "|")
+        choice = input(Fore.BLUE + ">").strip().lower()
+        print()
+        if choice in ["yes", "y"]:
+            print(Fore.YELLOW + "You enter the portal and exit in a random location!")
+            time.sleep(0.8)
+            persistentStats["floor"] += random.randint(1, 5)
+            persistentStats["room"] = random.randint(0, 8)
+            reset_monster()
+        else:
+            print(Fore.YELLOW + "You choose to ignore the portal and move on!")
+        return
 
 def monster_death_check():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
@@ -1987,12 +2004,12 @@ def monster_death_check():
         elif endlessMode:
             endlessKills += 1
 
+        try_portal()
         time.sleep(0.8)
         reset_monster()
         apply_boosts()
     else:
         monster_turn()
-
 
 def monster_turn():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
