@@ -38,7 +38,7 @@ player = {
 
     "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
     "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
-    "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn"],
+    "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn", "Portal Travel"],
 
     "xp": 0.0,
     "coins": 0,
@@ -156,6 +156,7 @@ shop_data = {
 persistentStats = {
     "floor": 0,
     "room": 0,
+    "highest_floor": 0,
     "loop_times": 0,
     "boss_fight_ready": False,
     "monsters_killed": 0,
@@ -744,6 +745,43 @@ def show_combat_stats():  # this is the main function to show all the stats duri
 
 # Minigame/Other Functions
 
+# Portal Travel Funcitons
+def portal_travel(): # The idea of this is to let you travel to any floor (50-max) that you have been to before
+    global persistentStats
+    clear_screen()
+    if persistentStats["floor"] < 50:
+        print(Fore.RED + "You can't do portal travel till floor 50!")
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
+        return
+
+    while True:
+        clear_screen()
+        print(Fore.BLUE + "===Portal Travel===")
+        print(Fore.BLACK + "|")
+        print(Fore.BLUE + f"You can access floors 50 to {persistentStats['highest_floor']}")
+        print(Fore.BLUE + "What floor would you like to go to? (or type 'exit')")
+        choice = input(Fore.GREEN + "> ").lower()
+
+        if choice in ["exit", "no", "leave"]:
+            print(Fore.CYAN + "Returning to combat")
+            time.sleep(0.8)
+            return
+
+        if choice.isdigit():
+            floor_num = int(choice)
+            if 50 <= floor_num <= persistentStats['highest_floor']:
+                print(Fore.MAGENTA + f"You enter the portal and travel to floor {floor_num}")
+                time.sleep(0.8)
+                persistentStats["floor"] = floor_num  # optional: set the new floor
+                return
+            else:
+                print(Fore.RED + "You cannot enter this floor")
+                time.sleep(0.5)
+        else:
+            print(Fore.RED + "Invalid input. Please enter a floor number or 'exit'.")
+            time.sleep(0.5)
+
 # Gatcha functions
 def start_gatcha_thread():  # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
     global gatcha_thread, gatcha_data
@@ -887,7 +925,7 @@ def reborn():
         return
 
     print(Fore.YELLOW + "--- Reborn ---")
-    if persistentStats["floor"] >= 50:
+    if persistentStats["floor"] <= 50:
         print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
     else:
         print(Fore.CYAN + "Reset to Floor 50 while keeping all stat boosts and inventory.")
@@ -904,10 +942,11 @@ def reborn():
             combat()
             return
 
+        persistentStats["highest_floor"] = persistentStats["floor"]
         player["xp"] = 0.0
         player["coins"] += 100000
         well_data["wishing_well_cost"] = 1000
-        if persistentStats["floor"] >= 50:
+        if persistentStats["floor"] <= 50:
             persistentStats["floor"] = 0
         else:
             persistentStats["floor"] = 50
@@ -1482,6 +1521,10 @@ def minigame_selection():
         print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
     else:
         print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
+    if persistentStats["floor"] < 50:
+        print(Fore.RED + "Portal Travel  → Travel through unlocked floors with ease!")
+    else:
+        print(Fore.YELLOW + "Portal Travel  → Travel through unlocked floors with ease!")
     print(Fore.BLACK + "|")
     print(Fore.BLUE + "Options:", player["gameList"])
     print(Fore.BLACK + "|")
@@ -1502,6 +1545,8 @@ def minigame_selection():
         gatcha_game()
     elif choice in ["reborn", "re", "born"]:
         reborn()
+    elif choice in ["portal","travel","port","trav","tele","teleport"]:
+        portal_travel()
     elif choice in ["exit", "leave"]:
         combat()
     else:
