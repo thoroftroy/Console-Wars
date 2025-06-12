@@ -550,7 +550,7 @@ def show_stats_screen():
         "===== PLAYER IS DECEASED =====\n" if stats.get("is_dead", False) else "===== PLAYER STATISTICS =====\n"))
 
     print(Fore.YELLOW + f"Name: {player_data.get('name', 'Unknown')}")
-    print(Fore.CYAN + f"Current Floor: {stats.get('floor', 0)}.{stats.get('room', 0)}")
+    print(Fore.GREEN + f"Current Floor: {stats.get('floor', 0)}.{stats.get('room', 0)}")
     print(f"XP: {round(player_data.get('xp', 0), 1)}  |  Coins: {round(player_data.get('coins', 0), 1)}")
     print(
         f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
@@ -563,7 +563,11 @@ def show_stats_screen():
     print(f"Demon Lords Defeated: {demon_lord_data.get('demonLordsDefeated', 0)}")
     print(f"Times Escaped: {persistentStats['escapes_used']}  |  Coins Looted: {persistentStats['coins_from_escapes']}")
 
-    print(Fore.MAGENTA + "\n--- Gambling Stats ---")
+    print(Fore.MAGENTA + "\n--- Perminent Upgrades ---")
+    print(f"Hackers Eye: {player['eye_purchased']}  |  Weight Dice: {player['weighted_dice_purchased']}")
+    print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purhcased']}")
+
+    print(Fore.CYAN + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
     print(
         f"Coins Gambled: {gambling_data.get('gamblingCoinsSpent', 0)} | Coins Won: {gambling_data.get('gamblingCoinsWon', 0)}")
@@ -574,10 +578,20 @@ def show_stats_screen():
     print(Fore.CYAN + "\n--- Fishing ---")
     print(f"Fish Caught: {fishing_data.get('fish_caught', 0)} | Items Fished: {fishing_data.get('items_fished', 0)}")
 
-    print(Fore.BLUE + "\n--- Gatcha ---")
+    print(Fore.CYAN + "\n--- Tamagatchi ---")
+    print(f"Active: {tama.get('active', False)} | Hunger: {tama.get('hunger', 0)} | Bond: {tama.get('bond', 0)}")
+    print(f"Boosts: {tama.get('boosts', {})}")
+
+    print(Fore.CYAN + "\n--- Wishing Well ---")
+    print(f"Wishes Made: {well.get('wishing_coins_used', 0)}")
+    print(f"Blessings Received: {well.get('blessings_received', 0)}")
+    print(f"Curses Received: {well.get('curses_received', 0)}")
+    print(f"Divine Spark Charges: {well.get('divine_spark', 0)}")
+
+    print(Fore.CYAN + "\n--- Gatcha ---")
     print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
     print(Fore.BLACK + "|" + Fore.BLUE)
-
+    
     characters = gatcha_data.get("characters_owned", [])
     if characters:
         for i, name in enumerate(characters, 1):
@@ -594,13 +608,7 @@ def show_stats_screen():
     else:
         print("(None)")
 
-    print(Fore.CYAN + "\n--- Wishing Well ---")
-    print(f"Wishes Made: {well.get('wishing_coins_used', 0)}")
-    print(f"Blessings Received: {well.get('blessings_received', 0)}")
-    print(f"Curses Received: {well.get('curses_received', 0)}")
-    print(f"Divine Spark Charges: {well.get('divine_spark', 0)}")
-
-    print(Fore.GREEN + "\n--- Inventory ---")
+    print(Fore.BLUE + "\n--- Inventory ---")
     inventory = player_data.get("inventory", [])
     if inventory:
         for i, item in enumerate(inventory, 1):
@@ -611,10 +619,6 @@ def show_stats_screen():
             print()  # Ensure final line ends properly
     else:
         print("(Empty)")
-
-    print(Fore.CYAN + "\n--- Tamagatchi ---")
-    print(f"Active: {tama.get('active', False)} | Hunger: {tama.get('hunger', 0)} | Bond: {tama.get('bond', 0)}")
-    print(f"Boosts: {tama.get('boosts', {})}")
 
     if persistentStats["is_dead"]:
         print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
