@@ -556,7 +556,7 @@ def show_stats_screen():
         f"Max Health: {round(player_data.get('maxHealth', 0), 1)}  |  Damage: {round(player_data.get('damage', 0), 1)}  |  Defense: {round(player_data.get('defense', 0), 1)}")
     print(
         f"Dodge Chance: {round(player_data.get('dodge', 0), 1)}%  |  Retreat Chance: {round(player_data.get('escape', 0), 1)}%  |  Drop Chance: {round(player_data.get('drop', 0), 1)}%")
-    print(f"Reborns Used: {stats.get('reborns_used', 0)}")
+    print(f"Reborns Used: {stats.get('reborns_used', 0)}  |  Highest Floor Reached: {persistentStats['highest_floor']}")
 
     print(Fore.MAGENTA + "\n--- Combat Stats ---")
     print(f"Monsters Killed: {stats.get('monsters_killed', 0)}")
