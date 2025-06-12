@@ -28,7 +28,7 @@ player = {
 
     "maxHealth": 30.0,
     "health": 30.0,
-    "damage": 4,
+    "damage": 4.0,
     "defense": 1.0,
     "dodge": 5.0,
     "escape": 50.0,
@@ -135,7 +135,7 @@ shop_data = {
     "baseEscapeBoostCostFactor": 1.1,
     "baseDropBoostCostFactor": 1.4,
 
-    # How much each boost gives you each time (This number is multiplied with the stat for exponential increases)
+    # How much each boost gives you each time
     "healthBoostMod": 1.05,
     "damageBoostMod": 1.13,
     "defenseBoostMod": 1.12,
@@ -147,7 +147,7 @@ shop_data = {
     "healthBoostCap": 8000000000000000000,
     "damageBoostCap": 8000000000000000000,
     "defenseBoostCap": 8000000000000000000,
-    "dodgeBoostCap": 55,
+    "dodgeBoostCap": 75,
     "escapeBoostCap": 99,
     "dropBoostCap": 35,
 }
@@ -765,10 +765,9 @@ def start_gatcha_thread():  # Starts the passive gatcha thread to earn xp based 
 
 
 def update_gatcha():  # The actual gatcha thread which updates your XP over time
-    # This isn't working, it is supposed to be running every 5-10 seconds from the gatcha thread then totalling all the xp boosts from the characters and giving it to the player, I am not getting an error but nothing seems to be happening
     global player, persistentStats, gatcha_data, gatcha, gatcha_thread, startup_grace_period
 
-    if gatcha_data["active"] and startup_grace_period == False: # Don't do it if its during startup
+    if gatcha_data["active"] and not startup_grace_period:  # Don't do it if it's during startup
         # Total up XP bonuses from player's active gatcha characters
         xp_gain = 0
         for name in gatcha_data.get("characters_owned", []):
@@ -777,11 +776,15 @@ def update_gatcha():  # The actual gatcha thread which updates your XP over time
                     xp_gain += char["boosts"]["xp_bonus"]
                     break  # Stop after the first match
 
-        # Save the gain in the gatcha_data for reference and apply it to the player
+        # Apply multipliers
+        reborns = (persistentStats["reborns_used"] + 1) * 5
+        floor = persistentStats["floor"] + 1
+        xp_gain *= reborns + floor
+
+        # Wait and apply the XP gain
         time.sleep(10)
         gatcha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
-
 
 def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
     global gatcha_data, persistentStats
@@ -797,7 +800,6 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
         time.sleep(1)
 
     return
-
 
 def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
@@ -825,9 +827,7 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
-
-        print(
-            Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
+        print(Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
@@ -854,13 +854,11 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
                         print(Fore.MAGENTA + f"{unlocked['desc']}")
                         time.sleep(1.5)
                 elif gatcha_chance <= 40:
-                    xp_earned = random.randint(10, 200) * (persistentStats["floor"] + 1) * (
-                                persistentStats["reborns_used"] + 1)
+                    xp_earned = random.randint(10, 200) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {xp_earned} xp!")
                     player["xp"] += xp_earned
                 elif gatcha_chance <= 70:
-                    coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (
-                                persistentStats["reborns_used"] + 1)
+                    coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {coins_earned} coins!")
                     player["coins"] += coins_earned
                 else:
@@ -875,7 +873,6 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
             print(Fore.RED + "Invalid input")
             time.sleep(1)
     return
-
 
 # Reborn functions
 def reborn():
@@ -1645,9 +1642,9 @@ def apply_boosts():
     # This function resets stats to base values and then adds all applicable bonuses.
 
     # Base stats
-    base_health = 25.0
-    base_damage = 3.5
-    base_defense = 0.0
+    base_health = 30.0
+    base_damage = 4.0
+    base_defense = 1.0
     base_dodge = 5.0
     base_escape = 50.0
     base_drop = 7.0
@@ -2039,7 +2036,9 @@ def combat():
                 persistentStats["boss_fight_ready"] = True
                 reset_monster()
             else:
-                if choice in ["yes", "y"]:
+                if choice in ["yes", "y", "", "confirm"]:
+                    if choice == "":
+                        print(Fore.RED + "(Not typing anything counts as a yes)")
                     persistentStats["boss_fight_ready"] = True
                     reset_monster()
                 else:
