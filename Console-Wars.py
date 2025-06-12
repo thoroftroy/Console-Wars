@@ -793,7 +793,7 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
             Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
         time.sleep(1)
-    elif random.randint(0, 100) <= 10:  # 10% chance
+    elif random.randint(0, 100) <= 5:  # 5% chance
         print(
             Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
         gatcha_data["gatcha_pulls_available"] += 1
@@ -887,7 +887,10 @@ def reborn():
         return
 
     print(Fore.YELLOW + "--- Reborn ---")
-    print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
+    if persistentStats["floor"] >= 50:
+        print(Fore.CYAN + "Reset to Floor 0 while keeping all stat boosts and inventory.")
+    else:
+        print(Fore.CYAN + "Reset to Floor 50 while keeping all stat boosts and inventory.")
     print(Fore.CYAN + "All minigames improve, and well cost resets.")
     print(Fore.CYAN + "Cost: All XP  →  Reward: 100,000 coins")
     print(Fore.YELLOW + "\nReborn? (yes/no)")
@@ -904,7 +907,10 @@ def reborn():
         player["xp"] = 0.0
         player["coins"] += 100000
         well_data["wishing_well_cost"] = 1000
-        persistentStats["floor"] = 0
+        if persistentStats["floor"] >= 50:
+            persistentStats["floor"] = 0
+        else:
+            persistentStats["floor"] = 50
         persistentStats["room"] = 0
         persistentStats["reborns_used"] += 1
 
@@ -1229,7 +1235,7 @@ def gambling():  # Manages the gambling screen
         apply_boosts()
 
     elif choice in ["gamble", "gam"]:
-        if gambling_data["gamblingCoinsWon"] >= 10000 * (persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1):
+        if gambling_data["gamblingCoinsWon"] >= (10000 * ((persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1))):
             print(Fore.BLACK + "|")
             print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
             print(Fore.BLUE + "(You can try to gamble again next floor)")
@@ -1243,7 +1249,7 @@ def gambling():  # Manages the gambling screen
                     if player["weighted_dice_purchased"] == True:
                         mults = [0.5, 0.6, 0.7, 0.8, 1.1, 1.2, 1.3, 1.4, 1.5]
                     else:
-                        mults = [0, 0.3, 0.4, 0.5, 1.0, 1.1, 1.2, 1.3, 1.4]
+                        mults = [0, 0.3, 0.4, 0.5, 1.0, 1.05, 1.1, 1.2, 1.3]
                     weights = [10, 20, 10, 7, 12, 10, 20, 5, 2]
                     scale = 1 + (persistentStats["floor"] / 10)
                     mult = random.choices(mults, weights)[0] * scale
@@ -1925,7 +1931,7 @@ def level_up():
 
 def try_portal():
     global persistentStats
-    if random.randint(1, 100) <= 5 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
+    if random.randint(1, 100) <= 3 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
         print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
         print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
         print(Fore.BLACK + "|")
@@ -1934,7 +1940,11 @@ def try_portal():
         if choice in ["yes", "y"]:
             print(Fore.YELLOW + "You enter the portal and exit in a random location!")
             time.sleep(0.8)
-            persistentStats["floor"] += random.randint(1, 5)
+            if random.randint(0,100) <= 5 and persistentStats["floor"] <= 100: #adds a really small chance to move super far
+                print(Fore.RED + "The portal took you really far... good luck")
+                persistentStats["floor"] += random.randint(6, 90)
+            else:
+                persistentStats["floor"] += random.randint(1, 5)
             persistentStats["room"] = random.randint(0, 8)
             reset_monster()
         else:
