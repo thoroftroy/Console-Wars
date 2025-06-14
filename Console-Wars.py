@@ -26,9 +26,9 @@ monster = monsterVariables()
 player = {
     "name": "placeHolderName",
 
-    "maxHealth": 30.0,
-    "health": 30.0,
-    "damage": 4.0,
+    "maxHealth": 25.0,
+    "health": 25.0,
+    "damage": 3.5,
     "defense": 1.0,
     "dodge": 5.0,
     "escape": 50.0,
@@ -850,8 +850,8 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
 def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
     clear_screen()
-    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You can't do gatcha pulls until floor 10!")
+    if persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "You can't do gatcha pulls until floor 50!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -926,8 +926,8 @@ def reborn():
 
     clear_screen()
 
-    if persistentStats["floor"] < 25:
-        print(Fore.RED + "You must reach floor 25 to use Reborn.")
+    if persistentStats["floor"] < 30:
+        print(Fore.RED + "You must reach floor 30 to use Reborn.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -979,8 +979,8 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You must defeat 350 monsters or make it to floor 15 to unlock the Wishing Well.")
+    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "You must defeat 550 monsters or make it to floor 30 to unlock the Wishing Well.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1212,9 +1212,9 @@ def gambling():  # Manages the gambling screen
     clear_screen()
     print(Style.RESET_ALL)
     print(Fore.YELLOW + "Welcome to the Gambling Den")
-    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
-        print(Fore.RED + "You must reach floor 5 to gamble!")
+        print(Fore.RED + "You must reach floor 15 to gamble!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1431,9 +1431,9 @@ def tamagatchi():
     clear_screen()
     print(Style.RESET_ALL)
 
-    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
-        print(Fore.RED + "You must reach floor 5 to unlock the Tamagatchi!")
+        print(Fore.RED + "You must reach floor 10 to unlock the Tamagatchi!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1509,23 +1509,23 @@ def minigame_selection():
     print(Fore.BLUE + "  Complete minigames to earn boosts, XP, and more!")
     print(Fore.BLACK + "|")
     print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
-    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Tamagatchi     → Feed a friend for passive stat boosts.")
     else:
         print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
-    if persistentStats["floor"] < 5 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
-    if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 20 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
     else:
         print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
-    if persistentStats["monsters_killed"] < 350 or persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
-    if persistentStats["floor"] < 25:
+    if persistentStats["floor"] < 30:
         print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
     else:
         print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
@@ -1721,8 +1721,8 @@ def apply_boosts():
     # This function resets stats to base values and then adds all applicable bonuses.
 
     # Base stats
-    base_health = 30.0
-    base_damage = 4.0
+    base_health = 25.0
+    base_damage = 3.5
     base_defense = 1.0
     base_dodge = 5.0
     base_escape = 50.0
@@ -1856,22 +1856,22 @@ def level_up():
         print("".join(output_parts) + Style.RESET_ALL)
 
         # Manage upgrades like the eye and weighted dice
-        if player["eye_purchased"] == False and persistentStats["floor"] >= 2:
+        if player["eye_purchased"] == False and persistentStats["floor"] >= 3:
             if player["xp"] >= shop_data["eyeCost"]:
                 print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']}")
             else:
                 print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']}")
-        elif player["weighted_dice_purchased"] == False and persistentStats["floor"] >= 5:
+        if player["weighted_dice_purchased"] == False and persistentStats["floor"] >= 10:
             if player["xp"] >= shop_data["weightedDiceCost"]:
                 print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}")
             else:
                 print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}")
-        elif player["dog_house_purhcased"] == False and persistentStats["floor"] >= 10:
+        if player["dog_house_purhcased"] == False and persistentStats["floor"] >= 15:
             if player["xp"] >= shop_data["dogHouseCost"]:
                 print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']}")
             else:
                 print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']}")
-        elif player["monster_bait_purchased"] == False and persistentStats["floor"] >= 3:
+        if player["monster_bait_purchased"] == False and persistentStats["floor"] >= 5:
             if player["xp"] >= shop_data["monsterBaitCost"]:
                 print(Fore.GREEN + f" Monster Bait: {shop_data['monsterBaitCost']}")
             else:
@@ -2038,7 +2038,7 @@ def monster_death_check():
                     tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
 
-        if persistentStats["floor"] >= 10 or persistentStats["reborns_used"] >= 1:
+        if persistentStats["floor"] >= 50 or persistentStats["reborns_used"] >= 1:
             try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
@@ -2049,7 +2049,7 @@ def monster_death_check():
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
-            if persistentStats["floor"] >= 10 or persistentStats["reborns_used"] >= 1:
+            if persistentStats["floor"] >= 50 or persistentStats["reborns_used"] >= 1:
                 try_gatcha_drop(0)
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
 
