@@ -109,9 +109,9 @@ Go to https://pip.pypa.io/en/stable/installation/ for more information
 After installing Pip, use `pip` or `pip3` to install the required module:
 
 ```bash
-pip install colorama
+pip install colorama numpy
 # or
-pip3 install colorama
+pip3 install colorama numpy
 ```
 
 ## Launching The Game
