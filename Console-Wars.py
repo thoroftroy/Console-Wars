@@ -748,7 +748,30 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     print(Fore.BLACK + "|")
     if player["eye_purchased"] == True:
         damageAverage = round((monster.minDamage[monsterId] + monster.maxDamage[monsterId]) / 2,1)
-        print(Fore.YELLOW + f"Hacker Eye Info |  Average Damage: {damageAverage} (Min: {monster.minDamage[monsterId]} - Max: {monster.maxDamage[monsterId]})")
+        damageMin = monster.minDamage[monsterId] 
+        damageMax = monster.maxDamage[monsterId]
+        # Scales the  damage with the difficulty
+        if player["difficulty"] == "easy":
+            damageAverage = round(damageAverage * 0.75)
+            damageMin = round(damageMin * 0.75)
+            damageMax = round(damageMax * 0.75)
+        if player["difficulty"] == "normal":
+            damageAverage = round(damageAverage * 1)
+            damageMin = round(damageMin * 1)
+            damageMax = round(damageMax * 1)
+        if player["difficulty"] == "hard":
+            damageAverage = round(damageAverage * 1.5)
+            damageMin = round(damageMin * 1.5)
+            damageMax = round(damageMax * 1.5)
+        if player["difficulty"] == "impossible":
+            damageAverage = round(damageAverage * 2)
+            damageMin = round(damageMin * 2)
+            damageMax = round(damageMax * 2)
+        else:
+            damageAverage = round(dmg * 1)
+            damageMin = round(damageMin * 1)
+            damageMax = round(damageMax * 1)
+        print(Fore.YELLOW + f"Hacker Eye Info |  Average Damage: {damageAverage} (Min: {damageMin} - Max: {damageMax})")
     print(Fore.BLACK + "|")
     currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100, 2)
     print(Fore.GREEN + "Player Stats:")
