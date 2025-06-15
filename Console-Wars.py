@@ -8,8 +8,6 @@ import json
 from datetime import datetime
 import threading
 import shutil
-from collections import Counter
-from numpy.matlib import empty
 
 # Define libraries and classes
 
@@ -19,7 +17,8 @@ class monsterVariables:
     maxHealth = [11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589, 2906462504527, 3342431880206, 3843796662236, 4420366161571, 5083421085806, 5845934248676, 6722824385977, 7731248043873]
     maxDamage = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589, 2906462504527, 3342431880206]
     minDamage = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682, 2197703217034, 2527358699589]
-    defense = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682]
+    defense =   [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 26, 29, 33, 37, 42, 48, 55, 63, 72, 82, 94, 108, 124, 142, 163, 187, 215, 247, 284, 326, 374, 430, 494, 568, 653, 750, 862, 991, 1139, 1309, 1505, 1730, 1989, 2287, 2630, 3024, 3477, 3998, 4597, 5286, 6078, 6989, 8037, 9242, 10628, 12222, 14055, 16163, 18587, 21375, 24581, 28268, 32508, 37384, 42991, 49439, 56854, 65382, 75189, 86467, 99437, 114352, 131504, 151229, 173913, 199999, 229998, 264497, 304171, 349796, 402265, 462604, 531994, 611793, 703561, 809095, 930459, 1070027, 1230531, 1415110, 1627376, 1871482, 2152204, 2475034, 2846289, 3273232, 3764216, 4328848, 4978175, 5724901, 6583636, 7571181, 8706858, 10012886, 11514818, 13242040, 15228345, 17512596, 20139485, 23160407, 26634468, 30629638, 35224083, 40507695, 46583849, 53571426, 61607139, 70848209, 81475440, 93696756, 107751269, 123913959, 142501052, 163876209, 188457640, 216726285, 249235227, 286620511, 329613587, 379055625, 435913968, 501301063, 576496222, 662970655, 762416253, 876778690, 1008295493, 1159539816, 1333470788, 1533491406, 1763515116, 2028042383, 2332248740, 2682086051, 3084398958, 3547058801, 4079117621, 4690985264, 5394633053, 6203828010, 7134402211, 8204562542, 9435246923, 10850533961, 12478114055, 14349831163, 16502305837, 18977651712, 21824299468, 25097944388, 28862636046, 33192031452, 38170836169, 43896461594, 50480930833, 58053070457, 66761031025, 76775185678, 88291463529, 101535183058, 116765460516, 134280279593, 154422321531, 177585669760, 204223520223, 234857048256, 270085605494, 310598446318, 357188213265, 410766445254, 472381412042, 543238623848, 624724417425, 718433080038, 826198042043, 950127748349, 1092646910601, 1256543947191, 1445025539269, 1661779370159, 1911046275682]
+
 monster = monsterVariables()
 
 # The Player Library
@@ -55,6 +54,11 @@ player = {
     "weighted_dice_purchased": False,
     "monster_bait_purchased": False,
     "dog_house_purhcased": False,
+    "mirror_pendant_purchased": False,
+    "escape_key_purchased": False,
+    "reaper's_token_purchased": False,
+    "greed's_gullet_purchased": False,
+    "soul_mirror_purchased": False,
 }
 
 # Endless mode
@@ -122,18 +126,34 @@ shop_data = {
     "baseEscapeBoostCost": 2,
     "baseDropBoostCost": 10,
 
+    # Single use upgrades
+    "eyeFloor": 3,
+    "weightedDiceFloor": 5,
+    "monsterBaitFloor": 10,
+    "dogHouseFloor": 15,
+    "mirrorPendantFloor": 45,
+    "escapeKeyFloor": 40,
+    "reaperTokenFloor": 75,
+    "greedGulletFloor": 10,
+    "soulMirrorFloor": 30,
+    
     "eyeCost": 500,
-    "weightedDiceCost": 10000,
-    "monsterBaitCost": 2500,
-    "dogHouseCost": 7500,
+    "weightedDiceCost": 1500,
+    "monsterBaitCost": 1000,
+    "dogHouseCost": 2000,
+    "mirrorPendantCost": 10000,
+    "escapeKeyCost": 5000,
+    "reaperTokenCost": 15000,
+    "greedGulletCost": 5000,
+    "soulMirrorCost": 18000,
 
     # How much the cost goes up each time
-    "baseHealthBoostCostFactor": 1.35,
-    "baseDamageBoostCostFactor": 1.25,
-    "baseDefenseBoostCostFactor": 1.4,
-    "baseDodgeBoostCostFactor": 1.7,
-    "baseEscapeBoostCostFactor": 1.1,
-    "baseDropBoostCostFactor": 1.4,
+    "baseHealthBoostCostFactor": 1.45,
+    "baseDamageBoostCostFactor": 1.35,
+    "baseDefenseBoostCostFactor": 1.5,
+    "baseDodgeBoostCostFactor": 1.8,
+    "baseEscapeBoostCostFactor": 1.3,
+    "baseDropBoostCostFactor": 1.9,
 
     # How much each boost gives you each time
     "healthBoostMod": 1.05,
@@ -179,6 +199,7 @@ startup_grace_period = True
 
 # Monster Variables
 monsterId = 0
+monsterAttack = 0
 currentMonsterFight = monster.names[monsterId]
 currentMonsterHealth = monster.maxHealth[monsterId]
 currentMonsterDefense = monster.defense[monsterId]
@@ -635,7 +656,6 @@ def show_stats_screen():
 
 def get_item_coin_value(item):
     # Calculate the coin value of an item based on its boosts and rarity.
-    # Heuristic:
     #    - Each point of boost contributes some coins depending on stat type.
     #    - Extremely rare items (lower weight) are worth significantly more.
 
@@ -667,7 +687,7 @@ def get_item_coin_value(item):
 
     # Rarity multiplier (inverse of weight; capped to avoid extreme inflation)
     rarity_bonus = min(50, round(25 / weight)) if weight > 0 else 100
-    floorBonus = persistentStats["floor"] / 1.2
+    floorBonus = persistentStats["floor"] / 2.5
     if floorBonus <= 1:
         floorBonus = 1
     value = round(value * (1 + rarity_bonus / 100) * floorBonus * ((persistentStats["reborns_used"] * 10) + 1)) + 100
@@ -755,8 +775,8 @@ def show_combat_stats():  # this is the main function to show all the stats duri
 def portal_travel(): # The idea of this is to let you travel to any floor (50-max) that you have been to before
     global persistentStats
     clear_screen()
-    if persistentStats["floor"] < 50:
-        print(Fore.RED + "You can't do portal travel till floor 50!")
+    if persistentStats["floor"] < 75:
+        print(Fore.RED + "You can't do portal travel till floor 75!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -979,8 +999,8 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You must defeat 550 monsters or make it to floor 30 to unlock the Wishing Well.")
+    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "You must defeat 550 monsters or make it to floor 50 to unlock the Wishing Well.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1097,11 +1117,17 @@ def fishing():
         
         if fishing_data["fish_caught"] >= max_fish:
                 print(Fore.RED + "You have caught all the fish here, try again next floor!")
-                print(Fore.BLUE + "Type EXIT to continue")
+                print(Fore.BLUE + "Type EXIT to continue (you may have to type it several times)")
                 input(Fore.GREEN + "> ")
                 return
         
         while fishing_active and not fishing_stop_event.is_set():
+            
+            if fishing_data["fish_caught"] >= max_fish:
+                print(Fore.RED + "You have caught all the fish here, try again next floor!")
+                print(Fore.BLUE + "Type EXIT to continue (you may have to type it several times)")
+                input(Fore.GREEN + "> ")
+                return
             
             if fishing_penalty or time.time() < cooldown_until:
                 time.sleep(0.2)
@@ -1229,7 +1255,7 @@ def gambling():  # Manages the gambling screen
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
     print(Fore.CYAN + f"You have {player['coins']} coins.")
-    if persistentStats["floor"] >= 20:
+    if persistentStats["floor"] >= 45:
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
               "  | Defense:", str(round(player["defense"])))
@@ -1246,10 +1272,10 @@ def gambling():  # Manages the gambling screen
     print(Fore.GREEN + " [sell]    → Sell inventory items for coins")
     print(Fore.GREEN + " [gamble]  → Bet a custom amount of coins")
     print(Fore.GREEN + " [convert] → Convert 10 coins into 1 XP")
-    if persistentStats["floor"] >= 20:
+    if persistentStats["floor"] >= 45:
         print(Fore.GREEN + " [highrisk] → Gamble health, damage, or defense stats (costs 10,000 coins)")
     else:
-        print(Fore.RED + " [highrisk] → Unlocks at Floor 20+")
+        print(Fore.RED + " [highrisk] → Unlocks at Floor 45+")
     print(Fore.GREEN + " [leave]   → Exit back to combat")
     print(Fore.BLACK, "|")
 
@@ -1306,7 +1332,7 @@ def gambling():  # Manages the gambling screen
                     if player["weighted_dice_purchased"] == True:
                         mults = [0.5, 0.6, 0.7, 0.8, 1.1, 1.2, 1.3, 1.4, 1.5]
                     else:
-                        mults = [0, 0.3, 0.4, 0.5, 1.0, 1.05, 1.1, 1.2, 1.3]
+                        mults = [0, 0.3, 0.4, 0.5, 1.0, 1.025, 1.05, 1.1, 1.2]
                     weights = [10, 20, 10, 7, 12, 10, 20, 5, 2]
                     scale = 1 + (persistentStats["floor"] / 10)
                     mult = random.choices(mults, weights)[0] * scale
@@ -1343,8 +1369,8 @@ def gambling():  # Manages the gambling screen
             print(Fore.RED + "Invalid input.")
 
     elif choice in ["highrisk", "high", "risk"]:
-        if persistentStats["floor"] < 20:
-            print(Fore.RED + "High Risk unlocked at Floor 20")
+        if persistentStats["floor"] < 45:
+            print(Fore.RED + "High Risk unlocked at Floor 45")
         else:
             stat = input(Fore.YELLOW + "Which stat? [health/damage/defense]: ").strip().lower()
             if stat in ["health", "damage", "defense"]:
@@ -1422,7 +1448,7 @@ def update_tamagatchi():
         scale = 1
         if persistentStats["reborns_used"] >= 1:
             scale = 10 * (persistentStats["reborns_used"] + 1)
-        floorBoost = persistentStats["floor"] + 1
+        floorBoost = (persistentStats["floor"] / 1.5) + 1
 
         tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
         tamagatchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 21) * 0.005))
@@ -1477,7 +1503,7 @@ def tamagatchi():
         print(Fore.YELLOW + "Tamagatchi will be much happier if hunger is kept under 20")
         print(Fore.BLACK + "|")
 
-        if hunger <= 5:
+        if hunger < 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
         else:
             cost = round(hunger * 1.2 * (tamagatchi_data["tamagatchiFeeds"] + 1), 1)
@@ -1536,7 +1562,7 @@ def minigame_selection():
         print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
     else:
         print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
-    if persistentStats["floor"] < 50:
+    if persistentStats["floor"] < 75:
         print(Fore.RED + "Portal Travel  → Travel through unlocked floors with ease!")
     else:
         print(Fore.YELLOW + "Portal Travel  → Travel through unlocked floors with ease!")
@@ -1572,10 +1598,10 @@ def minigame_selection():
 
 # Saving and Loading Functions
 def save_to_file():  # Saves the file
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.3.1"
+    persistentStats["currentVersion"] = "2.3.2"
 
     data = {
         "player": player,
@@ -1589,6 +1615,7 @@ def save_to_file():  # Saves the file
         "endlessKills": endlessKills,
         "monsterId": monsterId,
         "currentMonsterHealth": currentMonsterHealth,
+        "monsterAttack": monsterAttack,
         "gatcha_data": gatcha_data,
     }
 
@@ -1622,7 +1649,7 @@ def list_saved_files():  # lists saved files
     print(Style.RESET_ALL)
 
 def load_from_file(filename):  # Load data from files
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data
+    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
 
     path = os.path.join(saveDirectory, filename)
@@ -1646,6 +1673,7 @@ def load_from_file(filename):  # Load data from files
         currentMonsterFight = monster.names[monsterId]
         currentMonsterHealth = data.get("currentMonsterHealth", monster.maxHealth[monsterId])
         currentMonsterDefense = monster.defense[monsterId]
+        monsterAttack = data.get("monsterAttack", 0)
 
         # Stats the tamagatchi thread
         if tamagatchi_data.get("active"):
@@ -1675,7 +1703,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.3.1":
+        elif persistentStats["currentVersion"] != "2.3.2":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -1772,8 +1800,10 @@ def apply_boosts():
 
 def reset_monster():
     # Resets monster based on current floor + room count, or spawns boss
-    global monsterId, player, monster, currentMonsterFight, currentMonsterHealth, currentMonsterDefense, persistentStats
+    global monsterId, player, monster, currentMonsterFight, currentMonsterHealth, currentMonsterDefense, persistentStats, monsterAttack
 
+    monsterAttack = 0
+    
     if persistentStats["boss_fight_ready"]:
         boss_index = min(monsterId + 1, len(monster.names) - 1)
         monsterId = boss_index
@@ -1863,26 +1893,51 @@ def level_up():
         print("".join(output_parts) + Style.RESET_ALL)
 
         # Manage upgrades like the eye and weighted dice
-        if player["eye_purchased"] == False and persistentStats["floor"] >= 3:
+        if player["eye_purchased"] == False and persistentStats["floor"] >= shop_data["eyeFloor"]:
             if player["xp"] >= shop_data["eyeCost"]:
-                print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']}")
+                print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']}  -> See things you shouldn't be able to see")
             else:
-                print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']}")
-        if player["weighted_dice_purchased"] == False and persistentStats["floor"] >= 10:
-            if player["xp"] >= shop_data["weightedDiceCost"]:
-                print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}")
-            else:
-                print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}")
-        if player["dog_house_purhcased"] == False and persistentStats["floor"] >= 15:
-            if player["xp"] >= shop_data["dogHouseCost"]:
-                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']}")
-            else:
-                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']}")
-        if player["monster_bait_purchased"] == False and persistentStats["floor"] >= 5:
+                print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']}  -> See things you shouldn't be able to see")
+        if player["monster_bait_purchased"] == False and persistentStats["floor"] >= shop_data["monsterBaitFloor"]:
             if player["xp"] >= shop_data["monsterBaitCost"]:
-                print(Fore.GREEN + f" Monster Bait: {shop_data['monsterBaitCost']}")
+                print(Fore.GREEN + f" Monster Bait: {shop_data['monsterBaitCost']}  -> Increase how fast fish will bite")
             else:
-                print(Fore.RED + f" Monster Bait: {shop_data['monsterBaitCost']}")
+                print(Fore.RED + f" Monster Bait: {shop_data['monsterBaitCost']}  -> Increase how fast fish will bite")
+        if player["weighted_dice_purchased"] == False and persistentStats["floor"] >= shop_data["weightedDiceFloor"]:
+            if player["xp"] >= shop_data["weightedDiceCost"]:
+                print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}  -> Change gambling luck in your favor")
+            else:
+                print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}  -> Change gambling luck in your favor")
+        if player["dog_house_purhcased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"]:
+            if player["xp"] >= shop_data["dogHouseCost"]:
+                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']}  -> Make your Tamagatchi happier")
+            else:
+                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']}  -> Make your Tamagatchi happier")
+        if player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data["mirrorPendantFloor"]:
+            if player["xp"] >= shop_data["mirrorPendantCost"]:
+                print(Fore.GREEN + f" Mirror Pendant: {shop_data['mirrorPendantCost']}  -> Mosters can't seem to hit you")
+            else:
+                print(Fore.RED + f" Mirror Pendant: {shop_data['mirrorPendantCost']}  -> Mosters can't seem to hit you")
+        if player["escape_key_purchased"] == False and persistentStats["floor"] >= shop_data["escapeKeyFloor"]:
+            if player["xp"] >= shop_data["escapeKeyCost"]:
+                print(Fore.GREEN + f" Escape Key: {shop_data['escapeKeyCost']}  -> Escape is garenteed")
+            else:
+                print(Fore.RED + f" Escape Key: {shop_data['escapeKeyCost']}  -> Escape is garenteed")
+        if player["reaper's_token_purchased"] == False and persistentStats["floor"] >= shop_data["reaperTokenFloor"]:
+            if player["xp"] >= shop_data["reaperTokenCost"]:
+                print(Fore.GREEN + f" Reaper's Token: {shop_data['reaperTokenCost']}  -> Heal more from killing")
+            else:
+                print(Fore.RED + f" Reaper's Token: {shop_data['reaperTokenCost']}  -> Heal more from killing")
+        if player["greed's_gullet_purchased"] == False and persistentStats["floor"] >= shop_data["greedGulletFloor"]:
+            if player["xp"] >= shop_data["greedGulletCost"]:
+                print(Fore.GREEN + f" Greed's Gullet: {shop_data['greedGulletCost']}  -> Killing grants coins")
+            else:
+                print(Fore.RED + f" Greed's Gullet: {shop_data['greedGulletCost']}  -> Killing grants coins")
+        if player["soul_mirror_purchased"] == False and persistentStats["floor"] >= shop_data["soulMirrorFloor"]:
+            if player["xp"] >= shop_data["soulMirrorCost"]:
+                print(Fore.GREEN + f" Soul Mirror: {shop_data['soulMirrorCost']}  -> Reflect monsters attacks back at them")
+            else:
+                print(Fore.RED + f" Soul Mirror: {shop_data['soulMirrorCost']}  -> Reflect monsters attacks back at them")
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
@@ -1890,34 +1945,79 @@ def level_up():
         choice = input(Fore.GREEN + "> ").strip().lower()
 
         # More upgrade management
-        if player["eye_purchased"] == False and choice in ["eye", "hacker", "hack", "hackerseye", "hackers"]:
+        if player["eye_purchased"] == False and persistentStats["floor"] >= shop_data["eyeFloor"] and choice in ["eye", "hacker", "hack", "hackerseye", "hackers"]:
             if player["xp"] >= shop_data["eyeCost"]:
                 print(Fore.GREEN + f"Hackers Eye Purchased! You can now see extra monster stats during battle.")
                 player["xp"] -= shop_data["eyeCost"]
                 player["eye_purchased"] = True
+                time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["weighted_dice_purchased"] == False and choice in ["weight", "weighted", "dice", "die", "weighteddice"]:
+        elif player["weighted_dice_purchased"] == False and persistentStats["floor"] >= shop_data["weightedDiceFloor"] and choice in ["weight", "weighted", "dice", "die", "weighteddice"]:
             if player["xp"] >= shop_data["weightedDiceCost"]:
                 print(Fore.GREEN + f"Weighted Dice Purchased! Gambling is tipped in your favor!")
                 player["xp"] -= shop_data["weightedDiceCost"]
                 player["weighted_dice_purchased"] = True
+                time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["dog_house_purhcased"] == False and choice in ["dog", "doghouse","house"]:
+        elif player["dog_house_purhcased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"] and choice in ["dog", "doghouse","house"]:
             if player["xp"] >= shop_data["dogHouseCost"]:
                 print(Fore.GREEN + f"Dog(?) House Purchased! Tamagatchi has a higher max bond!")
                 player["xp"] -= shop_data["dogHouseCost"]
                 player["dog_house_purhcased"] = True
+                time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["monster_bait_purchased"] == False and choice in ["monster","bait","monsterbait"]:
+        elif player["monster_bait_purchased"] == False and persistentStats["floor"] >= shop_data["monsterBaitFloor"] and choice in ["monster","bait","monsterbait"]:
             if player["xp"] >= shop_data["monsterBaitCost"]:
                 print(Fore.GREEN + f"Monster Bait Purchased! Fishing is faster!")
                 player["xp"] -= shop_data["monsterBaitCost"]
                 player["monster_bait_purchased"] = True
+                time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
+        elif player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data["mirrorPendantFloor"] and choice in ["pendant","mirrorpendant","pend"]:
+            if player["xp"] >= shop_data["mirrorPendantCost"]:
+                print(Fore.GREEN + f"Mirror Pendant Purchased! The fist attack from any monster will deal 0 damage!")
+                player["xp"] -= shop_data["mirrorPendantCost"]
+                player["mirror_pendant_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["escape_key_purchased"] == False and persistentStats["floor"] >= shop_data["escapeKeyFloor"] and choice in ["escapekey","key","esckey"]:
+            if player["xp"] >= shop_data["escapeKeyCost"]:
+                print(Fore.GREEN + f"Escape Key Purchased! You escape every time!")
+                player["xp"] -= shop_data["escapeKeyCost"]
+                player["escape_key_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["reaper's_token_purchased"] == False and persistentStats["floor"] >= shop_data["reaperTokenFloor"] and choice in ["reaper","token","reapertoken"]:
+            if player["xp"] >= shop_data["reaperTokenCost"]:
+                print(Fore.GREEN + f"Reaper's Token Purchased! Healing from monster kills is trippled!")
+                player["xp"] -= shop_data["reaperTokenCost"]
+                player["reaper's_token_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")        
+        elif player["greed's_gullet_purchased"] == False and persistentStats["floor"] >= shop_data["greedGulletFloor"] and choice in ["greed","greedgullet","greedsgullet","gullet"]:
+            if player["xp"] >= shop_data["greedGulletCost"]:
+                print(Fore.GREEN + f"Greed's Gullet Purchased! Every monster kill has a 50% chance to grant some coins!")
+                player["xp"] -= shop_data["greedGulletCost"]
+                player["greed's_gullet_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["soul_mirror_purchased"] == False and persistentStats["floor"] >= shop_data["soulMirrorFloor"] and choice in ["soul","soulmirror","mirror"]:
+            if player["xp"] >= shop_data["soulMirrorCost"]:
+                print(Fore.GREEN + f"Soul Mirror Purchased! 25% of damage taken is reflected on attacker!")
+                player["xp"] -= shop_data["soulMirrorCost"]
+                player["soul_mirror_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+                
         else:
             upgrade_map = {
                 "health": ("healthBoost", "baseHealthBoostCost", "baseHealthBoostCostFactor", "healthBoostMod",
@@ -2007,7 +2107,7 @@ def level_up():
 
 def try_portal():
     global persistentStats
-    if random.randint(1, 100) <= 3 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
+    if random.randint(1, 100) <= 1 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
         print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
         print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
         print(Fore.BLACK + "|")
@@ -2025,6 +2125,7 @@ def try_portal():
             reset_monster()
         else:
             print(Fore.YELLOW + "You choose to ignore the portal and move on!")
+            time.sleep(0.5)
         return
 
 def monster_death_check():
@@ -2049,7 +2150,19 @@ def monster_death_check():
             try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
-        player["health"] += round(monster.maxHealth[monsterId] / 10)
+        
+        # Heals the player
+        if player["reaper's_token_purchased"] == True:
+            player["health"] += round(monster.maxHealth[monsterId] / 3)
+            print(Fore.YELLOW + "Your Reaper's Token Glows...")
+        else:
+            player["health"] += round(monster.maxHealth[monsterId] / 10)
+        
+        # The player earns some money maybe
+        if player["greed's_gullet_purchased"] == True and random.randint(0,1) == 1:
+            greedCoins = round(random.uniform(1,2) * 100 * (persistentStats["floor"] / 5))
+            player["coins"] += greedCoins
+            print(Fore.YELLOW + f"Your greed has manifested {greedCoins} coins!")
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
@@ -2097,11 +2210,17 @@ def monster_death_check():
         monster_turn()
 
 def monster_turn():
-    global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
+    global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills, monsterAttack
+    # Doding and other effects
     if random.randint(0, 100) < player["dodge"]:
         print(Fore.YELLOW + "You dodged the attack!")
+    elif player["mirror_pendant_purchased"] == True and monsterAttack == 0:
+        print(Fore.CYAN + "The monster's attack glances off of you!")
+        time.sleep(0.8)
+    # The monsters turn
     else:
         print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
+        monsterAttack += 1
         if endlessMode:
             scale = 2 ** endlessKills
             dmg = round(random.uniform(demon_lord_data["minDamage"], demon_lord_data["maxDamage"]) * scale - player["defense"],2)
@@ -2118,6 +2237,12 @@ def monster_turn():
         #dmg = max(1, dmg)
         player["health"] -= dmg
         print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
+        if player["soul_mirror_purchased"] == True: # Damage reflection
+            dmgReflect = round(dmg * .25,1)
+            currentMonsterHealth -= dmgReflect
+            if currentMonsterHealth <= 1:
+                currentMonsterHealth = 1
+            print(Fore.YELLOW + f"Your soul mirror reflects {dmgReflect} damage back onto the {currentMonsterFight}")
         time.sleep(0.8)
 
 # Main Functions
@@ -2171,7 +2296,9 @@ def combat():
                     monster_death_check()
                     continue
                 print(Fore.YELLOW + "Attempting to retreat...")
-                if random.randint(0, 100) < player["escape"]:
+                if random.randint(0, 100) < player["escape"] or player["escape_key_purchased"] == True:
+                    if player["escape_key_purchased"] == True:
+                        print(Fore.YELLOW + "Your escape key activates!")
                     print(Fore.GREEN + "You successfully escaped!")
                     loot_gain = round(random.uniform(5, (currentMonsterHealth * (persistentStats["reborns_used"] + 1))))
                     print(Fore.CYAN + f"You loot the room on the way out and gain {loot_gain} coins!")
