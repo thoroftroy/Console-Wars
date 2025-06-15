@@ -616,7 +616,7 @@ def show_stats_screen():
 
     print(Fore.CYAN + "\n--- Gatcha ---")
     print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
-    print(Fore.BLACK + "|" + Fore.BLUE)
+    print(Fore.BLACK + "|" + Fore.CYAN)
 
     characters = gatcha_data.get("characters_owned", [])
     if characters:
