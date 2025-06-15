@@ -53,7 +53,7 @@ player = {
     "eye_purchased": False,
     "weighted_dice_purchased": False,
     "monster_bait_purchased": False,
-    "dog_house_purhcased": False,
+    "dog_house_purchased": False,
     "mirror_pendant_purchased": False,
     "escape_key_purchased": False,
     "reaper's_token_purchased": False,
@@ -588,8 +588,8 @@ def show_stats_screen():
 
     print(Fore.MAGENTA + "\n--- Permanent Upgrades ---")
     print(f"Hackers Eye: {player['eye_purchased']}  |  Weight Dice: {player['weighted_dice_purchased']}")
-    print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purhcased']}")
-    print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purhcased']}")
+    print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purchased']}")
+    print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purchased']}")
     print(f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
     print(f"Soul Mirror: {player['soul_mirror_purchased']}")
 
@@ -1448,7 +1448,7 @@ def update_tamagatchi():
     bond = tamagatchi_data["bond"]
     kills = persistentStats.get("monsters_killed", 0)
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
-    if player["dog_house_purhcased"] == True:
+    if player["dog_house_purchased"] == True:
         max_bond = (max_bond * 2)
 
     # Hunger increases
@@ -1485,7 +1485,7 @@ def update_tamagatchi():
 def tamagatchi():
     global player, persistentStats
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
-    if player["dog_house_purhcased"] == True:
+    if player["dog_house_purchased"] == True:
         max_bond = (max_bond * 2)
     clear_screen()
     print(Style.RESET_ALL)
@@ -1934,7 +1934,7 @@ def level_up():
                 print(Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']}  -> Change gambling luck in your favor")
             else:
                 print(Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']}  -> Change gambling luck in your favor")
-        if player["dog_house_purhcased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"]:
+        if player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"]:
             if player["xp"] >= shop_data["dogHouseCost"]:
                 print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']}  -> Make your Tamagatchi happier")
             else:
@@ -1987,11 +1987,11 @@ def level_up():
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["dog_house_purhcased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"] and choice in ["dog", "doghouse","house"]:
+        elif player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"] and choice in ["dog", "doghouse","house"]:
             if player["xp"] >= shop_data["dogHouseCost"]:
                 print(Fore.GREEN + f"Dog(?) House Purchased! Tamagatchi has a higher max bond!")
                 player["xp"] -= shop_data["dogHouseCost"]
-                player["dog_house_purhcased"] = True
+                player["dog_house_purchased"] = True
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
