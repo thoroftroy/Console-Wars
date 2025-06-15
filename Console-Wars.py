@@ -101,7 +101,7 @@ gambling_data = {
 }
 
 well_data = {
-    "wishing_well_cost": 1000,
+    "wishing_well_cost": 50000,
     "wishing_coins_used": 0,
     "blessings_received": 0,
     "curses_received": 0,
@@ -1012,13 +1012,14 @@ def reborn():
         persistentStats["highest_floor"] = persistentStats["floor"]
         player["xp"] = 0.0
         player["coins"] += 100000
-        well_data["wishing_well_cost"] = 1000
+        well_data["wishing_well_cost"] = 50000
         if persistentStats["floor"] <= 50:
             persistentStats["floor"] = 0
         else:
             persistentStats["floor"] = 50
         persistentStats["room"] = 0
         persistentStats["reborns_used"] += 1
+        player["kills_sense_reborn"] = 0
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
         if endlessMode:
@@ -1057,6 +1058,7 @@ def wishing_well():
 
         if player["coins"] <= well_data["wishing_well_cost"]:  # Ensures you have some coins
             print(Fore.RED + "You don't have enough coins!")
+            print(Fore.RED + "The wishing well costs " + Fore.YELLOW + str(well_data["wishing_well_cost"]) + Fore.RED +" coins")
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
@@ -1490,7 +1492,7 @@ def update_tamagatchi():
     if bond > 0:
         scale = 1
         if persistentStats["reborns_used"] >= 1:
-            scale = 10 * (persistentStats["reborns_used"] + 1)
+            scale = 2 * (persistentStats["reborns_used"] + 1)
         floorBoost = (persistentStats["floor"] / 1.5) + 1
 
         tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
@@ -2099,7 +2101,7 @@ def level_up():
 
             if choice in upgrade_map:
                 boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
-                current_cost = (shop_data[cost_key] * (persistentStats["reborns_used"] + 1))
+                current_cost = (shop_data[cost_key])
                 boost_mod = shop_data[mod_key]
                 cap = shop_data[cap_key]
 
@@ -2207,7 +2209,10 @@ def monster_death_check():
             print(Fore.MAGENTA + "Demon Lords will now respawn stronger each time.")
             time.sleep(5)
 
-        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < 20:
+        max_bond = 20 * (persistentStats["reborns_used"] + 1)
+        if player["dog_house_purchased"] == True:
+            max_bond = (max_bond * 2)
+        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < max_bond:
             if random.random() < 0.2:
                 max_bond = 20 * (persistentStats["reborns_used"] + 1)
                 if tamagatchi_data["bond"] < max_bond:
