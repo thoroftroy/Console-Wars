@@ -1132,7 +1132,7 @@ def fishing():
 
             if random.random() < 0.8:
                 update_last_action()
-                scale = 1 + (persistentStats["floor"])
+                scale = 1 + (persistentStats["floor"] / 2)
                 mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
                 xp_gain = round(random.uniform(0.5, 2.0) * scale * mult, 1)
                 player["xp"] += xp_gain
