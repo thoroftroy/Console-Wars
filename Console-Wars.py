@@ -2227,14 +2227,26 @@ def monster_turn():
         else:
             dmg = round(random.uniform(monster.minDamage[monsterId], monster.maxDamage[monsterId]) - player["defense"],2)
 
-        if dmg <= 1:
+        # Scales the damage with the difficulty
+        if player["difficulty"] == "easy":
+            dmg = round(dmg * 0.75,2)
+        if player["difficulty"] == "normal":
+            dmg = round(dmg * 1,2)
+        if player["difficulty"] == "hard":
+            dmg = round(dmg * 1.5,2)
+        if player["difficulty"] == "impossible":
+            dmg = round(dmg * 2,2)
+        else:
+            dmg = round(dmg * 1,2)
+            
+        if dmg <= 1: # Ensures negative damage is never delt
             damagechance = random.randint(0,100)
             if damagechance >= 50: # 50% Chance to not take damage
                 dmg = 0
                 print(Fore.CYAN + f"The {currentMonsterFight}'s attack glances off of you!")
             else:
                 dmg = 1
-        #dmg = max(1, dmg)
+
         player["health"] -= dmg
         print(Fore.RED + f"{currentMonsterFight} deals {dmg} damage!")
         if player["soul_mirror_purchased"] == True: # Damage reflection
@@ -2312,15 +2324,15 @@ def combat():
                     print(Fore.RED + "Retreat failed!")
                     monster_turn()
 
-            elif choice in ["level", "lvl"]:
+            elif choice in ["level", "lvl", "shop", "shp"]:
                 update_last_action()
                 level_up()
 
-            elif choice in ["inventory", "inv"]:
+            elif choice in ["inventory", "inv", "inven"]:
                 update_last_action()
                 show_inventory()
 
-            elif choice in ["minigames", "mini", "games", "min", "other"]:
+            elif choice in ["minigames", "mini", "games", "min", "other", "oth"]:
                 update_last_action()
                 minigame_selection()
 
@@ -2357,6 +2369,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
+    print(Fore.CYAN + "Console Wars v2.3.2 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
@@ -2385,7 +2398,7 @@ def startup():
 
     if currentSaveName not in savedGames:
         print(Fore.YELLOW + "Choose difficulty: Easy / Normal / Hard / Impossible")
-        print(Fore.CYAN + "(Easy gives bonus XP; Hard gives less)")
+        print(Fore.CYAN + "(Difficulty effects monster damage and starting xp)")
         choice = input(Fore.GREEN + "> ").strip().lower()
 
         if choice in ["easy","eas"]:
@@ -2401,8 +2414,9 @@ def startup():
             player["difficulty"] = "impossible"
             startingXp = 0
         else:
-            player["difficulty"] = 1  # Default to normal
+            player["difficulty"] = "normal"  # Default to normal
             startingXp = 20
+        update_last_action()
         player["xp"] += startingXp
     combat()
 
