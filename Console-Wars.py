@@ -1073,7 +1073,6 @@ def apply_boost(
         elif key in player:
             player[key] += value
 
-
 # Section for managing the fishing minigame
 def fishing():
     global fishing_active, fishing_thread, fishing_stop_event
@@ -1092,7 +1091,18 @@ def fishing():
 
     def fishing_loop():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
+        global persistentStats, fishing_data
+        
+        max_fish = persistentStats["floor"] * 5
+        
+        if fishing_data["fish_caught"] >= max_fish:
+                print(Fore.RED + "You have caught all the fish here, try again next floor!")
+                print(Fore.BLUE + "Type EXIT to continue")
+                input(Fore.GREEN + "> ")
+                return
+        
         while fishing_active and not fishing_stop_event.is_set():
+            
             if fishing_penalty or time.time() < cooldown_until:
                 time.sleep(0.2)
                 continue
@@ -1122,8 +1132,8 @@ def fishing():
 
             if random.random() < 0.8:
                 update_last_action()
-                scale = 1 + (persistentStats["floor"] * 2)
-                mult = 10 * int(persistentStats["floor"] * 2.5) if persistentStats["floor"] >= 15 else 1
+                scale = 1 + (persistentStats["floor"])
+                mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
                 xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
@@ -1364,7 +1374,6 @@ def gambling():  # Manages the gambling screen
     time.sleep(2)
     gambling()
 
-
 # Tamagachi stuff
 def start_tamagatchi_thread():
     global tamagatchi_thread
@@ -1380,7 +1389,6 @@ def start_tamagatchi_thread():
 
     tamagatchi_thread = threading.Thread(target=loop, daemon=True)
     tamagatchi_thread.start()
-
 
 def update_tamagatchi():
     global startup_grace_period
@@ -1421,7 +1429,6 @@ def update_tamagatchi():
         tamagatchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 22) * 0.0005))
 
     apply_boosts()
-
 
 def tamagatchi():
     global player, persistentStats
@@ -2013,7 +2020,7 @@ def try_portal():
                 print(Fore.RED + "The portal took you really far... good luck")
                 persistentStats["floor"] += random.randint(6, 90)
             else:
-                persistentStats["floor"] += random.randint(1, 5)
+                persistentStats["floor"] += random.randint(3, 9)
             persistentStats["room"] = random.randint(0, 8)
             reset_monster()
         else:
