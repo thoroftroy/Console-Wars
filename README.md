@@ -40,7 +40,6 @@ project_root/
 ## Requirements
 
 - Python 3.3 or higher
-- The `Numpy` module
 - The `colorama` module (for colored terminal output — **this is NOT optional**)
 
 Install `colorama` with:
@@ -48,11 +47,6 @@ Install `colorama` with:
 ```bash
 pip install colorama
 ```
-And Install `Numpy` with
-```bash
-pip install numpy
-```
-
 ---
 
 ## Installing Python
@@ -109,9 +103,9 @@ Go to https://pip.pypa.io/en/stable/installation/ for more information
 After installing Pip, use `pip` or `pip3` to install the required module:
 
 ```bash
-pip install colorama numpy
+pip install colorama
 # or
-pip3 install colorama numpy
+pip3 install colorama
 ```
 
 ## Launching The Game
