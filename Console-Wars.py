@@ -62,6 +62,7 @@ player = {
     "portal_attractor_purchased": False,
     
     "kills_sense_reborn": 0,
+    "kills_sense_portal": 0,
 }
 
 # Endless mode
@@ -399,32 +400,32 @@ blessings = [  # Massive bonuses from the wishing well
      "boosts": {"defense": 15000, "health": 10000}},
     {"name": "Wish of Kings", "desc": "XP and coin surge. (+5000 xp, coins 50000)",
      "boosts": {"xp": 5000, "coins": 50000}},
-    {"name": "Ultimate Form", "desc": "Ascend to greatness. (+200000 health, +200000 damage, +20000 defense)",
-     "boosts": {"health": 200000, "damage": 200000, "defense": 20000}},
-    {"name": "Ultimate Soul", "desc": "Above all else. (+1500000 health, +2000 damage, +2000 defense)",
-     "boosts": {"health": 1500000, "damage": 2000, "defense": 2000}},
+    {"name": "Ultimate Form", "desc": "Ascend to greatness. (+20000 health, +20000 damage, +2000 defense)",
+     "boosts": {"health": 20000, "damage": 20000, "defense": 2000}},
+    {"name": "Ultimate Soul", "desc": "Above all else. (+15000 health, +2000 damage, +2000 defense)",
+     "boosts": {"health": 15000, "damage": 2000, "defense": 2000}},
     {"name": "Ultimate Hammer",
-     "desc": "Let the judgment of god strike. (+1000 health, +200000 damage, +20000 defense)",
-     "boosts": {"health": 1000, "damage": 200000, "defense": 20000}},
-    {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+10000000 health, damage, and defense)",
-     "boosts": {"health": 10000000, "damage": 10000000, "defense": 10000000}},
+     "desc": "Let the judgment of god strike. (+1000 health, +20000 damage, +2000 defense)",
+     "boosts": {"health": 1000, "damage": 20000, "defense": 2000}},
+    {"name": "Op Blessing", "desc": "The best one, makes you overpowered (+1000000 health, damage, and defense)",
+     "boosts": {"health": 1000000, "damage": 1000000, "defense": 1000000}},
 ]
 curses = [  # Small rare penalties from the wishing well
-    {"name": "Curse of Weakness", "desc": "Your strength fades. (-10 damage)", "boosts": {"damage": -10}},
-    {"name": "Curse of Fragility", "desc": "You feel frail. (-30 health)", "boosts": {"health": -30}},
-    {"name": "Curse of Vulnerability", "desc": "Your armor fails you (-10 defense).", "boosts": {"defense": -10}},
-    {"name": "Hex of Misfortune", "desc": "You lose your edge in luck. (-5 drop chance)", "boosts": {"drop": -5}},
-    {"name": "Curse of Confusion", "desc": "Your mind blurs, XP drops. (-2500 xp)", "boosts": {"xp": -2500}},
-    {"name": "Curse of Loss", "desc": "You lose some coins. (-500 coins)", "boosts": {"coins": -500}},
-    {"name": "Crippling Wound", "desc": "You bleed long after the blow. (-200 health)", "boosts": {"health": -200}},
-    {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-100 defense)", "boosts": {"defense": -100}},
-    {"name": "Broken Blade", "desc": "Your weapon weakens. (-150 damage)", "boosts": {"damage": -150}},
-    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-3 sparks)", "boosts": {"divine_spark": -3}},
-    {"name": "Weakening Fog", "desc": "Your body fades. (-10 health and defense)",
-     "boosts": {"health": -10, "defense": -10}},
-    {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-1000 health)", "boosts": {"health": -1000}},
-    {"name": "Shattered Luck", "desc": "Fortune slips away. (-10 drop chance)", "boosts": {"drop": -10}},
-    {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-5 spark).", "boosts": {"divine_spark": -5}}
+    {"name": "Curse of Weakness", "desc": "Your strength fades. (-100 damage)", "boosts": {"damage": -100}},
+    {"name": "Curse of Fragility", "desc": "You feel frail. (-300 health)", "boosts": {"health": -300}},
+    {"name": "Curse of Vulnerability", "desc": "Your armor fails you (-100 defense).", "boosts": {"defense": -100}},
+    {"name": "Hex of Misfortune", "desc": "You lose your edge in luck. (-50 drop chance)", "boosts": {"drop": -50}},
+    {"name": "Curse of Confusion", "desc": "Your mind blurs, XP drops. (-25000 xp)", "boosts": {"xp": -25000}},
+    {"name": "Curse of Loss", "desc": "You lose some coins. (-50000 coins)", "boosts": {"coins": -50000}},
+    {"name": "Crippling Wound", "desc": "You bleed long after the blow. (-2000 health)", "boosts": {"health": -2000}},
+    {"name": "Crack in Armor", "desc": "Your defenses fall apart. (-1000 defense)", "boosts": {"defense": -1000}},
+    {"name": "Broken Blade", "desc": "Your weapon weakens. (-1500 damage)", "boosts": {"damage": -1500}},
+    {"name": "Hex of Exhaustion", "desc": "You feel weary. XP halved. (-30 sparks)", "boosts": {"divine_spark": -30}},
+    {"name": "Weakening Fog", "desc": "Your body fades. (-100 health and defense)",
+     "boosts": {"health": -100, "defense": -100}},
+    {"name": "Sluggish Blood", "desc": "Your lifeforce drains. (-10000 health)", "boosts": {"health": -10000}},
+    {"name": "Shattered Luck", "desc": "Fortune slips away. (-100 drop chance)", "boosts": {"drop": -100}},
+    {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-50 spark).", "boosts": {"divine_spark": -50}}
 ]
 
 # Gatcha Table
@@ -806,17 +807,25 @@ def show_combat_stats():  # this is the main function to show all the stats duri
 def portal_travel(): # The idea of this is to let you travel to any floor (50-max) that you have been to before
     global persistentStats
     clear_screen()
-    if persistentStats["floor"] < 75:
-        print(Fore.RED + "You can't do portal travel till floor 75!")
+    if persistentStats["floor"] < 65:
+        print(Fore.RED + "You can't do portal travel till floor 65!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
+    monsters_left = 15 - player["kills_sense_portal"]
+    if player["kills_sense_portal"] <= monsters_left:
+        print(Fore.RED + "Your portal is recharging!")
+        print(Fore.RED + "You need to kill " + Fore.YELLOW + str(monsters_left) + Fore.RED + " monsters to recharge your portal!")
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
+        return
+    
     while True:
         clear_screen()
         print(Fore.BLUE + "===Portal Travel===")
         print(Fore.BLACK + "|")
-        print(Fore.BLUE + f"You can access floors " + Fore.YELLOW + f"50 to {persistentStats['highest_floor']}")
+        print(Fore.BLUE + f"You can access floors " + Fore.YELLOW + f"65 to {persistentStats['highest_floor']}")
         print(Fore.BLUE + "What floor would you like to go to? (or type 'exit')")
         choice = input(Fore.GREEN + "> ").lower()
 
@@ -827,7 +836,7 @@ def portal_travel(): # The idea of this is to let you travel to any floor (50-ma
 
         if choice.isdigit():
             floor_num = int(choice)
-            if 50 <= floor_num <= persistentStats['highest_floor']:
+            if 65 <= floor_num <= persistentStats['highest_floor']:
                 print(Fore.MAGENTA + f"You enter the portal and travel to floor {floor_num}")
                 time.sleep(0.8)
                 persistentStats["floor"] = floor_num
@@ -1020,6 +1029,7 @@ def reborn():
         persistentStats["room"] = 0
         persistentStats["reborns_used"] += 1
         player["kills_sense_reborn"] = 0
+        player["kills_sense_portal"] = 100
 
         print(Fore.GREEN + "You have been reborn. The climb begins anew...")
         if endlessMode:
@@ -1076,7 +1086,7 @@ def wishing_well():
                 print(Fore.RED + "Not enough coins!")
             else:
                 player["coins"] -= cost
-                well_data["wishing_well_cost"] = int(cost * 1.25)
+                well_data["wishing_well_cost"] = int(cost * 3.5)
                 well_data["wishing_coins_used"] += 1
 
                 roll = random.randint(1, 100)
@@ -1607,7 +1617,7 @@ def minigame_selection():
         print(Fore.RED + "Reborn         → Reset with your stats intact after high progress.")
     else:
         print(Fore.YELLOW + "Reborn         → Reset with your stats intact after high progress.")
-    if persistentStats["floor"] < 75:
+    if persistentStats["floor"] < 65:
         print(Fore.RED + "Portal Travel  → Travel through unlocked floors with ease!")
     else:
         print(Fore.YELLOW + "Portal Travel  → Travel through unlocked floors with ease!")
@@ -2045,7 +2055,7 @@ def level_up():
                 print(Fore.RED + f"Not Enough Xp!")
         elif player["reaper's_token_purchased"] == False and persistentStats["floor"] >= shop_data["reaperTokenFloor"] and choice in ["reaper","token","reapertoken"]:
             if player["xp"] >= shop_data["reaperTokenCost"]:
-                print(Fore.GREEN + f"Reaper's Token Purchased! Healing from monster kills is trippled!")
+                print(Fore.GREEN + f"Reaper's Token Purchased! Healing from monster kills is tripled!")
                 player["xp"] -= shop_data["reaperTokenCost"]
                 player["reaper's_token_purchased"] = True
                 time.sleep(1)
@@ -2179,6 +2189,7 @@ def portal():
         else:
             persistentStats["floor"] += random.randint(3, 9)
         persistentStats["room"] = random.randint(0, 8)
+        persistentStats["highest_floor"] = persistentStats["floor"]
         reset_monster()
     else:
         print(Fore.YELLOW + "You choose to ignore the portal and move on!")
@@ -2201,6 +2212,8 @@ def monster_death_check():
     if currentMonsterHealth <= 0:
         if persistentStats["reborns_used"] >= 1:
             player["kills_sense_reborn"] += 1
+        if persistentStats["floor"] >= 65:
+            player["kills_sense_portal"] += 1
         # Activate Endless Mode when Demon Lord dies
         if currentMonsterFight == "Demon Lord" and not endlessMode:
             endlessMode = True
@@ -2239,6 +2252,7 @@ def monster_death_check():
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
+            persistentStats["highest_floor"] = persistentStats["floor"]
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
