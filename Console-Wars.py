@@ -586,9 +586,12 @@ def show_stats_screen():
     print(f"Demon Lords Defeated: {demon_lord_data.get('demonLordsDefeated', 0)}")
     print(f"Times Escaped: {persistentStats['escapes_used']}  |  Coins Looted: {persistentStats['coins_from_escapes']}")
 
-    print(Fore.MAGENTA + "\n--- Perminent Upgrades ---")
+    print(Fore.MAGENTA + "\n--- Permanent Upgrades ---")
     print(f"Hackers Eye: {player['eye_purchased']}  |  Weight Dice: {player['weighted_dice_purchased']}")
     print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purhcased']}")
+    print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purhcased']}")
+    print(f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
+    print(f"Soul Mirror: {player['soul_mirror_purchased']}")
 
     print(Fore.CYAN + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
@@ -2392,7 +2395,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.CYAN + "Console Wars v2.3.2 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.3.2 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
