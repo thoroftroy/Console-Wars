@@ -1093,7 +1093,7 @@ def fishing():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
         global persistentStats, fishing_data
         
-        max_fish = persistentStats["floor"] * 5
+        max_fish = (persistentStats["floor"] + 1) * 5
         
         if fishing_data["fish_caught"] >= max_fish:
                 print(Fore.RED + "You have caught all the fish here, try again next floor!")
@@ -2066,7 +2066,6 @@ def monster_death_check():
                 backup_path = globalSavePath + ".bak"
                 save_to_file()  # Save current state
                 shutil.copy(globalSavePath, backup_path)
-                # print(Fore.CYAN + f"Backup saved to {backup_path}")
             except Exception as e:
                 print(Fore.RED + f"Failed to create backup: {e}")
                 time.sleep(2)
