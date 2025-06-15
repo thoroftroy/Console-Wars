@@ -128,23 +128,23 @@ shop_data = {
 
     # Single use upgrades
     "eyeFloor": 3,
-    "weightedDiceFloor": 5,
-    "monsterBaitFloor": 10,
+    "weightedDiceFloor": 25,
+    "monsterBaitFloor": 5,
     "dogHouseFloor": 15,
     "mirrorPendantFloor": 45,
     "escapeKeyFloor": 40,
     "reaperTokenFloor": 75,
-    "greedGulletFloor": 10,
+    "greedGulletFloor": 20,
     "soulMirrorFloor": 30,
     
     "eyeCost": 500,
-    "weightedDiceCost": 1500,
-    "monsterBaitCost": 1000,
+    "weightedDiceCost": 2500,
+    "monsterBaitCost": 900,
     "dogHouseCost": 2000,
     "mirrorPendantCost": 10000,
     "escapeKeyCost": 5000,
     "reaperTokenCost": 15000,
-    "greedGulletCost": 5000,
+    "greedGulletCost": 750,
     "soulMirrorCost": 18000,
 
     # How much the cost goes up each time
@@ -771,7 +771,7 @@ def show_combat_stats():  # this is the main function to show all the stats duri
             damageMin = round(damageMin * 2)
             damageMax = round(damageMax * 2)
         else:
-            damageAverage = round(dmg * 1)
+            damageAverage = round(damageAverage * 1)
             damageMin = round(damageMin * 1)
             damageMax = round(damageMax * 1)
         print(Fore.YELLOW + f"Hacker Eye Info |  Average Damage: {damageAverage} (Min: {damageMin} - Max: {damageMax})")
@@ -1139,7 +1139,7 @@ def fishing():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
         global persistentStats, fishing_data
         
-        max_fish = (persistentStats["floor"] + 1) * 3
+        max_fish = (persistentStats["floor"] + 1) * 4 * (persistentStats["reborns_used"] + 1)
         
         if fishing_data["fish_caught"] >= max_fish:
                 print(Fore.RED + "You have caught all the fish here, try again next floor!")
@@ -1344,7 +1344,7 @@ def gambling():  # Manages the gambling screen
         apply_boosts()
 
     elif choice in ["gamble", "gam"]:
-        if gambling_data["gamblingCoinsWon"] >= (10000 * ((persistentStats["floor"] + 1) * (persistentStats["reborns_used"] + 1))):
+        if gambling_data["gamblingCoinsWon"] >= (5000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1))):
             print(Fore.BLACK + "|")
             print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
             print(Fore.BLUE + "(You can try to gamble again next floor)")
@@ -1544,7 +1544,7 @@ def tamagatchi():
             combat()
             return
         elif choice == "feed":
-            if hunger <= 5:
+            if hunger < 5:
                 print(Fore.YELLOW + "It's not hungry enough to feed.")
             elif player["xp"] >= cost:  # type: ignore
                 tamagatchi_data["hunger"] = max(hunger - 4, 0)
