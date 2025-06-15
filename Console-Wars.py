@@ -59,6 +59,9 @@ player = {
     "reaper's_token_purchased": False,
     "greed's_gullet_purchased": False,
     "soul_mirror_purchased": False,
+    "portal_attractor_purchased": False,
+    
+    "kills_sense_reborn": 0,
 }
 
 # Endless mode
@@ -136,16 +139,18 @@ shop_data = {
     "reaperTokenFloor": 75,
     "greedGulletFloor": 20,
     "soulMirrorFloor": 30,
+    "portalAttractorFloor": 15,
     
     "eyeCost": 500,
-    "weightedDiceCost": 2500,
-    "monsterBaitCost": 900,
-    "dogHouseCost": 2000,
+    "weightedDiceCost": 10500,
+    "monsterBaitCost": 500,
+    "dogHouseCost": 5000,
     "mirrorPendantCost": 10000,
-    "escapeKeyCost": 5000,
-    "reaperTokenCost": 15000,
-    "greedGulletCost": 750,
+    "escapeKeyCost": 25000,
+    "reaperTokenCost": 150000,
+    "greedGulletCost": 5550,
     "soulMirrorCost": 18000,
+    "portalAttractorCost": 600,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.45,
@@ -896,8 +901,8 @@ def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past th
 def gatcha_game():  # When you type gatcha into the minigame screen this is shown
     global persistentStats, gatcha_data, gatcha, player, persistentStats
     clear_screen()
-    if persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You can't do gatcha pulls until floor 50!")
+    if persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
+        print(Fore.RED + "You can't do gatcha pulls until floor 30!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -977,6 +982,14 @@ def reborn():
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
+    
+    if player["kills_sense_reborn"] < 50:
+        monsters_left = 50 - player["kills_sense_reborn"]
+        print(Fore.RED + "You haven't killed enough monsters sense your last reborn.")
+        print(Fore.RED + "You need to kill " + Fore.YELLOW + str(monsters_left) + Fore.RED + " monsters!")
+        print(Fore.BLACK + "|")
+        input(Fore.BLUE + "Press Enter to return to combat.")
+        return
 
     print(Fore.YELLOW + "--- Reborn ---")
     if persistentStats["floor"] <= 50:
@@ -1025,8 +1038,8 @@ def wishing_well():
     global player, well_data, persistentStats
 
     clear_screen()
-    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You must defeat 550 monsters or make it to floor 50 to unlock the Wishing Well.")
+    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50:
+        print(Fore.RED + "You must defeat 550 monsters and make it to floor 50 to unlock the Wishing Well.")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
@@ -1344,7 +1357,11 @@ def gambling():  # Manages the gambling screen
         apply_boosts()
 
     elif choice in ["gamble", "gam"]:
-        if gambling_data["gamblingCoinsWon"] >= (5000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1))):
+        if player["weighted_dice_purchased"] == True:
+            max_winnings = (10000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1)))
+        else:
+            max_winnings = (5000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1)))
+        if gambling_data["gamblingCoinsWon"] >= max_winnings:
             print(Fore.BLACK + "|")
             print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
             print(Fore.BLUE + "(You can try to gamble again next floor)")
@@ -1576,11 +1593,11 @@ def minigame_selection():
         print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
-    if persistentStats["floor"] < 20 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
     else:
         print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
-    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50 and persistentStats["reborns_used"] <= 0:
+    if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
         print(Fore.YELLOW + "Wishing Well   → Spend coins for powerful blessings—or curses.")
@@ -1627,7 +1644,7 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.3.2"
+    persistentStats["currentVersion"] = "2.3.3"
 
     data = {
         "player": player,
@@ -1729,7 +1746,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.3.2":
+        elif persistentStats["currentVersion"] != "2.3.3":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -1964,6 +1981,11 @@ def level_up():
                 print(Fore.GREEN + f" Soul Mirror: {shop_data['soulMirrorCost']}  -> Reflect monsters attacks back at them")
             else:
                 print(Fore.RED + f" Soul Mirror: {shop_data['soulMirrorCost']}  -> Reflect monsters attacks back at them")
+        if player["portal_attractor_purchased"] == False and persistentStats["floor"] >= shop_data["portalAttractorFloor"]:
+            if player["xp"] >= shop_data["portalAttractorCost"]:
+                print(Fore.GREEN + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
+            else:
+                print(Fore.RED + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
@@ -2040,6 +2062,14 @@ def level_up():
                 print(Fore.GREEN + f"Soul Mirror Purchased! 25% of damage taken is reflected on attacker!")
                 player["xp"] -= shop_data["soulMirrorCost"]
                 player["soul_mirror_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["portal_attractor_purchased"] == False and persistentStats["floor"] >= shop_data["portalAttractorFloor"] and choice in ["portal","portalattractor","attractor"]:
+            if player["xp"] >= shop_data["portalAttractorCost"]:
+                print(Fore.GREEN + f"Portal Attractor Purchased! Portals will spawn much more often")
+                player["xp"] -= shop_data["portalAttractorCost"]
+                player["portal_attractor_purchased"] = True
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
@@ -2131,32 +2161,44 @@ def level_up():
                 print(Fore.RED + "Invalid input.")
         time.sleep(1)
 
-def try_portal():
-    global persistentStats
-    if random.randint(1, 100) <= 1 and persistentStats["floor"] <= 190:  # have a small chance to skip a couple floors this will also not happen if the floor is too high
-        print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
-        print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
-        print(Fore.BLACK + "|")
-        choice = input(Fore.BLUE + ">").strip().lower()
-        print()
-        if choice in ["yes", "y"]:
-            print(Fore.YELLOW + "You enter the portal and exit in a random location!")
-            time.sleep(0.8)
-            if random.randint(0,100) <= 5 and persistentStats["floor"] <= 100: #adds a really small chance to move super far
-                print(Fore.RED + "The portal took you really far... good luck")
-                persistentStats["floor"] += random.randint(6, 90)
-            else:
-                persistentStats["floor"] += random.randint(3, 9)
-            persistentStats["room"] = random.randint(0, 8)
-            reset_monster()
+def portal():
+    global persistentStats, player
+    print(Fore.CYAN + "A strange portal opens up, would you like to go in?")
+    print(Fore.CYAN + "This will skip some floors " + Fore.RED + "(WARNING: You may not be equiped to handle the higher floors)")
+    print(Fore.BLACK + "|")
+    choice = input(Fore.BLUE + ">").strip().lower()
+    print()
+    if choice in ["yes", "y"]:
+        print(Fore.YELLOW + "You enter the portal and exit in a random location!")
+        time.sleep(0.8)
+        if random.randint(0,100) <= 5 and persistentStats["floor"] <= 100: #adds a really small chance to move super far
+            print(Fore.RED + "The portal took you really far... good luck")
+            persistentStats["floor"] += random.randint(6, 90)
         else:
-            print(Fore.YELLOW + "You choose to ignore the portal and move on!")
-            time.sleep(0.5)
-        return
+            persistentStats["floor"] += random.randint(3, 9)
+        persistentStats["room"] = random.randint(0, 8)
+        reset_monster()
+    else:
+        print(Fore.YELLOW + "You choose to ignore the portal and move on!")
+        time.sleep(0.5)
+    return
+
+def try_portal():
+    global persistentStats, player
+    # have a small chance to skip a couple floors this will also not happen if the floor is too high
+    if player["portal_attractor_purchased"] == True:
+        if random.randint(1, 100) <= 20 and persistentStats["floor"] <= 190:
+            portal()
+    else:
+        if random.randint(1, 100) <= 2 and persistentStats["floor"] <= 190:
+            portal()
+    return
 
 def monster_death_check():
     global currentMonsterHealth, monsterId, player, persistentStats, endlessMode, endlessKills
     if currentMonsterHealth <= 0:
+        if persistentStats["reborns_used"] >= 1:
+            player["kills_sense_reborn"] += 1
         # Activate Endless Mode when Demon Lord dies
         if currentMonsterFight == "Demon Lord" and not endlessMode:
             endlessMode = True
@@ -2172,7 +2214,7 @@ def monster_death_check():
                     tamagatchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
 
-        if persistentStats["floor"] >= 50 or persistentStats["reborns_used"] >= 1:
+        if persistentStats["floor"] >= 30 or persistentStats["reborns_used"] >= 1:
             try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
@@ -2195,7 +2237,7 @@ def monster_death_check():
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
-            if persistentStats["floor"] >= 50 or persistentStats["reborns_used"] >= 1:
+            if persistentStats["floor"] >= 30 or persistentStats["reborns_used"] >= 1:
                 try_gatcha_drop(0)
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']}.")
 
@@ -2334,9 +2376,13 @@ def combat():
                     monster_death_check()
                     continue
                 print(Fore.YELLOW + "Attempting to retreat...")
-                if random.randint(0, 100) < player["escape"] or player["escape_key_purchased"] == True:
-                    if player["escape_key_purchased"] == True:
-                        print(Fore.YELLOW + "Your escape key activates!")
+                if player["escape_key_purchased"] == True:
+                        print(Fore.YELLOW + "Your escape key activates but you find no loot")
+                        persistentStats["escapes_used"] += 1
+                        time.sleep(2.2)
+                        reset_monster()
+                        continue
+                elif random.randint(0, 100) < player["escape"]:
                     print(Fore.GREEN + "You successfully escaped!")
                     loot_gain = round(random.uniform(5, (currentMonsterHealth * (persistentStats["reborns_used"] + 1))))
                     print(Fore.CYAN + f"You loot the room on the way out and gain {loot_gain} coins!")
@@ -2395,7 +2441,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.YELLOW + "Console Wars v2.3.2 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.3.3 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
