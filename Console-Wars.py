@@ -513,7 +513,7 @@ def clear_screen():
 # Idle Checker functions
 def idle_checker_thread():
     global last_user_action
-    IDLE_TIMEOUT = 30 # The number of seconds before a timeout
+    IDLE_TIMEOUT = 120 # The number of seconds before a timeout
     while True:
         time.sleep(1)
         with idle_lock:
@@ -1093,7 +1093,7 @@ def fishing():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
         global persistentStats, fishing_data
         
-        max_fish = (persistentStats["floor"] + 1) * 5
+        max_fish = (persistentStats["floor"] + 1) * 3
         
         if fishing_data["fish_caught"] >= max_fish:
                 print(Fore.RED + "You have caught all the fish here, try again next floor!")
@@ -1134,7 +1134,7 @@ def fishing():
                 update_last_action()
                 scale = 1 + (persistentStats["floor"])
                 mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
-                xp_gain = round(random.uniform(0.5, 5.0) * scale * mult, 1)
+                xp_gain = round(random.uniform(0.5, 2.0) * scale * mult, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
                 fishing_data["fish_caught"] += 1
