@@ -35,13 +35,14 @@ player = {
 
     "difficulty": 0,
 
-    "actionList": ["Attack", "Retreat", "Level", "Inventory", "Minigames/Other", "Stats", "Exit"],
+    "actionList": ["Attack", "Retreat", "Level", "Inventory", "Relics", "Minigames/Other", "Stats", "Exit"],
     "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
     "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn", "Portal Travel"],
 
     "xp": 0.0,
     "coins": 0,
     "inventory": [],
+    "relics": [],
 
     "healthBoost": 0,
     "damageBoost": 0,
@@ -517,6 +518,27 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Teacup Berserker", "desc": "Tiny, angry, porcelain.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 450}},
 ]
 
+# late game multipliers
+relics = [
+    {"name": "Relic of the Colossus", "desc": "You grow ever harder to kill.", "boosts": {"mult_health": 2.0}, "weight": 2},
+    {"name": "Relic of Annihilation", "desc": "Your blows echo with godlike wrath.", "boosts": {"mult_damage": 2.5}, "weight": 2},
+    {"name": "Relic of the Aegis", "desc": "You feel no pain.", "boosts": {"mult_defense": 2.5}, "weight": 2},
+    {"name": "Relic of the Bloodforged", "desc": "Hurt more. Hurt harder.", "boosts": {"mult_damage": 3.0, "mult_health": 0.6}, "weight": 1},
+    {"name": "Relic of Immortality", "desc": "You simply don’t die.", "boosts": {"mult_health": 3.0}, "weight": 1},
+    {"name": "Relic of the End", "desc": "Every strike ends something.", "boosts": {"mult_damage": 2.2, "mult_defense": 0.5}, "weight": 2},
+    {"name": "Relic of the Glass Titan", "desc": "Unreal strength, fragile soul.", "boosts": {"mult_damage": 3.5, "mult_health": 0.4}, "weight": 1},
+    {"name": "Relic of the Unbroken Wall", "desc": "Nothing can pass.", "boosts": {"mult_defense": 3.0}, "weight": 2},
+    {"name": "Relic of Twilight", "desc": "Balance between extremes.", "boosts": {"mult_health": 1.5, "mult_damage": 1.5, "mult_defense": 1.5}, "weight": 2},
+    {"name": "Relic of Mutation", "desc": "Power mutates the flesh.", "boosts": {"mult_health": 0.75, "mult_damage": 2.2, "mult_defense": 1.2}, "weight": 2},
+    {"name": "Relic of Destiny", "desc": "Your path cannot be denied.", "boosts": {"mult_health": 1.3, "mult_damage": 1.3, "mult_defense": 1.3}, "weight": 1},
+    {"name": "Relic of the Pale Flame", "desc": "You burn with gentle fury.", "boosts": {"mult_damage": 1.8, "mult_defense": 1.1}, "weight": 2},
+    {"name": "Relic of Dust", "desc": "Everything falls apart... except you.", "boosts": {"mult_defense": 3.0}, "weight": 3},
+    {"name": "Relic of Suffering", "desc": "Pain is strength.", "boosts": {"mult_damage": 1.5, "mult_health": 0.5}, "weight": 3},
+    {"name": "Relic of the Broken Seal", "desc": "Power... at a cost.", "boosts": {"mult_damage": 4.0, "mult_defense": 0.2}, "weight": 0.5},
+    {"name": "Relic of Silence", "desc": "You strike before sound.", "boosts": {"mult_damage": 1.6}, "weight": 2},
+    {"name": "Relic of the Abysscore", "desc": "The void strengthens you.", "boosts": {"mult_health": 1.6, "mult_defense": 1.6}, "weight": 2},
+    {"name": "Relic of the Godshell", "desc": "You are a fortress.", "boosts": {"mult_defense": 5.0}, "weight": 0.5},
+]
 
 # Functions
 
@@ -668,6 +690,20 @@ def show_stats_screen():
     else:
         print("(Empty)")
 
+    print(Fore.BLUE + "\n--- Relics ---")
+    relic_list = player.get("relics", [])
+    if relic_list:
+        for i, relic in enumerate(relic_list, 1):
+            name = relic.get("name", "Unknown")
+            boosts = relic.get("boosts", {})
+            print(f"-{name}", end='   ')
+            if i % 3 == 0:
+                print()
+        if len(relic_list) % 3 != 0:
+            print()  # newline after final row
+    else:
+        print("(None)")
+
     if persistentStats["is_dead"]:
         print(Fore.RED + "\nThis character is dead. You must create a new one.\n")
         print(Style.RESET_ALL)
@@ -719,6 +755,55 @@ def get_item_coin_value(item):
 
     return max(1, int(value))  # Ensure at least 1 coin
 
+def show_relics():
+    clear_screen()
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Relic Overview")
+    print(Fore.BLACK + "|")
+
+    relic_list = player.get("relics", [])
+
+    if not relic_list:
+        print(Fore.RED + "You have no relics.")
+        print(Fore.YELLOW + "Find them from high level (floor 100+) bosses!")
+        print(Fore.BLACK + "|")
+    else:
+        total_multipliers = {
+            "mult_health": 1.0,
+            "mult_damage": 1.0,
+            "mult_defense": 1.0,
+            "mult_dodge": 1.0,
+            "mult_escape": 1.0,
+            "mult_drop": 1.0,
+            "mult_xp": 1.0,
+            "mult_coin_gain": 1.0,
+            "mult_shop_cost": 1.0,
+            "mult_reflect": 1.0
+        }
+
+        for i, relic in enumerate(relic_list, 1):
+            name = relic.get("name", "Unknown Relic")
+            desc = relic.get("desc", "No description.")
+            boosts = relic.get("boosts", {})
+
+            print(Fore.MAGENTA + f"[{i}] {name}")
+            print(Fore.YELLOW + f"  {desc}")
+            print(Fore.CYAN + f"  Multipliers: {boosts}")
+            print(Fore.BLACK + "|")
+
+            for k, v in boosts.items():
+                if k in total_multipliers:
+                    total_multipliers[k] *= v
+
+        print(Fore.GREEN + "\nTotal Multipliers from All Relics:")
+        for stat, mult in total_multipliers.items():
+            if mult != 1.0:
+                print(Fore.CYAN + f"  {stat.replace('mult_', '').capitalize()}: x{round(mult, 3)}")
+
+    print(Fore.BLACK + "|")
+    print(Fore.BLUE + "Press Enter to return to combat.")
+    input(Fore.GREEN + "> ")
+    combat()
 
 def show_inventory():  # Shows the inventory
     clear_screen()
@@ -1176,6 +1261,15 @@ def apply_boost(
                 player[key] += value
         elif key in player:
             player[key] += value
+
+    for relic in player["relics"]: # Relics
+        boosts = relic.get("boosts", {})
+        if "mult_health" in boosts:
+            player["maxHealth"] *= boosts["mult_health"]
+        if "mult_damage" in boosts:
+            player["damage"] *= boosts["mult_damage"]
+        if "mult_defense" in boosts:
+            player["defense"] *= boosts["mult_defense"]
 
 # Section for managing the fishing minigame
 def fishing():
@@ -1692,7 +1786,7 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.4"
+    persistentStats["currentVersion"] = "2.4.1"
 
     data = {
         "player": player,
@@ -1786,6 +1880,10 @@ def load_from_file(filename):  # Load data from files
         if player["difficulty"] not in ["easy", "normal", "hard", "impossible"]:
             player["difficulty"] = "Unknown" # This is needed beacuse difficulty used to save as an int when creating a save file and was never initialized anywhere else
 
+        # Ensure "Relics" appears in actionList for legacy saves
+        if "Relics" not in player.get("actionList", []):
+            player["actionList"].insert(-3, "Relics")
+
         # Version check
         if "currentVersion" not in persistentStats:
             print(Fore.RED + "WARNING")
@@ -1794,7 +1892,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.4":
+        elif persistentStats["currentVersion"] != "2.4.1":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -1841,6 +1939,25 @@ def try_drop_item():
         apply_boosts()
         time.sleep(0.5)
 
+def try_relic_drop(): # Tries to drop a relic after killing a boss on the 100th floor and onward
+    if persistentStats["floor"] < 100 or not persistentStats.get("boss_fight_ready", False):
+        return
+
+    if random.randint(1, 100) > 1:
+        return  # 1% chance failed
+
+    owned_names = {r["name"] for r in player.get("relics", [])}
+    available_relics = [r for r in relics if r["name"] not in owned_names]
+
+    if not available_relics:
+        return  # Already have all relics — no drop
+    else:
+        new_relic = random.choice(available_relics)
+        print(Fore.CYAN + f"A strange power surges... You obtained a relic!")
+        print(Fore.YELLOW + f"→ {new_relic['name']} — {new_relic['desc']}")
+        player["relics"].append(new_relic)
+        apply_boosts()
+        time.sleep(1.5)
 
 def apply_boosts():
     # Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
@@ -2356,6 +2473,7 @@ def monster_death_check():
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
+            try_relic_drop()
             if persistentStats["floor"] > persistentStats["highest_floor"]:
                 persistentStats["highest_floor"] = persistentStats["floor"]
             persistentStats["room"] = 0
@@ -2539,6 +2657,10 @@ def combat():
                 update_last_action()
                 show_inventory()
 
+            elif choice in ["relics", "relic", "rel"]:
+                update_last_action()
+                show_relics()
+
             elif choice in ["minigames", "mini", "games", "min", "other", "oth"]:
                 update_last_action()
                 minigame_selection()
@@ -2576,7 +2698,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.YELLOW + "Console Wars v2.4 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.4.1 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
