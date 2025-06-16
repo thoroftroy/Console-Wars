@@ -60,6 +60,7 @@ player = {
     "greed's_gullet_purchased": False,
     "soul_mirror_purchased": False,
     "portal_attractor_purchased": False,
+    "shield_disruptor_purchased": False,
     
     "berzerkerLevel": 0,
     
@@ -143,6 +144,7 @@ shop_data = {
     "greedGulletFloor": 20,
     "soulMirrorFloor": 30,
     "portalAttractorFloor": 15,
+    "shieldDisruptorFloor": 100,
     
     "berzerker1Kills": 500,
     "berzerker2Kills": 750,
@@ -159,6 +161,7 @@ shop_data = {
     "greedGulletCost": 5550,
     "soulMirrorCost": 18000,
     "portalAttractorCost": 600,
+    "shieldDisruptorCost": 1000000,
     
     "berzerker1Cost": 10000,
     "berzerker2Cost": 500000,
@@ -610,6 +613,7 @@ def show_stats_screen():
     print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purchased']}")
     print(f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
     print(f"Soul Mirror: {player['soul_mirror_purchased']}  |  Bezerker Level: {player['berzerkerLevel']}/4")
+    print(f"Shield Disruptor: {player['shield_disruptor_purchased']}")
 
     print(Fore.CYAN + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
@@ -1193,7 +1197,7 @@ def fishing():
         nonlocal fish_ready, cooldown_until, fishing_penalty, penalty_end_time
         global persistentStats, fishing_data
         
-        max_fish = (persistentStats["floor"] + 1) * 4 * (persistentStats["reborns_used"] + 1)
+        max_fish = (persistentStats["floor"] + 1) * 4 * ((persistentStats["reborns_used"] + 1) * 2)
         
         if fishing_data["fish_caught"] >= max_fish:
                 print(Fore.RED + "You have caught all the fish here, try again next floor!")
@@ -1240,7 +1244,8 @@ def fishing():
                 update_last_action()
                 scale = 1 + (persistentStats["floor"] / 2)
                 mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
-                xp_gain = round(random.uniform(0.5, 2.0) * scale * mult, 1)
+                scale = persistentStats["reborns_used"] + 1
+                xp_gain = round(random.uniform(0.5, 2.0) * scale * mult * scale, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
                 fishing_data["fish_caught"] += 1
@@ -1319,9 +1324,9 @@ def gamble_stat_change(amount):  # Returns how much the stats change when doing 
     else:
         if player["weighted_dice_purchsed"] == True:
             print(Fore.YELLOW + "The weighted dice twists your fate")
-            return amount * 3 * (persistentStats["floor"] / 7.5)
+            return amount * 3 * (persistentStats["floor"] / 6.5)
         else:
-            return amount * 2 * (persistentStats["floor"] / 7.5)  # Lets the big wins and big losses scale with the floor slightly
+            return amount * 2 * (persistentStats["floor"] / 6.5)  # Lets the big wins and big losses scale with the floor slightly
 
 def gambling():  # Manages the gambling screen
     global player, persistentStats
@@ -1532,6 +1537,8 @@ def update_tamagatchi():
         scale = 1
         if persistentStats["reborns_used"] >= 1:
             scale = 2 * (persistentStats["reborns_used"] + 1)
+        if persistentStats["reborns_used"] >= 5:
+            scale = 5 * (persistentStats["reborns_used"] + 1)
         floorBoost = (persistentStats["floor"] / 1.5) + 1
 
         tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
@@ -2027,24 +2034,29 @@ def level_up():
                 print(Fore.GREEN + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
             else:
                 print(Fore.RED + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
+        if player["shield_disruptor_purchased"] == False and persistentStats["floor"] >= shop_data["shieldDisruptorFloor"]:
+            if player["xp"] >= shop_data["shieldDisruptorCost"]:
+                print(Fore.GREEN + f" Shield Disruptor: {shop_data['shieldDisruptorCost']}  -> Ignore some shielding")
+            else:
+                print(Fore.RED + f" Shield Disruptor: {shop_data['shieldDisruptorCost']}  -> Ignore some shielding")
         
         if player["berzerkerLevel"] == 0: # and persistentStats["monsters_killed"] >= shop_data["berzerker1Kills"]
-            if player["xp"] >= shop_data["berzerker1Cost"]:
+            if player["xp"] >= shop_data["berzerker1Cost"] and persistentStats["monsters_killed"] >= shop_data["berzerker1Kills"]:
                 print(Fore.GREEN + f" Berzerker v1: {shop_data['berzerker1Cost']}  -> Unlocked after killing {shop_data["berzerker1Kills"]} monsters, doubles your damage")
             else:
                 print(Fore.RED + f" Berzerker v1: {shop_data['berzerker1Cost']}  -> Unlocked after killing {shop_data["berzerker1Kills"]} monsters, doubles your damage") 
         elif player["berzerkerLevel"] == 1: # and persistentStats["monsters_killed"] >= shop_data["berzerker2Kills"]
-            if player["xp"] >= shop_data["berzerker2Cost"]:
+            if player["xp"] >= shop_data["berzerker2Cost"] and persistentStats["monsters_killed"] >= shop_data["berzerker2Kills"]:
                 print(Fore.GREEN + f" Berzerker v2: {shop_data['berzerker2Cost']}  -> Unlocked after killing {shop_data["berzerker2Kills"]} monsters, doubles your damage")
             else:
                 print(Fore.RED + f" Berzerker v2: {shop_data['berzerker2Cost']}  -> Unlocked after killing {shop_data["berzerker2Kills"]} monsters, doubles your damage") 
         elif player["berzerkerLevel"] == 2: # and persistentStats["monsters_killed"] >= shop_data["berzerker3Kills"]
-            if player["xp"] >= shop_data["berzerker3Cost"]:
+            if player["xp"] >= shop_data["berzerker3Cost"] and persistentStats["monsters_killed"] >= shop_data["berzerker3Kills"]:
                 print(Fore.GREEN + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage")
             else:
                 print(Fore.RED + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage") 
         elif player["berzerkerLevel"] == 3: # and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"]
-            if player["xp"] >= shop_data["berzerker4Cost"]:
+            if player["xp"] >= shop_data["berzerker4Cost"] and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"] :
                 print(Fore.GREEN + f" Berzerker v4: {shop_data['berzerker4Cost']}  -> Unlocked after killing {shop_data["berzerker4Kills"]} monsters, doubles your damage")
             else:
                 print(Fore.RED + f" Berzerker v4: {shop_data['berzerker4Cost']}  -> Unlocked after killing {shop_data["berzerker4Kills"]} monsters, doubles your damage") 
@@ -2132,6 +2144,14 @@ def level_up():
                 print(Fore.GREEN + f"Portal Attractor Purchased! Portals will spawn much more often")
                 player["xp"] -= shop_data["portalAttractorCost"]
                 player["portal_attractor_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["shield_disruptor_purchased"] == False and persistentStats["floor"] >= shop_data["shieldDisruptorFloor"] and choice in ["shield","disruptor","shielddisruptor"]:
+            if player["xp"] >= shop_data["shieldDisruptorCost"]:
+                print(Fore.GREEN + f"Shield Disruptor Purchased! You now pierce through a lot of enemy sheild!")
+                player["xp"] -= shop_data["shieldDisruptorCost"]
+                player["shield_disruptor_purchased"] = True
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
@@ -2468,7 +2488,13 @@ def combat():
                 update_last_action()
                 print(Fore.YELLOW + "You attack!")
                 multiplier = 2 ** player["berzerkerLevel"] if player["berzerkerLevel"] > 0 else 1 # Apply bezerker levels
-                damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2)) * multiplier
+                if player["shield_disruptor_purchased"] == True:
+                    pierceAmt = currentMonsterDefense * 0.75
+                    monsterDefense = currentMonsterDefense - pierceAmt
+                    print(Fore.YELLOW + f"Your shield disruptor destroyed {pierceAmt} defense!")
+                else:
+                    monsterDefense = currentMonsterDefense
+                damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - monsterDefense, 2)) * multiplier
                 currentMonsterHealth -= damage
                 if player["berzerkerLevel"] > 0:
                     multiplier = 2 ** player["berzerkerLevel"]
