@@ -61,6 +61,8 @@ player = {
     "soul_mirror_purchased": False,
     "portal_attractor_purchased": False,
     
+    "berzerkerLevel": 0,
+    
     "kills_sense_reborn": 0,
     "kills_sense_portal": 0,
 }
@@ -142,6 +144,11 @@ shop_data = {
     "soulMirrorFloor": 30,
     "portalAttractorFloor": 15,
     
+    "berzerker1Kills": 500,
+    "berzerker2Kills": 750,
+    "berzerker3Kills": 1000,
+    "berzerker4Kills": 10000,
+    
     "eyeCost": 500,
     "weightedDiceCost": 10500,
     "monsterBaitCost": 500,
@@ -152,6 +159,11 @@ shop_data = {
     "greedGulletCost": 5550,
     "soulMirrorCost": 18000,
     "portalAttractorCost": 600,
+    
+    "berzerker1Cost": 10000,
+    "berzerker2Cost": 500000,
+    "berzerker3Cost": 10000000,
+    "berzerker4Cost": 1000000000,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.45,
@@ -1657,7 +1669,7 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.3.3"
+    persistentStats["currentVersion"] = "2.4"
 
     data = {
         "player": player,
@@ -1759,7 +1771,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.3.3":
+        elif persistentStats["currentVersion"] != "2.4":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -1999,6 +2011,27 @@ def level_up():
                 print(Fore.GREEN + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
             else:
                 print(Fore.RED + f" Portal Attractor: {shop_data['portalAttractorCost']}  -> Portals will spawn much more often")
+        
+        if player["berzerkerLevel"] == 0: # and persistentStats["monsters_killed"] >= shop_data["berzerker1Kills"]
+            if player["xp"] >= shop_data["berzerker1Cost"]:
+                print(Fore.GREEN + f" Berzerker v1: {shop_data['berzerker1Cost']}  -> Unlocked after killing {shop_data["berzerker1Kills"]} monsters, doubles your damage")
+            else:
+                print(Fore.RED + f" Berzerker v1: {shop_data['berzerker1Cost']}  -> Unlocked after killing {shop_data["berzerker1Kills"]} monsters, doubles your damage") 
+        elif player["berzerkerLevel"] == 1: # and persistentStats["monsters_killed"] >= shop_data["berzerker2Kills"]
+            if player["xp"] >= shop_data["berzerker2Cost"]:
+                print(Fore.GREEN + f" Berzerker v2: {shop_data['berzerker2Cost']}  -> Unlocked after killing {shop_data["berzerker2Kills"]} monsters, doubles your damage")
+            else:
+                print(Fore.RED + f" Berzerker v2: {shop_data['berzerker2Cost']}  -> Unlocked after killing {shop_data["berzerker2Kills"]} monsters, doubles your damage") 
+        elif player["berzerkerLevel"] == 2: # and persistentStats["monsters_killed"] >= shop_data["berzerker3Kills"]
+            if player["xp"] >= shop_data["berzerker3Cost"]:
+                print(Fore.GREEN + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage")
+            else:
+                print(Fore.RED + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage") 
+        elif player["berzerkerLevel"] == 4: # and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"]
+            if player["xp"] >= shop_data["berzerker4Cost"]:
+                print(Fore.GREEN + f" Berzerker v4: {shop_data['berzerker4Cost']}  -> Unlocked after killing {shop_data["berzerker4Kills"]} monsters, doubles your damage")
+            else:
+                print(Fore.RED + f" Berzerker v4: {shop_data['berzerker4Cost']}  -> Unlocked after killing {shop_data["berzerker4Kills"]} monsters, doubles your damage") 
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
@@ -2083,6 +2116,39 @@ def level_up():
                 print(Fore.GREEN + f"Portal Attractor Purchased! Portals will spawn much more often")
                 player["xp"] -= shop_data["portalAttractorCost"]
                 player["portal_attractor_purchased"] = True
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+                
+        elif player["berzerkerLevel"] == 0 and persistentStats["monsters_killed"] >= shop_data["berzerker1Kills"] and choice in ["berzerker","berz"]:
+            if player["xp"] >= shop_data["berzerker1Cost"]:
+                print(Fore.GREEN + f"Bezerker v1 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berzerker1Cost"]
+                player["berzerkerLevel"] += 1
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["berzerkerLevel"] == 1 and persistentStats["monsters_killed"] >= shop_data["berzerker2Kills"] and choice in ["berzerker","berz"]:
+            if player["xp"] >= shop_data["berzerker2Cost"]:
+                print(Fore.GREEN + f"Bezerker v2 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berzerker2Cost"]
+                player["berzerkerLevel"] += 1
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["berzerkerLevel"] == 2 and persistentStats["monsters_killed"] >= shop_data["berzerker3Kills"] and choice in ["berzerker","berz"]:
+            if player["xp"] >= shop_data["berzerker3Cost"]:
+                print(Fore.GREEN + f"Bezerker v3 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berzerker3Cost"]
+                player["berzerkerLevel"] += 1
+                time.sleep(1)
+            else:
+                print(Fore.RED + f"Not Enough Xp!")
+        elif player["berzerkerLevel"] == 4 and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"] and choice in ["berzerker","berz"]:
+            if player["xp"] >= shop_data["berzerker4Cost"]:
+                print(Fore.GREEN + f"Bezerker v4 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berzerker1Cost"]
+                player["berzerkerLevel"] += 1
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
@@ -2383,7 +2449,10 @@ def combat():
             if choice in ["attack", "atk", ""]:
                 update_last_action()
                 print(Fore.YELLOW + "You attack!")
-                damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2))
+                if player["berzerkerLevel"] > 0:
+                    print(Fore.YELLOW + "Your bezerker rage increases your damage!")
+                multiplier = 2 ** player["berzerkerLevel"] if player["berzerkerLevel"] > 0 else 1 # Apply bezerker levels
+                damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2)) * multiplier
                 currentMonsterHealth -= damage
                 print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
                 time.sleep(0.2)
@@ -2462,7 +2531,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.YELLOW + "Console Wars v2.3.3 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.4 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
