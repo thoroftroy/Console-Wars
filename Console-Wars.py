@@ -65,7 +65,7 @@ player = {
     
     "berzerkerLevel": 0,
     
-    "kills_sense_reborn": 0,
+    "kills_sense_reborn": 100,
     "kills_sense_portal": 0,
 }
 
@@ -660,7 +660,6 @@ def show_stats_screen():
 
     print(Fore.CYAN + "\n--- Gatcha ---")
     print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0)} | Xp Earned: {gatcha_data.get('xp_earned', 0)}")
-    print(Fore.BLACK + "|" + Fore.CYAN)
 
     characters = gatcha_data.get("characters_owned", [])
     if characters:
@@ -888,8 +887,11 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     print(Fore.GREEN + " Health: ", end='')
     for i in range(round(currentHealthPercentage / 2.4)): print(Fore.GREEN + '=', end='')
     print("", str(currentHealthPercentage) + "%  (" + str(round(player["health"], 1)) + ")")
-    print(Fore.GREEN + " Damage:", round(player["damage"], 1), " |  Defense:", round(player["defense"], 1), " |  Xp:",
-          round(player["xp"], 1))
+    print(
+        Fore.GREEN + f" Damage: {round(player['damage'], 1)}" +
+        (Fore.YELLOW + f" (Bezerk x{2 ** player['berzerkerLevel']})" if player['berzerkerLevel'] > 0 else "") +
+        Fore.GREEN + f" |  Defense: {round(player['defense'], 1)} |  Xp: {round(player['xp'], 1)}"
+    )
     print(Fore.GREEN + " Dodge Chance:", str(round(player["dodge"], 1)) + "% |  Retreat Chance:",
           str(round(player["escape"], 1)) + "%", " |  Item Drop Chance:", str(round(player["drop"], 1)) + "%")
     print(Fore.BLACK + "|")
@@ -989,7 +991,7 @@ def update_gatcha():  # The actual gatcha thread which updates your XP over time
         xp_gain *= reborns + floor
 
         # Wait and apply the XP gain
-        time.sleep(random.randint(10,20))
+        time.sleep(random.randint(60,140))
         gatcha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
         print(Fore.CYAN + f"Your gatcha characters have returned from battle with {xp_gain} xp")
@@ -1339,7 +1341,7 @@ def fishing():
                 scale = 1 + (persistentStats["floor"] / 2)
                 mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
                 scale = persistentStats["reborns_used"] + 1
-                xp_gain = round(random.uniform(0.5, 2.0) * scale * mult * scale, 1)
+                xp_gain = round(random.uniform(0.5, 4.0) * scale * mult * scale, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain} XP!")
                 fishing_data["fish_caught"] += 1
@@ -1786,7 +1788,7 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.4.1"
+    persistentStats["currentVersion"] = "2.4.2"
 
     data = {
         "player": player,
@@ -1804,8 +1806,14 @@ def save_to_file():  # Saves the file
         "gatcha_data": gatcha_data,
     }
 
-    with open(globalSavePath, "w") as f:
-        json.dump(data, f, indent=4)
+    try:
+        with open(globalSavePath, "w") as f:
+            json.dump(data, f, indent=4)
+    except PermissionError as e:
+        print(f"[SAVE ERROR] Permission denied: {globalSavePath}")
+        print("Try closing other programs, check OneDrive sync, or move the file out of protected folders.")
+        input("Press Enter to exit.")
+        sys.exit(1)
 
 def list_saved_files():  # lists saved files
     files = os.listdir(saveDirectory)
@@ -1891,7 +1899,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.4.1":
+        elif persistentStats["currentVersion"] != "2.4.2":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -2468,7 +2476,7 @@ def monster_death_check():
         if player["greed's_gullet_purchased"] == True and random.randint(0,1) == 1:
             greedCoins = round(random.uniform(1,2) * 100 * (persistentStats["floor"] / 5) * (persistentStats["reborns_used"] + 1))
             player["coins"] += greedCoins
-            print(Fore.YELLOW + f"Your greed has manifested {greedCoins} coins!")
+            print(Fore.YELLOW + f"Your greed manifestes {greedCoins} coins!")
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
@@ -2603,7 +2611,6 @@ def combat():
 
             if choice in ["attack", "atk", ""]:
                 update_last_action()
-                print(Fore.YELLOW + "You attack!")
                 multiplier = 2 ** player["berzerkerLevel"] if player["berzerkerLevel"] > 0 else 1 # Apply bezerker levels
                 if player["shield_disruptor_purchased"] == True:
                     pierceAmt = currentMonsterDefense * 0.75
@@ -2613,11 +2620,12 @@ def combat():
                     monsterDefense = currentMonsterDefense
                 damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - monsterDefense, 2)) * multiplier
                 currentMonsterHealth -= damage
-                if player["berzerkerLevel"] > 0:
-                    multiplier = 2 ** player["berzerkerLevel"]
-                    print(Fore.YELLOW + f"Your berserker rage increases your damage by {multiplier}x!")
-                print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
-                time.sleep(0.2)
+                print(Fore.YELLOW + f"You dealt {damage} to {currentMonsterFight}.")
+                # Check if damage is less than 10% of the monster's current HP
+                ten_percent = monster.maxHealth[monsterId] * 0.10
+                if damage < ten_percent:
+                    print(Fore.RED + "Warning: Your attack dealt less than 10% of the enemy’s health. You may not be strong enough for this fight.")
+                    time.sleep(1.5)
                 monster_death_check()
 
             elif choice in ["retreat", "ret", "escape", "esc"]:
@@ -2697,7 +2705,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.YELLOW + "Console Wars v2.4.1 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.4.2 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
