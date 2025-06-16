@@ -147,7 +147,7 @@ shop_data = {
     "berzerker1Kills": 500,
     "berzerker2Kills": 750,
     "berzerker3Kills": 1000,
-    "berzerker4Kills": 10000,
+    "berzerker4Kills": 5000,
     
     "eyeCost": 500,
     "weightedDiceCost": 10500,
@@ -163,7 +163,7 @@ shop_data = {
     "berzerker1Cost": 10000,
     "berzerker2Cost": 500000,
     "berzerker3Cost": 10000000,
-    "berzerker4Cost": 1000000000,
+    "berzerker4Cost": 100000000,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.45,
@@ -936,7 +936,22 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
         clear_screen()
         print(Fore.BLUE + "====Gatcha=====")
         if gatcha_data["characters_owned"]:
-            print(Fore.CYAN + "You have: " + Fore.YELLOW + str(gatcha_data["characters_owned"]))
+            print(Fore.CYAN + "You have: " + Fore.YELLOW)
+            characters = gatcha_data.get("characters_owned", [])
+            if characters:
+                for i, name in enumerate(characters, 1):
+                    # Find the full character data from the gatcha list
+                    full_data = next((char for char in gatcha if char["name"] == name), None)
+                    if full_data:
+                        print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
+                    else:
+                        print(f"-{name}  (Unknown Data)", end='     ')
+                    if i % 3 == 0:
+                        print()  # Newline after every 3 items
+                if len(characters) % 3 != 0:
+                    print()  # Ensure final line ends properly
+            else:
+                print("(None)")
             print(Fore.BLACK + "|")
             print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gatcha_data["xp_earned"]))
 
@@ -1022,6 +1037,9 @@ def reborn():
     print(Fore.CYAN + "Cost: All XP  →  Reward: 100,000 coins")
     print(Fore.YELLOW + "\nReborn? (yes/no)")
 
+    if persistentStats["floor"] > persistentStats["highest_floor"]:
+            persistentStats["highest_floor"] = persistentStats["floor"]
+    
     choice = input(Fore.GREEN + "> ").strip().lower()
     update_last_action()
     if choice in ["yes", "y"]:
@@ -1031,7 +1049,6 @@ def reborn():
             combat()
             return
 
-        persistentStats["highest_floor"] = persistentStats["floor"]
         player["xp"] = 0.0
         player["coins"] += 100000
         well_data["wishing_well_cost"] = 50000
@@ -1055,7 +1072,6 @@ def reborn():
         print(Fore.YELLOW + "Rebirth canceled.")
         time.sleep(1.5)
         combat()
-
 
 # Section for managing the wishing well
 def wishing_well():
@@ -2027,7 +2043,7 @@ def level_up():
                 print(Fore.GREEN + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage")
             else:
                 print(Fore.RED + f" Berzerker v3: {shop_data['berzerker3Cost']}  -> Unlocked after killing {shop_data["berzerker3Kills"]} monsters, doubles your damage") 
-        elif player["berzerkerLevel"] == 4: # and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"]
+        elif player["berzerkerLevel"] == 3: # and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"]
             if player["xp"] >= shop_data["berzerker4Cost"]:
                 print(Fore.GREEN + f" Berzerker v4: {shop_data['berzerker4Cost']}  -> Unlocked after killing {shop_data["berzerker4Kills"]} monsters, doubles your damage")
             else:
@@ -2256,7 +2272,8 @@ def portal():
         else:
             persistentStats["floor"] += random.randint(3, 9)
         persistentStats["room"] = random.randint(0, 8)
-        persistentStats["highest_floor"] = persistentStats["floor"]
+        if persistentStats["floor"] > persistentStats["highest_floor"]:
+            persistentStats["highest_floor"] = persistentStats["floor"]
         reset_monster()
     else:
         print(Fore.YELLOW + "You choose to ignore the portal and move on!")
@@ -2319,7 +2336,8 @@ def monster_death_check():
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
-            persistentStats["highest_floor"] = persistentStats["floor"]
+            if persistentStats["floor"] > persistentStats["highest_floor"]:
+                persistentStats["highest_floor"] = persistentStats["floor"]
             persistentStats["room"] = 0
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
@@ -2449,11 +2467,12 @@ def combat():
             if choice in ["attack", "atk", ""]:
                 update_last_action()
                 print(Fore.YELLOW + "You attack!")
-                if player["berzerkerLevel"] > 0:
-                    print(Fore.YELLOW + "Your bezerker rage increases your damage!")
                 multiplier = 2 ** player["berzerkerLevel"] if player["berzerkerLevel"] > 0 else 1 # Apply bezerker levels
                 damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - currentMonsterDefense, 2)) * multiplier
                 currentMonsterHealth -= damage
+                if player["berzerkerLevel"] > 0:
+                    multiplier = 2 ** player["berzerkerLevel"]
+                    print(Fore.YELLOW + f"Your berserker rage increases your damage by {multiplier}x!")
                 print(Fore.RED + f"You dealt {damage} to {currentMonsterFight}.")
                 time.sleep(0.2)
                 monster_death_check()
