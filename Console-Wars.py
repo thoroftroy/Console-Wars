@@ -888,9 +888,10 @@ def update_gatcha():  # The actual gatcha thread which updates your XP over time
         xp_gain *= reborns + floor
 
         # Wait and apply the XP gain
-        time.sleep(10)
+        time.sleep(random.randint(10,20))
         gatcha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
+        print(Fore.CYAN + f"Your gatcha characters have returned from battle with {xp_gain} xp")
 
 def try_gatcha_drop(garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
     global gatcha_data, persistentStats
@@ -2246,7 +2247,7 @@ def monster_death_check():
         
         # The player earns some money maybe
         if player["greed's_gullet_purchased"] == True and random.randint(0,1) == 1:
-            greedCoins = round(random.uniform(1,2) * 100 * (persistentStats["floor"] / 5))
+            greedCoins = round(random.uniform(1,2) * 100 * (persistentStats["floor"] / 5) * (persistentStats["reborns_used"] + 1))
             player["coins"] += greedCoins
             print(Fore.YELLOW + f"Your greed has manifested {greedCoins} coins!")
 
@@ -2303,6 +2304,7 @@ def monster_turn():
         print(Fore.YELLOW + "You dodged the attack!")
     elif player["mirror_pendant_purchased"] == True and monsterAttack == 0:
         print(Fore.CYAN + "The monster's attack glances off of you!")
+        monsterAttack += 1
         time.sleep(0.8)
     # The monsters turn
     else:
