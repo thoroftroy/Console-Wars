@@ -609,7 +609,7 @@ def show_stats_screen():
     print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purchased']}")
     print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purchased']}")
     print(f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
-    print(f"Soul Mirror: {player['soul_mirror_purchased']}")
+    print(f"Soul Mirror: {player['soul_mirror_purchased']}  |  Bezerker Level: {player['berzerkerLevel']}/4")
 
     print(Fore.CYAN + "\n--- Gambling Stats ---")
     print(f"Gambles: {gambling_data.get('gamblingBets', 0)}")
