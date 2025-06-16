@@ -566,6 +566,10 @@ def update_last_action():
         global last_user_action
         last_user_action = time.time()
 
+def rainbow_text(text):
+    colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
+    return "".join(colors[i % len(colors)] + c for i, c in enumerate(text))
+
 # Define the current os and clear screen properly
 def clear_screen():
     print(Style.RESET_ALL)
@@ -942,6 +946,7 @@ def portal_travel(): # The idea of this is to let you travel to any floor (50-ma
             if 65 <= floor_num <= persistentStats['highest_floor']:
                 print(Fore.MAGENTA + f"You enter the portal and travel to floor {floor_num}")
                 time.sleep(0.8)
+                player["kills_sense_portal"] = 0
                 persistentStats["floor"] = floor_num
                 persistentStats["room"] = 1
                 reset_monster() # This makes it a free retreat butttt I don't care
@@ -1950,7 +1955,7 @@ def try_relic_drop(): # Tries to drop a relic after killing a boss on the 100th 
     if persistentStats["floor"] < 100 or not persistentStats.get("boss_fight_ready", False):
         return
 
-    if random.randint(1, 100) > 5:
+    if random.randint(1, 100) > 5: # 5 is default
         return  # 5% chance failed
 
     owned_names = {r["name"] for r in player.get("relics", [])}
@@ -1960,11 +1965,11 @@ def try_relic_drop(): # Tries to drop a relic after killing a boss on the 100th 
         return  # Already have all relics — no drop
     else:
         new_relic = random.choice(available_relics)
-        print(Fore.CYAN + f"A strange power surges... You obtained a relic!")
-        print(Fore.YELLOW + f"→ {new_relic['name']} — {new_relic['desc']}")
+        print(rainbow_text("A strange power surges...") + Fore.YELLOW + " You obtained a relic!")
+        print(Fore.MAGENTA + "→ " + Fore.CYAN + f"{new_relic['name']}" + Fore.WHITE + " — " + Fore.YELLOW + f"{new_relic['desc']}")
         player["relics"].append(new_relic)
         apply_boosts()
-        time.sleep(1.5)
+        time.sleep(2.5)
 
 def apply_boosts():
     # Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
@@ -2464,14 +2469,22 @@ def monster_death_check():
             try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
 
         persistentStats["monsters_killed"] += 1
-        
+
         # Heals the player
-        if player["reaper's_token_purchased"] == True:
+        before_heal = player["health"]
+        if player["reaper's_token_purchased"]:
             player["health"] += round(monster.maxHealth[monsterId] / 3)
-            print(Fore.YELLOW + "Your Reaper's Token Glows...")
         else:
             player["health"] += round(monster.maxHealth[monsterId] / 10)
-        
+
+        # Clamp to maxHealth
+        if player["health"] > player["maxHealth"]:
+            player["health"] = player["maxHealth"]
+
+        # Only show Reaper Token message if healing actually occurred
+        if player["reaper's_token_purchased"] and player["health"] > before_heal:
+            print(Fore.YELLOW + "Your Reaper's Token Glows...")
+
         # The player earns some money maybe
         if player["greed's_gullet_purchased"] == True and random.randint(0,1) == 1:
             greedCoins = round(random.uniform(1,2) * 100 * (persistentStats["floor"] / 5) * (persistentStats["reborns_used"] + 1))
