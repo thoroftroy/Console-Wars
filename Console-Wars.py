@@ -1942,8 +1942,8 @@ def try_relic_drop(): # Tries to drop a relic after killing a boss on the 100th 
     if persistentStats["floor"] < 100 or not persistentStats.get("boss_fight_ready", False):
         return
 
-    #if random.randint(1, 100) > 1:
-    #    return  # 1% chance failed
+    if random.randint(1, 100) > 5:
+        return  # 5% chance failed
 
     owned_names = {r["name"] for r in player.get("relics", [])}
     available_relics = [r for r in relics if r["name"] not in owned_names]
