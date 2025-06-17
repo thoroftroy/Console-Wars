@@ -245,7 +245,7 @@ shop_data = {
     "escapeKeyFloor": 40,
     "reaperTokenFloor": 75,
     "greedGulletFloor": 20,
-    "soulMirrorFloor": 30,
+    "soulMirrorFloor": 25,
     "portalAttractorFloor": 15,
     "shieldDisruptorFloor": 100,
 
@@ -262,7 +262,7 @@ shop_data = {
     "escapeKeyCost": 25000,
     "reaperTokenCost": 150000,
     "greedGulletCost": 5550,
-    "soulMirrorCost": 18000,
+    "soulMirrorCost": 1800,
     "portalAttractorCost": 600,
     "shieldDisruptorCost": 1000000,
 
@@ -1369,8 +1369,9 @@ def wishing_well():
         print(Fore.BLACK + "|")
 
         if player["coins"] <= well_data["wishing_well_cost"]:  # Ensures you have some coins
+            needed = cost - player["coins"]
             print(Fore.RED + "You don't have enough coins!")
-            print(Fore.RED + "The wishing well costs " + Fore.YELLOW + f"{well_data["wishing_well_cost"]:,}" + Fore.RED + " coins")
+            print(Fore.RED + "You need " + Fore.YELLOW + f"{needed:,}" + Fore.RED + " more coins.")
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
@@ -2900,6 +2901,7 @@ def monster_turn():
             if currentMonsterHealth <= 1:
                 currentMonsterHealth = 1
             print(Fore.YELLOW + f"Your Soul Mirror reflects {dmgReflect:,} damage back onto the {currentMonsterFight}.")
+            time.sleep(0.5)
         time.sleep(0.8)
 
 
@@ -3025,7 +3027,24 @@ def combat():
                 print(Fore.RED + "You have died.")
                 if endlessMode:
                     print(Fore.YELLOW + f"You defeated {endlessKills:,} Demon Lords!")
+                    if endlessKills == 0:
+                        print(Fore.RED + "You lose, but hey, at least you made it!")
+                    elif endlessKills == 1:
+                        print(Fore.CYAN + "Well... that's not too bad.")
+                    elif endlessKills <= 4:
+                        print(Fore.GREEN + "Respectable effort.")
+                    elif endlessKills <= 6:
+                        print(Fore.YELLOW + "That's pretty dang good.")
+                    elif endlessKills <= 9:
+                        print(Fore.MAGENTA + "Incredible run!")
+                    elif endlessKills >= 10:
+                        print(Fore.RED + Style.BRIGHT + "You are a LEGEND. That was AMAZING.")
+                else:
+                    print(Fore.RED + "YOU LOSE!!!!")
                 persistentStats["is_dead"] = True
+                time.sleep(5)
+                print(Fore.GREEN + "Thanks for playing!")
+                time.sleep(3)
                 save_to_file()
                 show_stats_screen()
 
