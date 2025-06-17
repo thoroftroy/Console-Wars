@@ -1215,7 +1215,9 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
                     if len(owned) % 3 != 0:
                         print()
             print(Fore.BLACK + "|")
-            print(Fore.CYAN + f"They have earned you: {gacha_data['xp_earned']:,}")
+            print(Fore.BLACK + "|")
+            print(Fore.CYAN + f"They have earned you: {Fore.YELLOw}{gacha_data['xp_earned']:,}")
+            print(Fore.BLACK + "|")
 
         if gacha_data["gacha_pulls_available"] <= 0:  # Ensures you have some gacha passes to use
             print(Fore.RED + "You don't have any pulls available!")
@@ -2354,264 +2356,183 @@ def level_up():
         # Build the output string with individual coloring
         output_parts = []
 
-        for i, boost in enumerate(boosts):  # Use enumerate to get index i
+        for i, boost in enumerate(boosts):
             base_cost = shop_data[f'base{boost}BoostCost']
+            rounded_cost = round(base_cost, 1)  # ✅ Round to nearest 10th
             current_mod = shop_data[f'{boost.lower()}BoostMod']
             cap = shop_data[f'{boost.lower()}BoostCap']
 
-            can_buy = player["xp"] >= base_cost and current_mod < cap
+            can_buy = player["xp"] >= rounded_cost and current_mod < cap
             color = Fore.GREEN if can_buy else Fore.RED
 
-            output_parts.append(f"{color} {boost}: {base_cost:,}")
-
-            # Add newline after each entry
+            output_parts.append(f"{color} {boost}: {rounded_cost:,}")
             output_parts.append("\n")
 
         # Join and print everything
         print("".join(output_parts) + Style.RESET_ALL)
 
-        # Manage upgrades like the eye and weighted dice
-        if player["eye_purchased"] == False and persistentStats["floor"] >= shop_data["eyeFloor"]:
-            if player["xp"] >= shop_data["eyeCost"]:
-                print(Fore.GREEN + f" Hackers Eye: {shop_data['eyeCost']:,}  -> See things you shouldn't be able to see")
-            else:
-                print(Fore.RED + f" Hackers Eye: {shop_data['eyeCost']:,}  -> See things you shouldn't be able to see")
-        if player["monster_bait_purchased"] == False and persistentStats["floor"] >= shop_data["monsterBaitFloor"]:
-            if player["xp"] >= shop_data["monsterBaitCost"]:
-                print(
-                    Fore.GREEN + f" Monster Bait: {shop_data['monsterBaitCost']:,}  -> Increase how fast fish will bite")
-            else:
-                print(Fore.RED + f" Monster Bait: {shop_data['monsterBaitCost']:,}  -> Increase how fast fish will bite")
-        if player["weighted_dice_purchased"] == False and persistentStats["floor"] >= shop_data["weightedDiceFloor"]:
-            if player["xp"] >= shop_data["weightedDiceCost"]:
-                print(
-                    Fore.GREEN + f" Weighted Dice: {shop_data['weightedDiceCost']:,}  -> Change gambling luck in your favor")
-            else:
-                print(
-                    Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']:,}  -> Change gambling luck in your favor")
-        if player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"]:
-            if player["xp"] >= shop_data["dogHouseCost"]:
-                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagotchi happier")
-            else:
-                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagotchi happier")
-        if player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data["mirrorPendantFloor"]:
-            if player["xp"] >= shop_data["mirrorPendantCost"]:
-                print(
-                    Fore.GREEN + f" Mirror Pendant: {shop_data['mirrorPendantCost']:,}  -> Monsters can't seem to hit you")
-            else:
-                print(Fore.RED + f" Mirror Pendant: {shop_data['mirrorPendantCost']:,}  -> Monsters can't seem to hit you")
-        if player["escape_key_purchased"] == False and persistentStats["floor"] >= shop_data["escapeKeyFloor"]:
-            if player["xp"] >= shop_data["escapeKeyCost"]:
-                print(Fore.GREEN + f" Escape Key: {shop_data['escapeKeyCost']:,}  -> Escape is guaranteed")
-            else:
-                print(Fore.RED + f" Escape Key: {shop_data['escapeKeyCost']:,}  -> Escape is guaranteed")
-        if player["reaper's_token_purchased"] == False and persistentStats["floor"] >= shop_data["reaperTokenFloor"]:
-            if player["xp"] >= shop_data["reaperTokenCost"]:
-                print(Fore.GREEN + f" Reaper's Token: {shop_data['reaperTokenCost']:,}  -> Heal more from killing")
-            else:
-                print(Fore.RED + f" Reaper's Token: {shop_data['reaperTokenCost']:,}  -> Heal more from killing")
-        if player["greed's_gullet_purchased"] == False and persistentStats["floor"] >= shop_data["greedGulletFloor"]:
-            if player["xp"] >= shop_data["greedGulletCost"]:
-                print(Fore.GREEN + f" Greed's Gullet: {shop_data['greedGulletCost']:,}  -> Killing grants coins")
-            else:
-                print(Fore.RED + f" Greed's Gullet: {shop_data['greedGulletCost']:,}  -> Killing grants coins")
-        if player["soul_mirror_purchased"] == False and persistentStats["floor"] >= shop_data["soulMirrorFloor"]:
-            if player["xp"] >= shop_data["soulMirrorCost"]:
-                print(
-                    Fore.GREEN + f" Soul Mirror: {shop_data['soulMirrorCost']:,}  -> Reflect monsters attacks back at them")
-            else:
-                print(
-                    Fore.RED + f" Soul Mirror: {shop_data['soulMirrorCost']:,}  -> Reflect monsters attacks back at them")
-        if player["portal_attractor_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "portalAttractorFloor"]:
-            if player["xp"] >= shop_data["portalAttractorCost"]:
-                print(
-                    Fore.GREEN + f" Portal Attractor: {shop_data['portalAttractorCost']:,}  -> Portals will spawn much more often")
-            else:
-                print(
-                    Fore.RED + f" Portal Attractor: {shop_data['portalAttractorCost']:,}  -> Portals will spawn much more often")
-        if player["shield_disruptor_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "shieldDisruptorFloor"]:
-            if player["xp"] >= shop_data["shieldDisruptorCost"]:
-                print(Fore.GREEN + f" Shield Disruptor: {shop_data['shieldDisruptorCost']:,}  -> Ignore some shielding")
-            else:
-                print(Fore.RED + f" Shield Disruptor: {shop_data['shieldDisruptorCost']:,}  -> Ignore some shielding")
+        # --- Define shop upgrades in a reusable format ---
+        shop_items = [
+            ("eye_purchased", "eyeCost", "eyeFloor", "Hackers Eye", "See things you shouldn't be able to see"),
+            ("monster_bait_purchased", "monsterBaitCost", "monsterBaitFloor", "Monster Bait",
+             "Increase how fast fish will bite"),
+            ("weighted_dice_purchased", "weightedDiceCost", "weightedDiceFloor", "Weighted Dice",
+             "Change gambling luck in your favor"),
+            ("dog_house_purchased", "dogHouseCost", "dogHouseFloor", "Dog(?) House", "Make your Tamagotchi happier"),
+            ("mirror_pendant_purchased", "mirrorPendantCost", "mirrorPendantFloor", "Mirror Pendant",
+             "Monsters can't seem to hit you"),
+            ("escape_key_purchased", "escapeKeyCost", "escapeKeyFloor", "Escape Key", "Escape is guaranteed"),
+            ("reaper's_token_purchased", "reaperTokenCost", "reaperTokenFloor", "Reaper's Token",
+             "Heal more from killing"),
+            ("greed's_gullet_purchased", "greedGulletCost", "greedGulletFloor", "Greed's Gullet",
+             "Killing grants coins"),
+            ("soul_mirror_purchased", "soulMirrorCost", "soulMirrorFloor", "Soul Mirror",
+             "Reflect monsters attacks back at them"),
+            ("portal_attractor_purchased", "portalAttractorCost", "portalAttractorFloor", "Portal Attractor",
+             "Portals will spawn much more often"),
+            ("shield_disruptor_purchased", "shieldDisruptorCost", "shieldDisruptorFloor", "Shield Disruptor",
+             "Ignore some shielding"),
+        ]
 
-        if player["berserkerLevel"] == 0:  # and persistentStats["monsters_killed"] >= shop_data["berserker1Kills"]
-            if player["xp"] >= shop_data["berserker1Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berserker1Kills"]:
+        for purchase_flag, cost_key, floor_key, name, desc in shop_items:
+            if not player[purchase_flag] and persistentStats["floor"] >= shop_data[floor_key]:
+                cost = shop_data[cost_key]
+                color = Fore.GREEN if player["xp"] >= cost else Fore.RED
+                print(color + f" {name}: {cost:,}  -> {desc}")
+
+        # --- Berserker Upgrade Tiers ---
+        for level in range(4):
+            if player["berserkerLevel"] == level:
+                cost_key = f"berserker{level + 1}Cost"
+                kill_key = f"berserker{level + 1}Kills"
+                cost = shop_data[cost_key]
+                kill_req = shop_data[kill_key]
+                meets_kills = persistentStats["monsters_killed"] >= kill_req
+                meets_xp = player["xp"] >= cost
+                color = Fore.GREEN if meets_kills and meets_xp else Fore.RED
                 print(
-                    Fore.GREEN + f" Berzerker v1: {shop_data['berserker1Cost']:,}  -> Unlocked after killing {shop_data["berserker1Kills"]:,} monsters, doubles your damage")
-            else:
-                print(
-                    Fore.RED + f" Berzerker v1: {shop_data['berserker1Cost']:,}  -> Unlocked after killing {shop_data["berserker1Kills"]:,} monsters, doubles your damage")
-        elif player["berserkerLevel"] == 1:  # and persistentStats["monsters_killed"] >= shop_data["berserker2Kills"]
-            if player["xp"] >= shop_data["berserker2Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berserker2Kills"]:
-                print(
-                    Fore.GREEN + f" Berzerker v2: {shop_data['berserker2Cost']:,}  -> Unlocked after killing {shop_data["berserker2Kills"]:,} monsters, doubles your damage")
-            else:
-                print(
-                    Fore.RED + f" Berzerker v2: {shop_data['berserker2Cost']:,}  -> Unlocked after killing {shop_data["berserker2Kills"]:,} monsters, doubles your damage")
-        elif player["berserkerLevel"] == 2:  # and persistentStats["monsters_killed"] >= shop_data["berserker3Kills"]
-            if player["xp"] >= shop_data["berserker3Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berserker3Kills"]:
-                print(
-                    Fore.GREEN + f" Berzerker v3: {shop_data['berserker3Cost']:,}  -> Unlocked after killing {shop_data["berserker3Kills"]:,} monsters, doubles your damage")
-            else:
-                print(
-                    Fore.RED + f" Berzerker v3: {shop_data['berserker3Cost']:,}  -> Unlocked after killing {shop_data["berserker3Kills"]:,} monsters, doubles your damage")
-        elif player["berserkerLevel"] == 3:  # and persistentStats["monsters_killed"] >= shop_data["berserker4Kills"]
-            if player["xp"] >= shop_data["berserker4Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berserker4Kills"]:
-                print(
-                    Fore.GREEN + f" Berzerker v4: {shop_data['berserker4Cost']:,}  -> Unlocked after killing {shop_data["berserker4Kills"]:,} monsters, doubles your damage")
-            else:
-                print(
-                    Fore.RED + f" Berzerker v4: {shop_data['berserker4Cost']:,}  -> Unlocked after killing {shop_data["berserker4Kills"]:,} monsters, doubles your damage")
+                    color + f" Berzerker v{level + 1}: {cost:,}  -> Unlocked after killing {kill_req:,} monsters, doubles your damage")
+                break
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
 
-        # More upgrade management
-        if player["eye_purchased"] == False and persistentStats["floor"] >= shop_data["eyeFloor"] and choice in ["eye","hacker","hack","hackerseye","hackers"]:
-            if player["xp"] >= shop_data["eyeCost"]:
-                print(Fore.GREEN + f"Hackers Eye Purchased! You can now see extra monster stats during battle.")
-                player["xp"] -= shop_data["eyeCost"]
-                player["eye_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["weighted_dice_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "weightedDiceFloor"] and choice in ["weight", "weighted", "dice", "die", "weighteddice"]:
-            if player["xp"] >= shop_data["weightedDiceCost"]:
-                print(Fore.GREEN + f"Weighted Dice Purchased! Gambling is tipped in your favor!")
-                player["xp"] -= shop_data["weightedDiceCost"]
-                player["weighted_dice_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "dogHouseFloor"] and choice in ["dog", "doghouse", "house"]:
-            if player["xp"] >= shop_data["dogHouseCost"]:
-                print(Fore.GREEN + f"Dog(?) House Purchased! Tamagotchi has a higher max bond!")
-                player["xp"] -= shop_data["dogHouseCost"]
-                player["dog_house_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["monster_bait_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "monsterBaitFloor"] and choice in ["monster", "bait", "monsterbait"]:
-            if player["xp"] >= shop_data["monsterBaitCost"]:
-                print(Fore.GREEN + f"Monster Bait Purchased! Fishing is faster!")
-                player["xp"] -= shop_data["monsterBaitCost"]
-                player["monster_bait_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "mirrorPendantFloor"] and choice in ["pendant", "mirrorpendant", "pend"]:
-            if player["xp"] >= shop_data["mirrorPendantCost"]:
-                print(Fore.GREEN + f"Mirror Pendant Purchased! The first attack from any monster will deal 0 damage!")
-                player["xp"] -= shop_data["mirrorPendantCost"]
-                player["mirror_pendant_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["escape_key_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "escapeKeyFloor"] and choice in ["escapekey", "key", "esckey"]:
-            if player["xp"] >= shop_data["escapeKeyCost"]:
-                print(Fore.GREEN + f"Escape Key Purchased! You escape every time!")
-                player["xp"] -= shop_data["escapeKeyCost"]
-                player["escape_key_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["reaper's_token_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "reaperTokenFloor"] and choice in ["reaper", "token", "reapertoken"]:
-            if player["xp"] >= shop_data["reaperTokenCost"]:
-                print(Fore.GREEN + f"Reaper's Token Purchased! Healing from monster kills is tripled!")
-                player["xp"] -= shop_data["reaperTokenCost"]
-                player["reaper's_token_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["greed's_gullet_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "greedGulletFloor"] and choice in ["greed", "greedgullet", "greedsgullet", "gullet"]:
-            if player["xp"] >= shop_data["greedGulletCost"]:
-                print(
-                    Fore.GREEN + f"Greed's Gullet Purchased! Every monster kill has a 50% chance to grant some coins!")
-                player["xp"] -= shop_data["greedGulletCost"]
-                player["greed's_gullet_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["soul_mirror_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "soulMirrorFloor"] and choice in ["soul", "soulmirror", "mirror"]:
-            if player["xp"] >= shop_data["soulMirrorCost"]:
-                print(Fore.GREEN + f"Soul Mirror Purchased! 25% of damage taken is reflected on attacker!")
-                player["xp"] -= shop_data["soulMirrorCost"]
-                player["soul_mirror_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["portal_attractor_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "portalAttractorFloor"] and choice in ["portal", "portalattractor", "attractor"]:
-            if player["xp"] >= shop_data["portalAttractorCost"]:
-                print(Fore.GREEN + f"Portal Attractor Purchased! Portals will spawn much more often")
-                player["xp"] -= shop_data["portalAttractorCost"]
-                player["portal_attractor_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["shield_disruptor_purchased"] == False and persistentStats["floor"] >= shop_data[
-            "shieldDisruptorFloor"] and choice in ["shield", "disruptor", "shielddisruptor"]:
-            if player["xp"] >= shop_data["shieldDisruptorCost"]:
-                print(Fore.GREEN + f"Shield Disruptor Purchased! You now pierce through a lot of enemy sheild!")
-                player["xp"] -= shop_data["shieldDisruptorCost"]
-                player["shield_disruptor_purchased"] = True
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
+        # --- Condensed special item/relic purchases ---
+        special_upgrades = [
+            {
+                "flag": "eye_purchased",
+                "floor": "eyeFloor",
+                "cost": "eyeCost",
+                "aliases": ["eye", "hacker", "hack", "hackerseye", "hackers"],
+                "desc": "Hackers Eye Purchased! You can now see extra monster stats during battle."
+            },
+            {
+                "flag": "weighted_dice_purchased",
+                "floor": "weightedDiceFloor",
+                "cost": "weightedDiceCost",
+                "aliases": ["weight", "weighted", "dice", "die", "weighteddice"],
+                "desc": "Weighted Dice Purchased! Gambling is tipped in your favor!"
+            },
+            {
+                "flag": "dog_house_purchased",
+                "floor": "dogHouseFloor",
+                "cost": "dogHouseCost",
+                "aliases": ["dog", "doghouse", "house"],
+                "desc": "Dog(?) House Purchased! Tamagotchi has a higher max bond!"
+            },
+            {
+                "flag": "monster_bait_purchased",
+                "floor": "monsterBaitFloor",
+                "cost": "monsterBaitCost",
+                "aliases": ["monster", "bait", "monsterbait"],
+                "desc": "Monster Bait Purchased! Fishing is faster!"
+            },
+            {
+                "flag": "mirror_pendant_purchased",
+                "floor": "mirrorPendantFloor",
+                "cost": "mirrorPendantCost",
+                "aliases": ["pendant", "mirrorpendant", "pend"],
+                "desc": "Mirror Pendant Purchased! The first attack from any monster will deal 0 damage!"
+            },
+            {
+                "flag": "escape_key_purchased",
+                "floor": "escapeKeyFloor",
+                "cost": "escapeKeyCost",
+                "aliases": ["escapekey", "key", "esckey"],
+                "desc": "Escape Key Purchased! You escape every time!"
+            },
+            {
+                "flag": "reaper's_token_purchased",
+                "floor": "reaperTokenFloor",
+                "cost": "reaperTokenCost",
+                "aliases": ["reaper", "token", "reapertoken"],
+                "desc": "Reaper's Token Purchased! Healing from monster kills is tripled!"
+            },
+            {
+                "flag": "greed's_gullet_purchased",
+                "floor": "greedGulletFloor",
+                "cost": "greedGulletCost",
+                "aliases": ["greed", "greedgullet", "greedsgullet", "gullet"],
+                "desc": "Greed's Gullet Purchased! Every monster kill has a 50% chance to grant some coins!"
+            },
+            {
+                "flag": "soul_mirror_purchased",
+                "floor": "soulMirrorFloor",
+                "cost": "soulMirrorCost",
+                "aliases": ["soul", "soulmirror", "mirror"],
+                "desc": "Soul Mirror Purchased! 25% of damage taken is reflected on attacker!"
+            },
+            {
+                "flag": "portal_attractor_purchased",
+                "floor": "portalAttractorFloor",
+                "cost": "portalAttractorCost",
+                "aliases": ["portal", "portalattractor", "attractor"],
+                "desc": "Portal Attractor Purchased! Portals will spawn much more often"
+            },
+            {
+                "flag": "shield_disruptor_purchased",
+                "floor": "shieldDisruptorFloor",
+                "cost": "shieldDisruptorCost",
+                "aliases": ["shield", "disruptor", "shielddisruptor"],
+                "desc": "Shield Disruptor Purchased! You now pierce through a lot of enemy shield!"
+            }
+        ]
 
-        elif player["berserkerLevel"] == 0 and persistentStats["monsters_killed"] >= shop_data[
-            "berserker1Kills"] and choice in ["berserker", "berz","ber","bers"]:
-            if player["xp"] >= shop_data["berserker1Cost"]:
-                print(Fore.GREEN + f"Berserker v1 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berserker1Cost"]
-                player["berserkerLevel"] += 1
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["berserkerLevel"] == 1 and persistentStats["monsters_killed"] >= shop_data[
-            "berserker2Kills"] and choice in ["berserker", "berz","ber","bers"]:
-            if player["xp"] >= shop_data["berserker2Cost"]:
-                print(Fore.GREEN + f"Berserker v2 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berserker2Cost"]
-                player["berserkerLevel"] += 1
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["berserkerLevel"] == 2 and persistentStats["monsters_killed"] >= shop_data[
-            "berserker3Kills"] and choice in ["berserker", "berz","ber","bers"]:
-            if player["xp"] >= shop_data["berserker3Cost"]:
-                print(Fore.GREEN + f"Berserker v3 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berserker3Cost"]
-                player["berserkerLevel"] += 1
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
-        elif player["berserkerLevel"] == 4 and persistentStats["monsters_killed"] >= shop_data[
-            "berserker4Kills"] and choice in ["berserker", "berz","ber","bers"]:
-            if player["xp"] >= shop_data["berserker4Cost"]:
-                print(Fore.GREEN + f"Berserker v4 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berserker1Cost"]
-                player["berserkerLevel"] += 1
-                time.sleep(1)
-            else:
-                print(Fore.RED + f"Not Enough Xp!")
+        # Check all special item upgrades
+        for item in special_upgrades:
+            if (
+                    not player[item["flag"]] and
+                    persistentStats["floor"] >= shop_data[item["floor"]] and
+                    choice in item["aliases"]
+            ):
+                if player["xp"] >= shop_data[item["cost"]]:
+                    print(Fore.GREEN + item["desc"])
+                    player["xp"] -= shop_data[item["cost"]]
+                    player[item["flag"]] = True
+                    time.sleep(1)
+                else:
+                    print(Fore.RED + "Not Enough XP!")
+                break
+
+        # --- Condensed Berserker upgrade handling ---
+        berserker_aliases = ["berserker", "berz", "ber", "bers"]
+        for level in range(4):
+            if (
+                    player["berserkerLevel"] == level and
+                    choice in berserker_aliases and
+                    persistentStats["monsters_killed"] >= shop_data[f"berserker{level + 1}Kills"]
+            ):
+                cost = shop_data[f"berserker{level + 1}Cost"]
+                if player["xp"] >= cost:
+                    print(Fore.GREEN + f"Berserker v{level + 1} purchased! Your damage is permanently doubled!")
+                    player["xp"] -= cost
+                    player["berserkerLevel"] += 1
+                    time.sleep(1)
+                else:
+                    print(Fore.RED + "Not Enough XP!")
+                break
 
         else:
             upgrade_map = {
@@ -2635,62 +2556,104 @@ def level_up():
                 "ret": "escape", "esc": "escape", "retreat": "escape",
                 "drp": "drop", "drop chance": "drop", "dropchance": "drop"
             }
+
             choice = aliases.get(choice, choice)
 
-            if choice in upgrade_map:
-                boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[choice]
-                current_cost = (shop_data[cost_key])
-                boost_mod = shop_data[mod_key]
+            parts = choice.split() # Shop rework to allow mass buying
+            if len(parts) == 2:
+                if parts[0].isdigit():
+                    amount = int(parts[0])
+                    stat = parts[1]
+                elif parts[1].isdigit():
+                    amount = int(parts[1])
+                    stat = parts[0]
+                else:
+                    amount = 1
+                    stat = choice
+            elif len(parts) == 1:
+                amount = 1
+                stat = parts[0]
+            else:
+                amount = 1
+                stat = choice
+
+            stat = aliases.get(stat.lower(), stat.lower())
+
+            if stat in upgrade_map:
+                boost_key, cost_key, factor_key, mod_key, cap_key = upgrade_map[stat]
+                cost = shop_data[cost_key]
+                factor = shop_data[factor_key]
+                mod = shop_data[mod_key]
                 cap = shop_data[cap_key]
+                current_boost = player[boost_key]
 
-                if player["xp"] < current_cost:
-                    update_last_action()
-                    print(Fore.RED + "Not enough XP!")
-                elif player[boost_key] >= cap:
-                    update_last_action()
-                    print(Fore.RED + f"{boost_key.capitalize()} boost is capped at {cap}.")
-                else:  # applies stat boosts
-                    update_last_action()
-                    player["xp"] -= current_cost
+                total_cost = 0
+                purchasable = 0
+                simulated_boost = current_boost
+                simulated_cost = cost
 
-                    if choice == "health":
-                        base_health = 25.0
+                for _ in range(amount):
+                    if simulated_boost >= cap:
+                        break
+                    if total_cost + simulated_cost > player["xp"]:
+                        break
+                    total_cost += simulated_cost
+                    simulated_cost *= factor
+                    simulated_boost += mod
+                    purchasable += 1
 
+                total_cost = round(total_cost)
+
+                if purchasable == 0:
+                    if current_boost >= cap:
+                        print(Fore.RED + f"{stat.capitalize()} is already at the cap of {cap:,}.")
+                    else:
+                        # Recalculate how many upgrades you *could* afford
+                        temp_cost = cost
+                        afford = 0
+                        temp_total = 0
+                        while temp_total + temp_cost <= player["xp"] and current_boost + (afford * mod) < cap:
+                            temp_total += temp_cost
+                            temp_cost *= factor
+                            afford += 1
+                        if afford == 0:
+                            print(Fore.RED + f"Not enough XP to buy any upgrades for {stat}.")
+                        else:
+                            print(Fore.RED + f"Not enough XP to buy {amount} {stat} upgrades. You can afford {afford}.")
+                    time.sleep(1.5)
+                    continue  # Stay in loop
+
+                # Deduct XP
+                player["xp"] -= total_cost
+
+                # Apply the boosts
+                if stat == "health":
+                    base_health = 25.0
+                    for _ in range(purchasable):
                         if player[boost_key] <= 0:
-                            player[boost_key] = 1.0  # Starting point
-
-                        current_boost = player[boost_key]
-                        proposed_boost = current_boost + boost_mod
-
-                        # Calculate new maxHealth
+                            player[boost_key] = 1.0
                         current_max = player["maxHealth"]
+                        proposed_boost = player[boost_key] + mod
                         proposed_max = (base_health + proposed_boost) / 5
-                        increase = proposed_max - current_max
                         max_increase = current_max / 10
-
-                        # Enforce cap
-                        if increase > max_increase:
+                        if proposed_max - current_max > max_increase:
                             proposed_max = current_max + max_increase
                             proposed_boost = proposed_max - base_health
-
                         player[boost_key] = min(proposed_boost, cap)
-
                         apply_boosts()
                         heal_amount = player["maxHealth"] * 0.5
                         player["health"] = min(player["health"] + heal_amount, player["maxHealth"])
-                    else:
-                        player[boost_key] += boost_mod
-                        player[boost_key] = min(player[boost_key], cap)  # Clamp all boosts
+                else:
+                    player[boost_key] += mod * purchasable
+                    player[boost_key] = min(player[boost_key], cap)
+                    if stat not in ["dodge", "escape", "drop"]:
+                        shop_data[mod_key] *= factor
 
-                    # Apply scaling multipliers only to linear boosts
-                    if choice not in ["dodge", "escape", "drop"]:
-                        shop_data[mod_key] *= shop_data[factor_key]
-
-                    # Always scale price
-                    shop_data[cost_key] = round(shop_data[cost_key] * shop_data[factor_key], 1)
-
-                    apply_boosts()
-                    print(Fore.YELLOW + f"{boost_key.capitalize()} boosted! New value: {round(player[boost_key], 2):,}")
+                shop_data[cost_key] = simulated_cost
+                print(
+                    Fore.GREEN + f"Upgraded {Fore.YELLOW}{stat} {purchasable} {Fore.GREEN}time(s) for {Fore.YELLOW}{total_cost:,} {Fore.GREEN}XP.")
+                time.sleep(1)
+                apply_boosts()
 
             elif choice in ["exit", "leave", ""]:
                 update_last_action()
