@@ -1036,7 +1036,6 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     print(Fore.GREEN + "Player Stats:")
     bar = '=' * round(currentHealthPercentage / 2.4)
     print(Fore.GREEN + f" Health: {bar} {currentHealthPercentage}%  ({round(player['health'], 1):,})")
-    print(f" {currentHealthPercentage}%  ({round(player["health"], 1):,})")
     print(
         Fore.GREEN + f" Damage: {round(player['damage'], 1):,}" +
         (Fore.YELLOW + f" (Bezerk x{2 ** player['berserkerLevel']})" if player['berserkerLevel'] > 0 else "") +
