@@ -129,6 +129,15 @@ So why bother with things like idle timeouts or anti-spam detection in fishing? 
 
 If you choose to cheat, that's entirely up to you. It's a single-player game, and I won’t waste development time trying to stop something I ultimately can’t control. Just play the game however you enjoy it.
 
+## To Compile
+Run this on your machine
+```
+pyinstaller --onefile --name "ConsoleWars" Console-Wars.py
+```
+If pyinstaller is not installed then run 
+```
+pip install pyinstaller
+```
 ## Known Issue(s)
 On some devices the fishing minigame will simply not work, when hitting enter quickly to catch a fish nothing will happen
 
