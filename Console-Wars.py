@@ -204,6 +204,7 @@ gambling_data = {
     "itemsSold": 0,
     "coinsFromSelling": 0,
     "coinsConvertedToXP": 0,
+    "highRiskStatChange": 0,
 }
 
 well_data = {
@@ -1594,6 +1595,10 @@ def gambling():  # Manages the gambling screen
     global player, persistentStats
     clear_screen()
     print(Style.RESET_ALL)
+
+    # Enforce limits
+    high_risk_limit = (persistentStats["floor"] + 1) * 15 * (persistentStats["reborns_used"] + 1)
+
     print(Fore.YELLOW + "Welcome to the Gambling Den")
     if persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
@@ -1665,9 +1670,9 @@ def gambling():  # Manages the gambling screen
 
     elif choice in ["gamble", "gam"]:
         if player["weighted_dice_purchased"] == True:
-            max_winnings = (10000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1)))
+            max_winnings = (10000 * (((persistentStats["floor"] + 1) / 5) * ((persistentStats["reborns_used"] + 1) * 4)))
         else:
-            max_winnings = (5000 * (((persistentStats["floor"] + 1) / 5) * (persistentStats["reborns_used"] + 1)))
+            max_winnings = (5000 * (((persistentStats["floor"] + 1) / 5) * ((persistentStats["reborns_used"] + 1) * 2)))
         if gambling_data["gamblingCoinsWon"] >= max_winnings:
             print(Fore.BLACK + "|")
             print(Fore.MAGENTA + "Casino Man: " + Fore.RED + "You have gambled too much! You need to take a break!")
@@ -1717,28 +1722,67 @@ def gambling():  # Manages the gambling screen
                 print(Fore.GREEN + f"Gained {xp:,} XP.")
         except:
             print(Fore.RED + "Invalid input.")
-
     elif choice in ["highrisk", "high", "risk"]:
         if persistentStats["floor"] < 45:
             print(Fore.RED + "High Risk unlocked at Floor 45")
         else:
+            # Aliases like in shop
+            stat_aliases = {
+                "hp": "health", "hlth": "health",
+                "dmg": "damage", "dm": "damage",
+                "def": "defense", "dfs": "defense"
+            }
+            # Calculate high-risk stat change cap for this floor
+            high_risk_limit = (persistentStats["floor"] + 1) * 15 * (persistentStats["reborns_used"] + 1)
+            if gambling_data.get("highRiskStatChange", 0) >= high_risk_limit:
+                print(Fore.MAGENTA + "Pit Boss: " + Fore.RED + "You've risked enough this floor.")
+                print(Fore.YELLOW + "Try again after reaching a higher floor.")
+                return
             stat = input(Fore.YELLOW + "Which stat? [health/damage/defense]: ").strip().lower()
+            stat = stat_aliases.get(stat, stat)
             if stat in ["health", "damage", "defense"]:
                 try:
                     amt = int(input(Fore.CYAN + f"Points of {stat} to gamble: ").strip())
                     key = f"{stat}Boost"
-                    if amt <= 0 or amt > player[key]:
-                        print(Fore.RED + "Invalid amount.")
+                    cap_key = f"{stat}BoostCap"
+                    current_value = player[key]
+                    cap_value = shop_data[cap_key]
+                    cap_space = cap_value - current_value
+                    if amt <= 0:
+                        print(Fore.RED + "You must gamble a positive amount.")
+                    elif player["coins"] < 10000:
+                        print(Fore.RED + "You need at least 10,000 coins to gamble.")
+                    elif current_value >= cap_value:
+                        print(Fore.RED + f"{stat.capitalize()} is already at the cap ({cap_value:,}).")
+                    elif amt > current_value and gamble_stat_change(amt) < 0:
+                        print(Fore.RED + f"You can’t risk more than your current {stat} ({current_value:,}).")
+                    elif gamble_stat_change(amt) > 0 and amt > cap_space:
+                        print(
+                            Fore.RED + f"You can’t increase {stat} by that much — cap is currently {cap_value:,}, you're at {current_value:,}.")
                     else:
                         player["coins"] -= 10000
                         change = gamble_stat_change(amt)
-                        player[key] = max(0, player[key] + change)
-                        print(Fore.MAGENTA + f"{stat.capitalize()} changed by {change}.")
-                        apply_boosts()
-                except:
+                        old_value = player[key]
+                        new_value = max(0, min(old_value + change, cap_value))
+                        actual_change = new_value - old_value
+                        # Floor-based high-risk cap check
+                        if abs(actual_change) + gambling_data.get("highRiskStatChange", 0) > high_risk_limit:
+                            print(Fore.RED + "You can't gamble that much on this floor, you've reached the high-risk gamble cap for this floor!")
+                            print(Fore.YELLOW + "Try again on the next floor.")
+                            time.sleep(1)
+                        else:
+                            player[key] = new_value
+                            gambling_data["highRiskStatChange"] = gambling_data.get("highRiskStatChange", 0) + abs(
+                                actual_change)
+                            if actual_change == 0 and change > 0:
+                                print(Fore.RED + f"{stat.capitalize()} is already near the cap. No gain.")
+                            else:
+                                print(Fore.MAGENTA + f"{stat.capitalize()} changed by {actual_change:+,}.")
+                            apply_boosts()
+                except ValueError:
                     print(Fore.RED + "Invalid number.")
             else:
-                print(Fore.RED + "Invalid stat.")
+                print(Fore.RED + "Invalid stat. Choose: health / damage / defense.")
 
     elif choice in ["leave", "exit"]:
         combat()
@@ -2082,7 +2126,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have some minor compatability issues")
             # Specific warning for 2.4.2 or earlier
             if Version(persistentStats["currentVersion"]) <= Version("2.4.2"):
-                print(Fore.YELLOW + "Note: Some newer data (like Tamagotchi bond scaling and relic boosts may not convert properly from older saves.")
+                print(Fore.YELLOW + "Note: Some newer data (like Tamagotchi bond scaling, gacha, and berserker level may not convert properly from older saves.")
             input(Fore.BLUE + "Press ENTER to continue...")
 
         return True
