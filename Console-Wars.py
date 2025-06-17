@@ -2361,17 +2361,21 @@ def level_up():
         # Build the output string with individual coloring
         output_parts = []
 
-        for i, boost in enumerate(boosts):
-            base_cost = shop_data[f'base{boost}BoostCost']
-            rounded_cost = round(base_cost, 1)  # ✅ Round to nearest 10th
-            current_mod = shop_data[f'{boost.lower()}BoostMod']
-            cap = shop_data[f'{boost.lower()}BoostCap']
+        for boost in boosts: # Change and display things correctly with colors
+            cost_key = f'base{boost}BoostCost'
+            mod_key = f'{boost.lower()}BoostMod'
+            cap_key = f'{boost.lower()}BoostCap'
+            boost_key = f'{boost.lower()}Boost'
 
-            can_buy = player["xp"] >= rounded_cost and current_mod < cap
-            color = Fore.GREEN if can_buy else Fore.RED
+            cost = shop_data[cost_key]
+            cap = shop_data[cap_key]
+            current = player[boost_key]
 
-            output_parts.append(f"{color} {boost}: {rounded_cost:,}")
-            output_parts.append("\n")
+            if current >= cap:
+                output_parts.append(f"{Fore.BLUE} {boost}: CAPPED\n")
+            else:
+                color = Fore.GREEN if player["xp"] >= round(cost, 1) else Fore.RED
+                output_parts.append(f"{color} {boost}: {round(cost, 1):,}\n")
 
         # Join and print everything
         print("".join(output_parts) + Style.RESET_ALL)
