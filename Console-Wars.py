@@ -292,7 +292,7 @@ shop_data = {
     "damageBoostCap": 8000000000000000000,
     "defenseBoostCap": 8000000000000000000,
     "dodgeBoostCap": 75,
-    "escapeBoostCap": 99,
+    "escapeBoostCap": 85,
     "dropBoostCap": 35,
 }
 
@@ -2112,6 +2112,11 @@ def load_from_file(filename):  # Load data from files
         if player["difficulty"] not in ["easy", "normal", "hard", "impossible"]:
             player[
                 "difficulty"] = "Unknown"  # This is needed beacuse difficulty used to save as an int when creating a save file and was never initialized anywhere else
+        # Cap correction for escape (legacy saves)
+        if shop_data.get("escapeBoostCap", 85) == 99:
+            shop_data["escapeBoostCap"] = 85
+        if player.get("escapeBoost", 0) > 85:
+            player["escapeBoost"] = 85
 
         # Ensure "Relics" appears in actionList for legacy saves
         if "Relics" not in player.get("actionList", []):
