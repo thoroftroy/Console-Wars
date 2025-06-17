@@ -1060,7 +1060,8 @@ def show_combat_stats():  # this is the main function to show all the stats duri
                         f"Boosts → Health: {boosts.get('health', 0):,}, Damage: {boosts.get('damage', 0):,}, Defense: {boosts.get('defense', 0):,}")
         print(Fore.BLACK + "|")
     print(Fore.BLACK + "|")
-    print(Fore.BLUE + "Actions:", player["actionList"])
+    print(Fore.BLUE + "Available Actions:")
+    print(Fore.CYAN + "     " + Fore.YELLOW + "  |  ".join(player["actionList"]))
     print(Style.RESET_ALL)
 
 
@@ -1216,7 +1217,7 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
                         print()
             print(Fore.BLACK + "|")
             print(Fore.BLACK + "|")
-            print(Fore.CYAN + f"They have earned you: {Fore.YELLOw}{gacha_data['xp_earned']:,}")
+            print(Fore.CYAN + f"They have earned you: {Fore.YELLOW}{gacha_data['xp_earned']:,}")
             print(Fore.BLACK + "|")
 
         if gacha_data["gacha_pulls_available"] <= 0:  # Ensures you have some gacha passes to use
@@ -1226,7 +1227,7 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
         print(
-            Fore.CYAN + f"You have {gacha_data["gacha_pulls_available"]:,}{Fore.CYAN} pulls")
+            Fore.CYAN + f"You have {Fore.YELLOW}{gacha_data["gacha_pulls_available"]:,}{Fore.CYAN} pulls")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
@@ -1977,7 +1978,8 @@ def minigame_selection():
     else:
         print(Fore.YELLOW + "Portal Travel  → Travel through unlocked floors with ease!")
     print(Fore.BLACK + "|")
-    print(Fore.BLUE + "Options:", player["gameList"])
+    print(Fore.BLUE + "Available Minigames:")
+    print(Fore.CYAN + "     " + Fore.YELLOW + "  |  ".join(player["gameList"]))
     print(Fore.BLACK + "|")
     print(Style.RESET_ALL)
 
@@ -2423,8 +2425,11 @@ def level_up():
                     color + f" Berzerker v{level + 1}: {cost:,}  -> Unlocked after killing {kill_req:,} monsters, doubles your damage")
                 break
 
-        print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
-        print(Fore.BLUE + f"(You can type a number before or after the purchase to buy in mass but it costs {Fore.RED}10% {Fore.BLUE}more)")
+        print(Fore.BLACK + "|\n" + Fore.BLUE + "Upgrade Options:")
+        print(Fore.CYAN + "     " + Fore.YELLOW + "  |  ".join(player["buyList"]))
+        print(Fore.BLACK + "|")
+        print(Fore.BLUE + f"You can type a number before or after the upgrade name to buy in bulk at a {Fore.RED}10% {Fore.BLUE}penalty.")
+        print(Fore.BLUE + "If you try to buy more than you can afford, it will automatically buy the maximum you can.")
         print(Fore.BLACK + "|")
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
