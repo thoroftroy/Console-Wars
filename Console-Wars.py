@@ -758,7 +758,7 @@ def show_stats_screen():
     print(Fore.MAGENTA + "\n--- Permanent Upgrades ---")
     print(f"Hackers Eye: {player['eye_purchased']}  |  Weight Dice: {player['weighted_dice_purchased']}")
     print(f"Monster Bait: {player['monster_bait_purchased']}  |  Dog(?) House: {player['dog_house_purchased']}")
-    print(f"Mirror Pendant: {player['mirror_pendant_purchased']:,}  |  Escape Key: {player['escape_key_purchased']:,}")
+    print(f"Mirror Pendant: {player['mirror_pendant_purchased']}  |  Escape Key: {player['escape_key_purchased']}")
     print(
         f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
     print(f"Soul Mirror: {player['soul_mirror_purchased']}  |  Berserker Level: {player['berserkerLevel']}/4")
@@ -1149,8 +1149,7 @@ def update_gacha():  # The actual gacha thread which updates your XP over time
         time.sleep(random.randint(60, 140))
         gacha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
-        print(Fore.CYAN + f"Your gacha characters have returned from battle with {xp_gain:,} xp")
-
+        print(Fore.CYAN + f"Your gacha characters have returned from battle with {Fore.YELLOW}{xp_gain:,}{Fore.CYAN} xp")
 
 def try_gacha_drop(
         garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gacha pass
@@ -1167,7 +1166,6 @@ def try_gacha_drop(
         time.sleep(1)
 
     return
-
 
 def gacha_game():  # When you type gacha into the minigame screen this is shown
     global persistentStats, gacha_data, gacha, player, persistentStats
