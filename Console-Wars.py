@@ -2377,6 +2377,21 @@ def level_up():
             cap = shop_data[cap_key]
             current = player[boost_key]
 
+            cap = shop_data[cap_key]
+            boosted_value = player[boost_key]
+
+            # Calculate final value for comparison
+            if boost_key == "dodgeBoost":
+                current = 5.0 + boosted_value  # base_dodge
+                for item in player["inventory"]:
+                    current += item.get("boosts", {}).get("dodge", 0)
+                for relic in player.get("relics", []):
+                    current *= relic.get("boosts", {}).get("mult_dodge", 1.0)
+                if tamagotchi_data.get("active"):
+                    current += tamagotchi_data["boosts"].get("dodge", 0)
+            else:
+                current = boosted_value  # Default behavior
+
             if current >= cap:
                 output_parts.append(f"{Fore.BLUE} {boost}: CAPPED\n")
             else:
@@ -2396,7 +2411,7 @@ def level_up():
             ("dog_house_purchased", "dogHouseCost", "dogHouseFloor", "Dog(?) House", "Make your Tamagotchi happier"),
             ("mirror_pendant_purchased", "mirrorPendantCost", "mirrorPendantFloor", "Mirror Pendant",
              "Monsters can't seem to hit you"),
-            ("escape_key_purchased", "escapeKeyCost", "escapeKeyFloor", "Escape Key", "Escape is guaranteed"),
+            ("escape_key_purchased", "escapeKeyCost", "escapeKeyFloor", "Escape Key", "Escape is guaranteed, but you get no loot"),
             ("reaper's_token_purchased", "reaperTokenCost", "reaperTokenFloor", "Reaper's Token",
              "Heal more from killing"),
             ("greed's_gullet_purchased", "greedGulletCost", "greedGulletFloor", "Greed's Gullet",
@@ -2481,7 +2496,7 @@ def level_up():
                 "floor": "escapeKeyFloor",
                 "cost": "escapeKeyCost",
                 "aliases": ["escapekey", "key", "esckey"],
-                "desc": "Escape Key Purchased! You escape every time!"
+                "desc": "Escape Key Purchased! You escape every time, but get no loot!"
             },
             {
                 "flag": "reaper's_token_purchased",
