@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 import threading
 import shutil
-
+from packaging.version import Version
 
 # Define libraries and classes
 
@@ -2080,6 +2080,9 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
             print(Fore.RED + "Expect to have some minor compatability issues")
+            # Specific warning for 2.4.2 or earlier
+            if Version(persistentStats["currentVersion"]) <= Version("2.4.2"):
+                print(Fore.YELLOW + "Note: Some newer data (like Tamagotchi bond scaling and relic boosts may not convert properly from older saves.")
             input(Fore.BLUE + "Press ENTER to continue...")
 
         return True
