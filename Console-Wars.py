@@ -2415,6 +2415,8 @@ def level_up():
                 break
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
+        print(Fore.BLUE + f"(You can type a number before or after the purchase to buy in mass but it costs {Fore.RED}10% {Fore.BLUE}more)")
+        print(Fore.BLACK + "|")
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
@@ -2590,7 +2592,7 @@ def level_up():
                 total_cost = 0
                 purchasable = 0
                 simulated_boost = current_boost
-                simulated_cost = cost
+                simulated_cost = shop_data[cost_key]
 
                 for _ in range(amount):
                     if simulated_boost >= cap:
@@ -2598,11 +2600,11 @@ def level_up():
                     if total_cost + simulated_cost > player["xp"]:
                         break
                     total_cost += simulated_cost
-                    simulated_cost *= factor
+                    simulated_cost *= factor * 1.1  # 10% extra per level when bulk buying
                     simulated_boost += mod
                     purchasable += 1
 
-                total_cost = round(total_cost)
+                total_cost = round(total_cost,1)
 
                 if purchasable == 0:
                     if current_boost >= cap:
@@ -2625,6 +2627,7 @@ def level_up():
 
                 # Deduct XP
                 player["xp"] -= total_cost
+                player["xp"] = round(player["xp"], 1)
 
                 # Apply the boosts
                 if stat == "health":
@@ -2649,7 +2652,17 @@ def level_up():
                     if stat not in ["dodge", "escape", "drop"]:
                         shop_data[mod_key] *= factor
 
-                shop_data[cost_key] = simulated_cost
+                for _ in range(purchasable):
+                    player[boost_key] += mod
+                    player[boost_key] = min(player[boost_key], cap)
+                    shop_data[cost_key] *= factor * 1.1  # Apply both normal scaling and 10% per level
+                    if stat not in ["dodge", "escape", "drop"]:
+                        shop_data[mod_key] *= factor
+
+                # Round after all increases to keep things clean
+                shop_data[cost_key] = round(shop_data[cost_key], 1)
+                shop_data[mod_key] = round(shop_data[mod_key], 3)
+
                 print(
                     Fore.GREEN + f"Upgraded {Fore.YELLOW}{stat} {purchasable} {Fore.GREEN}time(s) for {Fore.YELLOW}{total_cost:,} {Fore.GREEN}XP.")
                 time.sleep(1)
