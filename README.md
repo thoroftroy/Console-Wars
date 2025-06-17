@@ -90,6 +90,7 @@ pip3 install colorama
 ```
 
 ## Launching The Game
+Some verisons of the game have a compiled program you can just double click, but for most.... 
 
 YOU MUST RUN THE GAME FROM THE TERMINAL FOR IT TO WORK
 
