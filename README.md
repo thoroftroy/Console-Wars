@@ -20,7 +20,7 @@ project_root/
 ```
 ## Requirements
 
-- Python 3 or higher
+- Python 3+
 - The `colorama` module (for colored terminal output — **this is NOT optional**)
 
 Install `colorama` with:
