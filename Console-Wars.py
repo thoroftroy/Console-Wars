@@ -793,21 +793,29 @@ def show_stats_screen():
     print(Fore.CYAN + "\n--- Gacha ---")
     print(f"Gatches Done: {gacha_data.get('gachas_pulled', 0):,} | Xp Earned: {gacha_data.get('xp_earned', 0):,}")
 
-    characters = gacha_data.get("characters_owned", [])
-    if characters:
-        for i, name in enumerate(characters, 1):
-            # Find the full character data from the gacha list
-            full_data = next((char for char in gacha if char["name"] == name), None)
-            if full_data:
-                print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
-            else:
-                print(f"-{name}  (Unknown Data)", end='     ')
-            if i % 3 == 0:
-                print()  # Newline after every 3 items
-        if len(characters) % 3 != 0:
-            print()  # Ensure final line ends properly
-    else:
-        print("(None)")
+    characters_by_rank = {
+        "Common": [],
+        "Normal": [],
+        "Rare": [],
+        "Super Rare": [],
+        "Ultra Rare": [],
+        "MEGA Rare": [],
+    }
+    for name in gacha_data["characters_owned"]:
+        char_data = next((c for c in gacha if c["name"] == name), None)
+        rank = char_data["rank"] if char_data else "Unknown"
+        characters_by_rank.setdefault(rank, []).append(name)
+
+    for rank in ["Common", "Normal", "Rare", "Super Rare", "Ultra Rare", "MEGA Rare"]:
+        owned = characters_by_rank.get(rank, [])
+        if owned:
+            print(Fore.MAGENTA + f"\n{rank}:")
+            for i, name in enumerate(owned, 1):
+                print(Fore.YELLOW + f"  - {name}", end='    ')
+                if i % 3 == 0:
+                    print()
+            if len(owned) % 3 != 0:
+                print()
 
     print(Fore.BLUE + "\n--- Inventory ---")
     inventory = player_data.get("inventory", [])
@@ -1183,24 +1191,31 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
         clear_screen()
         print(Fore.BLUE + "====Gacha=====")
         if gacha_data["characters_owned"]:
-            print(Fore.CYAN + "You have: " + Fore.YELLOW)
-            characters = gacha_data.get("characters_owned", [])
-            if characters:
-                for i, name in enumerate(characters, 1):
-                    # Find the full character data from the gacha list
-                    full_data = next((char for char in gacha if char["name"] == name), None)
-                    if full_data:
-                        print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
-                    else:
-                        print(f"-{name}  (Unknown Data)", end='     ')
-                    if i % 3 == 0:
-                        print()  # Newline after every 3 items
-                if len(characters) % 3 != 0:
-                    print()  # Ensure final line ends properly
-            else:
-                print("(None)")
+            characters_by_rank = {
+                "Common": [],
+                "Normal": [],
+                "Rare": [],
+                "Super Rare": [],
+                "Ultra Rare": [],
+                "MEGA Rare": [],
+            }
+            for name in gacha_data["characters_owned"]:
+                char_data = next((c for c in gacha if c["name"] == name), None)
+                rank = char_data["rank"] if char_data else "Unknown"
+                characters_by_rank.setdefault(rank, []).append(name)
+
+            for rank in ["Common", "Normal", "Rare", "Super Rare", "Ultra Rare", "MEGA Rare"]:
+                owned = characters_by_rank.get(rank, [])
+                if owned:
+                    print(Fore.MAGENTA + f"\n{rank}:")
+                    for i, name in enumerate(owned, 1):
+                        print(Fore.YELLOW + f"  - {name}", end='    ')
+                        if i % 3 == 0:
+                            print()
+                    if len(owned) % 3 != 0:
+                        print()
             print(Fore.BLACK + "|")
-            print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gacha_data["xp_earned"]))
+            print(Fore.CYAN + f"They have earned you: {gacha_data['xp_earned']:,}")
 
         if gacha_data["gacha_pulls_available"] <= 0:  # Ensures you have some gacha passes to use
             print(Fore.RED + "You don't have any pulls available!")
@@ -1209,7 +1224,7 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
         print(
-            Fore.CYAN + "You have " + Fore.YELLOW + str(gacha_data["gacha_pulls_available"]) + Fore.CYAN + " pulls!")
+            Fore.CYAN + f"You have {gacha_data["gacha_pulls_available"]:,}{Fore.CYAN} pulls")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
@@ -1975,7 +1990,7 @@ def minigame_selection():
         fishing()
     elif choice in ["wishing well", "wish", "wishingwell", "wsh", "well"]:
         wishing_well()
-    elif choice in ["gacha", "gach", "draw","ga"]:
+    elif choice in ["gacha", "gach", "draw","ga","gac"]:
         gacha_game()
     elif choice in ["reborn", "re", "born"]:
         reborn()
