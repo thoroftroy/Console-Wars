@@ -927,8 +927,12 @@ def show_relics():
             boosts = relic.get("boosts", {})
 
             print(Fore.MAGENTA + f"[{i}] {name}")
-            print(Fore.YELLOW + f"  {desc}")
-            print(Fore.CYAN + f"  Multipliers: {boosts}")
+            print(Fore.BLUE + f"  {desc}")
+            if boosts:
+                parts = [f"{k.replace('mult_', '').capitalize()}: x{round(v, 3)}" for k, v in boosts.items()]
+                print(Fore.CYAN + "  Multipliers: " + Fore.YELLOW + " | ".join(parts))
+            else:
+                print(Fore.CYAN + "  Multipliers: " + Fore.RED + "None")
             print(Fore.BLACK + "|")
 
             for k, v in boosts.items():
@@ -1509,10 +1513,10 @@ def fishing():
 
             if random.random() < 0.8:
                 update_last_action()
-                scale = 1 + (persistentStats["floor"] / 2)
+                scale = 1 + (persistentStats["floor"] / 1.5)
                 mult = 10 * int(persistentStats["floor"] * 1.5) if persistentStats["floor"] >= 50 else 1
                 scale = persistentStats["reborns_used"] + 1
-                xp_gain = round(random.uniform(0.5, 4.0) * scale * mult * scale, 1)
+                xp_gain = round(random.uniform(0.85, 5.5) * scale * mult * scale, 1)
                 player["xp"] += xp_gain
                 print(Fore.GREEN + f"You caught a fish and earned {xp_gain:,} XP!")
                 fishing_data["fish_caught"] += 1
@@ -1521,7 +1525,7 @@ def fishing():
                 item = random.choices(drop_table, weights=[i["weight"] for i in drop_table], k=1)[0]
                 owned_names = [i["name"] for i in player["inventory"]]
                 if item["name"] in owned_names:
-                    value = get_item_coin_value(item)
+                    value = (get_item_coin_value(item) * 1.5) # Items are worth more when you fish
                     player["coins"] += value
                     print(Fore.MAGENTA + f"Duplicate item: {item['name']:,} → sold for {value:,} coins.")
                     gambling_data["itemsSold"] += 1
