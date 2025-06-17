@@ -138,7 +138,7 @@ player = {
 
     "actionList": ["Attack", "Retreat", "Level", "Inventory", "Relics", "Minigames/Other", "Stats", "Exit"],
     "buyList": ["Health", "Damage", "Defense", "Dodge", "Retreat", "Drop"],
-    "gameList": ["Tamagachi", "Gambling", "Fishing", "Gatcha", "Wishing Well", "Reborn", "Portal Travel"],
+    "gameList": ["Tamagachi", "Gambling", "Fishing", "Gacha", "Wishing Well", "Reborn", "Portal Travel"],
 
     "xp": 0.0,
     "coins": 0,
@@ -164,7 +164,7 @@ player = {
     "portal_attractor_purchased": False,
     "shield_disruptor_purchased": False,
 
-    "berzerkerLevel": 0,
+    "berserkerLevel": 0,
 
     "kills_sense_reborn": 100,
     "kills_sense_portal": 0,
@@ -182,8 +182,8 @@ demon_lord_data = {
 }
 
 # Minigame libraries
-tamagatchi_data = {
-    "tamagatchiFeeds": 0,
+tamagotchi_data = {
+    "tamagotchiFeeds": 0,
     "active": False,
     "last_update": None,
     "hunger": 0,
@@ -216,9 +216,9 @@ well_data = {
     "obtained_curses": [],
 }
 
-gatcha_data = {
-    "gatcha_pulls_available": 0,
-    "gatchas_pulled": 0,
+gacha_data = {
+    "gacha_pulls_available": 0,
+    "gachas_pulled": 0,
     "xp_earned": 0,
     "characters_owned": [],
     "last_update": time.time(),
@@ -248,10 +248,10 @@ shop_data = {
     "portalAttractorFloor": 15,
     "shieldDisruptorFloor": 100,
 
-    "berzerker1Kills": 500,
-    "berzerker2Kills": 750,
-    "berzerker3Kills": 1000,
-    "berzerker4Kills": 5000,
+    "berserker1Kills": 500,
+    "berserker2Kills": 750,
+    "berserker3Kills": 1000,
+    "berserker4Kills": 5000,
 
     "eyeCost": 500,
     "weightedDiceCost": 10500,
@@ -265,10 +265,10 @@ shop_data = {
     "portalAttractorCost": 600,
     "shieldDisruptorCost": 1000000,
 
-    "berzerker1Cost": 10000,
-    "berzerker2Cost": 500000,
-    "berzerker3Cost": 10000000,
-    "berzerker4Cost": 100000000,
+    "berserker1Cost": 10000,
+    "berserker2Cost": 500000,
+    "berserker3Cost": 10000000,
+    "berserker4Cost": 100000000,
 
     # How much the cost goes up each time
     "baseHealthBoostCostFactor": 1.45,
@@ -337,10 +337,10 @@ os.makedirs(saveDirectory, exist_ok=True)
 # Thread management flags
 fishing_thread = None
 fishing_stop_event = threading.Event()
-tamagatchi_thread = None
-tamagatchi_stop_event = threading.Event()
-gatcha_thread = None
-gatcha_stop_event = threading.Event()
+tamagotchi_thread = None
+tamagotchi_stop_event = threading.Event()
+gacha_thread = None
+gacha_stop_event = threading.Event()
 
 # Drop Table
 drop_table = [
@@ -545,8 +545,8 @@ curses = [  # Small rare penalties from the wishing well
     {"name": "Doom’s Brand", "desc": "All gains halved temporarily (-50 spark).", "boosts": {"divine_spark": -50}}
 ]
 
-# Gatcha Table
-gatcha = [  # The gatcha characters will passively earn XP over time as they fight for you in other battles
+# Gacha Table
+gacha = [  # The gacha characters will passively earn XP over time as they fight for you in other battles
     # Common = 1-4
     # Normal = 5-10
     # Rare = 11-20
@@ -554,7 +554,7 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     # Ultra Rare = 31-40
     # MEGA rare = 41-100
     {"name": "Catgirl", "desc": "Why?", "rank": "Common", "boosts": {"xp_bonus": 1}},
-    {"name": "Sticky Champion", "desc": "Built for hugs.", "rank": "Common", "boosts": {"xp_bonus": 2}},
+    {"name": "Sticky Champion", "desc": "Very sticky...", "rank": "Common", "boosts": {"xp_bonus": 2}},
     {"name": "Funky Snail", "desc": "Screams when idle.", "rank": "Common", "boosts": {"xp_bonus": 3}},
     {"name": "Wandering Ghost", "desc": "Only eats moonlight.", "rank": "Common", "boosts": {"xp_bonus": 4}},
     {"name": "Snoring Ogre", "desc": "Dreams of battle.", "rank": "Common", "boosts": {"xp_bonus": 5}},
@@ -588,7 +588,7 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Rust Lizard", "desc": "Crunchy scales.", "rank": "Rare", "boosts": {"xp_bonus": 16}},
     {"name": "Jelly Oracle", "desc": "Wiggles with wisdom.", "rank": "Rare", "boosts": {"xp_bonus": 17}},
     {"name": "Mimic Pianist", "desc": "Strikes a deadly chord.", "rank": "Rare", "boosts": {"xp_bonus": 18}},
-    {"name": "Cyber Fighter", "desc": "Built for hugs.", "rank": "Rare", "boosts": {"xp_bonus": 19}},
+    {"name": "Cyber Fighter", "desc": "The power of CYBER!.", "rank": "Rare", "boosts": {"xp_bonus": 19}},
     {"name": "Sticky Witch", "desc": "Glows slightly.", "rank": "Rare", "boosts": {"xp_bonus": 20}},
 
     {"name": "Moody Knight", "desc": "Cries in plate armor.", "rank": "Super Rare", "boosts": {"xp_bonus": 21}},
@@ -599,7 +599,7 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Sticky Champion", "desc": "Prefers chaos.", "rank": "Super Rare", "boosts": {"xp_bonus": 25}},
     {"name": "Funky Snail", "desc": "Tastes like victory.", "rank": "Super Rare", "boosts": {"xp_bonus": 30}},
     {"name": "Wandering Ghost", "desc": "Comes with a manual.", "rank": "Super Rare", "boosts": {"xp_bonus": 35}},
-    {"name": "Iron Fighter", "desc": "Built for hugs.", "rank": "Super Rare", "boosts": {"xp_bonus": 45}},
+    {"name": "Iron Fighter", "desc": "Smart as a brick.", "rank": "Super Rare", "boosts": {"xp_bonus": 45}},
     {"name": "Tiny Witch", "desc": "Glows slightly.", "rank": "Super Rare", "boosts": {"xp_bonus": 40}},
     {"name": "Cyber Tank", "desc": "Screams when idle.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 50}},
 
@@ -608,7 +608,7 @@ gatcha = [  # The gatcha characters will passively earn XP over time as they fig
     {"name": "Haunted Barista", "desc": "Your latte is cursed.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 130}},
     {"name": "Sticky Archer", "desc": "Hates stairs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 140}},
     {"name": "Funky Mystic", "desc": "Tastes like victory.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 150}},
-    {"name": "Wandering Beast", "desc": "Built for hugs.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 160}},
+    {"name": "Wandering Beast", "desc": "Where am I?", "rank": "Ultra Rare", "boosts": {"xp_bonus": 160}},
     {"name": "Iron Agent", "desc": "Only eats moonlight.", "rank": "Ultra Rare", "boosts": {"xp_bonus": 170}},
 
     {"name": "Banana Paladin", "desc": "He slips... into battle.", "rank": "MEGA Rare", "boosts": {"xp_bonus": 410}},
@@ -714,7 +714,7 @@ def idle_checker_thread():
                 os._exit(0)  # Should exit the entire program
 
 
-# Grace period timer: During the start of the program don't allow the tamagatchi or the gatcha to do anything
+# Grace period timer: During the start of the program don't allow the tamagotchi or the gacha to do anything
 def grace_period_timer():
     global startup_grace_period
     time.sleep(30)
@@ -734,7 +734,7 @@ def show_stats_screen():
 
     player_data = data.get("player", player)
     stats = data.get("persistentStats", persistentStats)
-    tama = data.get("tamagatchi_data", tamagatchi_data)
+    tama = data.get("tamagotchi_data", tamagotchi_data)
     well = data.get("well_data", well_data)
 
     print(Fore.RED + (
@@ -760,7 +760,7 @@ def show_stats_screen():
     print(f"Mirror Pendant: {player['mirror_pendant_purchased']:,}  |  Escape Key: {player['escape_key_purchased']:,}")
     print(
         f"Reaper's Token: {player["reaper's_token_purchased"]}  |  Greed's Gullet: {player["greed's_gullet_purchased"]}")
-    print(f"Soul Mirror: {player['soul_mirror_purchased']}  |  Bezerker Level: {player['berzerkerLevel']}/4")
+    print(f"Soul Mirror: {player['soul_mirror_purchased']}  |  Berserker Level: {player['berserkerLevel']}/4")
     print(f"Shield Disruptor: {player['shield_disruptor_purchased']}")
 
     print(Fore.CYAN + "\n--- Gambling Stats ---")
@@ -774,7 +774,7 @@ def show_stats_screen():
     print(Fore.CYAN + "\n--- Fishing ---")
     print(f"Fish Caught: {fishing_data.get('fish_caught', 0)} | Items Fished: {fishing_data.get('items_fished', 0)}")
 
-    print(Fore.CYAN + "\n--- Tamagatchi ---")
+    print(Fore.CYAN + "\n--- Tamagotchi ---")
     print(f"Active: {tama.get('active', False):,} | Hunger: {tama.get('hunger', 0):,} | Bond: {tama.get('bond', 0):,}")
     tama_boosts = tama.get('boosts', {})
     formatted_tama_boosts = ', '.join(
@@ -789,14 +789,14 @@ def show_stats_screen():
     print(f"Curses Received: {well.get('curses_received', 0)}")
     print(f"Divine Spark Charges: {well.get('divine_spark', 0)}")
 
-    print(Fore.CYAN + "\n--- Gatcha ---")
-    print(f"Gatches Done: {gatcha_data.get('gatchas_pulled', 0):,} | Xp Earned: {gatcha_data.get('xp_earned', 0):,}")
+    print(Fore.CYAN + "\n--- Gacha ---")
+    print(f"Gatches Done: {gacha_data.get('gachas_pulled', 0):,} | Xp Earned: {gacha_data.get('xp_earned', 0):,}")
 
-    characters = gatcha_data.get("characters_owned", [])
+    characters = gacha_data.get("characters_owned", [])
     if characters:
         for i, name in enumerate(characters, 1):
-            # Find the full character data from the gatcha list
-            full_data = next((char for char in gatcha if char["name"] == name), None)
+            # Find the full character data from the gacha list
+            full_data = next((char for char in gacha if char["name"] == name), None)
             if full_data:
                 print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
             else:
@@ -981,8 +981,7 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     clear_screen()
     print(Fore.BLACK + "|")
     monsterHealthPercentage = round((currentMonsterHealth / monster.maxHealth[monsterId]) * 100, 2)
-    print(Fore.WHITE + "You are currently fighting a", currentMonsterFight,
-          "  (Floor:" + str(persistentStats["floor"]) + "." + str(persistentStats["room"]) + ")")
+    print(Fore.WHITE + f"You are currently fighting a {currentMonsterFight}  (Floor: {persistentStats['floor']:,}.{persistentStats['room']:,})")
     print(Fore.BLACK + "|")
     print(Fore.RED + currentMonsterFight, "Health:")
     print(Fore.BLACK + "|", end='')
@@ -1035,21 +1034,21 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     print(Fore.BLACK + "|")
     currentHealthPercentage = round((player["health"] / player["maxHealth"]) * 100, 2)
     print(Fore.GREEN + "Player Stats:")
-    print(Fore.GREEN + " Health: ", end='')
-    for i in range(round(currentHealthPercentage / 2.4)): print(Fore.GREEN + '=', end='')
+    bar = '=' * round(currentHealthPercentage / 2.4)
+    print(Fore.GREEN + f" Health: {bar} {currentHealthPercentage}%  ({round(player['health'], 1):,})")
     print(f" {currentHealthPercentage}%  ({round(player["health"], 1):,})")
     print(
         Fore.GREEN + f" Damage: {round(player['damage'], 1):,}" +
-        (Fore.YELLOW + f" (Bezerk x{2 ** player['berzerkerLevel']})" if player['berzerkerLevel'] > 0 else "") +
+        (Fore.YELLOW + f" (Bezerk x{2 ** player['berserkerLevel']})" if player['berserkerLevel'] > 0 else "") +
         Fore.GREEN + f" |  Defense: {round(player['defense'], 1):,} |  Xp: {round(player['xp'], 1):,}"
     )
     print(Fore.GREEN + " Dodge Chance:", str(round(player["dodge"], 1)) + "% |  Retreat Chance:",
           str(round(player["escape"], 1)) + "%", " |  Item Drop Chance:", str(round(player["drop"], 1)) + "%")
     print(Fore.BLACK + "|")
-    if tamagatchi_data["active"]:
-        boosts = tamagatchi_data['boosts']
+    if tamagotchi_data["active"]:
+        boosts = tamagotchi_data['boosts']
         print(
-            Fore.CYAN + f"Tamagatchi → Bond: {tamagatchi_data['bond']:,} | Hunger: {tamagatchi_data['hunger']:,} | "
+            Fore.CYAN + f"Tamagotchi → Bond: {tamagotchi_data['bond']:,} | Hunger: {tamagotchi_data['hunger']:,} | "
                         f"Boosts → Health: {boosts.get('health', 0):,}, Damage: {boosts.get('damage', 0):,}, Defense: {boosts.get('defense', 0):,}")
         print(Fore.BLACK + "|")
     print(Fore.BLACK + "|")
@@ -1082,7 +1081,7 @@ def portal_travel():  # The idea of this is to let you travel to any floor (50-m
         clear_screen()
         print(Fore.BLUE + "===Portal Travel===")
         print(Fore.BLACK + "|")
-        print(Fore.BLUE + f"You can access floors " + Fore.YELLOW + f"65 to {persistentStats['highest_floor']:,}")
+        print(Fore.BLUE + f"You can access floors {Fore.YELLOW}65 to {persistentStats['highest_floor']:,}")
         print(Fore.BLUE + "What floor would you like to go to? (or type 'exit')")
         choice = input(Fore.GREEN + "> ").lower()
 
@@ -1109,34 +1108,34 @@ def portal_travel():  # The idea of this is to let you travel to any floor (50-m
             time.sleep(0.5)
 
 
-# Gatcha functions
-def start_gatcha_thread():  # Starts the passive gatcha thread to earn xp based on earned characters if you have characters
-    global gatcha_thread, gatcha_data
+# Gacha functions
+def start_gacha_thread():  # Starts the passive gacha thread to earn xp based on earned characters if you have characters
+    global gacha_thread, gacha_data
     # print(Fore.GREEN +
-    #    f"Starting gatcha thread? thread={gatcha_thread}, alive={gatcha_thread.is_alive() if gatcha_thread else 'N/A'}, owned={gatcha_data['characters_owned']}")
-    if gatcha_thread and gatcha_thread.is_alive() and not gatcha_data["characters_owned"]:
+    #    f"Starting gacha thread? thread={gacha_thread}, alive={gacha_thread.is_alive() if gacha_thread else 'N/A'}, owned={gacha_data['characters_owned']}")
+    if gacha_thread and gacha_thread.is_alive() and not gacha_data["characters_owned"]:
         return
-    gatcha_stop_event.clear()
+    gacha_stop_event.clear()
 
     def loop():
-        while gatcha_data["active"] and not gatcha_stop_event.is_set():
-            # if gatcha_data["last_update"] is not None:
-            update_gatcha()
-            time.sleep(random.uniform(5, 10))  # How long it takes for the gatcha to update
+        while gacha_data["active"] and not gacha_stop_event.is_set():
+            # if gacha_data["last_update"] is not None:
+            update_gacha()
+            time.sleep(random.uniform(5, 10))  # How long it takes for the gacha to update
 
-    gatcha_thread = threading.Thread(target=loop, daemon=True)
-    gatcha_thread.start()
-    # print("Gatcha thread started")
+    gacha_thread = threading.Thread(target=loop, daemon=True)
+    gacha_thread.start()
+    # print("Gacha thread started")
 
 
-def update_gatcha():  # The actual gatcha thread which updates your XP over time
-    global player, persistentStats, gatcha_data, gatcha, gatcha_thread, startup_grace_period
+def update_gacha():  # The actual gacha thread which updates your XP over time
+    global player, persistentStats, gacha_data, gacha, gacha_thread, startup_grace_period
 
-    if gatcha_data["active"] and not startup_grace_period:  # Don't do it if it's during startup
-        # Total up XP bonuses from player's active gatcha characters
+    if gacha_data["active"] and not startup_grace_period:  # Don't do it if it's during startup
+        # Total up XP bonuses from player's active gacha characters
         xp_gain = 0
-        for name in gatcha_data.get("characters_owned", []):
-            for char in gatcha:
+        for name in gacha_data.get("characters_owned", []):
+            for char in gacha:
                 if char["name"] == name:
                     xp_gain += char["boosts"]["xp_bonus"]
                     break  # Stop after the first match
@@ -1148,50 +1147,50 @@ def update_gatcha():  # The actual gatcha thread which updates your XP over time
 
         # Wait and apply the XP gain
         time.sleep(random.randint(60, 140))
-        gatcha_data["xp_earned"] += xp_gain
+        gacha_data["xp_earned"] += xp_gain
         player["xp"] += xp_gain
-        print(Fore.CYAN + f"Your gatcha characters have returned from battle with {xp_gain:,} xp")
+        print(Fore.CYAN + f"Your gacha characters have returned from battle with {xp_gain:,} xp")
 
 
-def try_gatcha_drop(
-        garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gatcha pass
-    global gatcha_data, persistentStats
+def try_gacha_drop(
+        garentee):  # Is called whenever a monster is killed past the 10th floor, tries to drop a gacha pass
+    global gacha_data, persistentStats
     if garentee == 0:  # Garentees a gatach drop
         print(
-            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
-        gatcha_data["gatcha_pulls_available"] += 1
+            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gacha minigame to use it!")
+        gacha_data["gacha_pulls_available"] += 1
         time.sleep(1)
     elif random.randint(0, 100) <= 5:  # 5% chance
         print(
-            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gatcha minigame to use it!")
-        gatcha_data["gatcha_pulls_available"] += 1
+            Fore.CYAN + "You found a " + Fore.RED + "G" + Fore.YELLOW + "a" + Fore.GREEN + "t" + Fore.CYAN + "c" + Fore.BLUE + "h" + Fore.MAGENTA + "a" + Fore.CYAN + " pass! Go to the gacha minigame to use it!")
+        gacha_data["gacha_pulls_available"] += 1
         time.sleep(1)
 
     return
 
 
-def gatcha_game():  # When you type gatcha into the minigame screen this is shown
-    global persistentStats, gatcha_data, gatcha, player, persistentStats
+def gacha_game():  # When you type gacha into the minigame screen this is shown
+    global persistentStats, gacha_data, gacha, player, persistentStats
     clear_screen()
     if persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "You can't do gatcha pulls until floor 30!")
+        print(Fore.RED + "You can't do gacha pulls until floor 30!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
-    gatcha_data["active"] = True
-    start_gatcha_thread()  # ensures the thread is running
+    gacha_data["active"] = True
+    start_gacha_thread()  # ensures the thread is running
 
     while True:
         clear_screen()
-        print(Fore.BLUE + "====Gatcha=====")
-        if gatcha_data["characters_owned"]:
+        print(Fore.BLUE + "====Gacha=====")
+        if gacha_data["characters_owned"]:
             print(Fore.CYAN + "You have: " + Fore.YELLOW)
-            characters = gatcha_data.get("characters_owned", [])
+            characters = gacha_data.get("characters_owned", [])
             if characters:
                 for i, name in enumerate(characters, 1):
-                    # Find the full character data from the gatcha list
-                    full_data = next((char for char in gatcha if char["name"] == name), None)
+                    # Find the full character data from the gacha list
+                    full_data = next((char for char in gacha if char["name"] == name), None)
                     if full_data:
                         print(f"-{full_data['name']}  ({full_data['rank']})", end='     ')
                     else:
@@ -1203,47 +1202,47 @@ def gatcha_game():  # When you type gatcha into the minigame screen this is show
             else:
                 print("(None)")
             print(Fore.BLACK + "|")
-            print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gatcha_data["xp_earned"]))
+            print(Fore.CYAN + "They have earned you: " + Fore.YELLOW + str(gacha_data["xp_earned"]))
 
-        if gatcha_data["gatcha_pulls_available"] <= 0:  # Ensures you have some gatcha passes to use
+        if gacha_data["gacha_pulls_available"] <= 0:  # Ensures you have some gacha passes to use
             print(Fore.RED + "You don't have any pulls available!")
             print(Fore.YELLOW + "Go kill some monsters to get more pulls.")
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
         print(
-            Fore.CYAN + "You have " + Fore.YELLOW + str(gatcha_data["gatcha_pulls_available"]) + Fore.CYAN + " pulls!")
+            Fore.CYAN + "You have " + Fore.YELLOW + str(gacha_data["gacha_pulls_available"]) + Fore.CYAN + " pulls!")
         print(Fore.BLACK + "|")
         print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
         choice = input()
         update_last_action()
         if choice in ["yes", "y", ""]:
-            if gatcha_data["gatcha_pulls_available"] >= 1:
+            if gacha_data["gacha_pulls_available"] >= 1:
                 print(Fore.BLACK + "|")
-                gatcha_data["gatcha_pulls_available"] -= 1
-                gatcha_data["gatchas_pulled"] += 1
-                gatcha_chance = random.randint(0, 100)
-                if gatcha_chance <= 20:
-                    if set(gatcha_data["characters_owned"]) >= {c["name"] for c in
-                                                                gatcha}:  # Tests if you have every character
+                gacha_data["gacha_pulls_available"] -= 1
+                gacha_data["gachas_pulled"] += 1
+                gacha_chance = random.randint(0, 100)
+                if gacha_chance <= 20:
+                    if set(gacha_data["characters_owned"]) >= {c["name"] for c in
+                                                                gacha}:  # Tests if you have every character
                         print(Fore.RED + "You have unlocked all characters so you can't unlock more")
                         print(Fore.BLUE + "You can still earn xp and coins from the draws!")
                         time.sleep(2)
                     else:
-                        unlocked = random.choice(gatcha)  # chooses a random character
-                        while unlocked["name"] in gatcha_data[
+                        unlocked = random.choice(gacha)  # chooses a random character
+                        while unlocked["name"] in gacha_data[
                             "characters_owned"]:  # Ensures the character is not a duplicate
-                            unlocked = random.choice(gatcha)
-                        gatcha_data["characters_owned"].append(unlocked["name"])
+                            unlocked = random.choice(gacha)
+                        gacha_data["characters_owned"].append(unlocked["name"])
                         print(Fore.BLUE + f"You unlocked an {unlocked['rank']} rank! {unlocked['name']}!")
                         print(Fore.MAGENTA + f"{unlocked['desc']}")
                         time.sleep(1.5)
-                elif gatcha_chance <= 40:
+                elif gacha_chance <= 40:
                     xp_earned = random.randint(10, 200) * (persistentStats["floor"] + 1) * (
                                 persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {xp_earned:,} xp!")
                     player["xp"] += xp_earned
-                elif gatcha_chance <= 70:
+                elif gacha_chance <= 70:
                     coins_earned = random.randint(10, 500) * (persistentStats["floor"] + 1) * (
                                 persistentStats["reborns_used"] + 1)
                     print(Fore.BLUE + f"You earned {coins_earned:,} coins!")
@@ -1383,7 +1382,7 @@ def wishing_well():
                 elif result_type == "blessing":
                     blessing = random.choice(blessings)
                     if blessing["name"] in well_data["obtained_blessings"]:
-                        print(Fore.YELLOW + f"You already received {blessing['name']:,}. Refund: {cost // 2:,} coins.")
+                        print(Fore.YELLOW + f"You already received {blessing['name']}. Refund: {cost // 2:,} coins.")
                         player["coins"] += cost // 2
                     else:
                         apply_boost(blessing["boosts"])
@@ -1393,7 +1392,7 @@ def wishing_well():
                 else:  # curse
                     curse = random.choice(curses)
                     if curse["name"] in well_data["obtained_curses"]:
-                        print(Fore.YELLOW + f"You already endured {curse['name']:,}. Refund: {cost // 2:,} coins.")
+                        print(Fore.YELLOW + f"You already endured {curse['name']}. Refund: {cost // 2:,} coins.")
                         player["coins"] += cost // 2
                     else:
                         apply_boost(curse["boosts"])
@@ -1606,8 +1605,7 @@ def gambling():  # Manages the gambling screen
     print(Fore.CYAN + f"You have {player['coins']:,} coins.")
     if persistentStats["floor"] >= 45:
         print(Fore.BLACK + "|")
-        print(Fore.YELLOW + "Health:", str(round(player["maxHealth"])), "  | Damage:", str(round(player["damage"])),
-              "  | Defense:", str(round(player["defense"])))
+        print(Fore.YELLOW + f"Health: {round(player['maxHealth']):,}  |  Damage: {round(player['damage']):,}  |  Defense: {round(player['defense']):,}")
     print(Fore.BLACK, "|")
 
     if player["coins"] == 0 and not player["inventory"]:
@@ -1755,26 +1753,26 @@ def gambling():  # Manages the gambling screen
 
 
 # Tamagachi stuff
-def start_tamagatchi_thread():
-    global tamagatchi_thread
-    if tamagatchi_thread and tamagatchi_thread.is_alive():
+def start_tamagotchi_thread():
+    global tamagotchi_thread
+    if tamagotchi_thread and tamagotchi_thread.is_alive():
         return
-    tamagatchi_stop_event.clear()
+    tamagotchi_stop_event.clear()
 
     def loop():
-        while tamagatchi_data["active"] and not tamagatchi_stop_event.is_set():
-            if tamagatchi_data["last_update"] is not None:
-                update_tamagatchi()
-            time.sleep(random.uniform(30, 200))  # How long it takes for the tamagatchi to update (30 - 200)
+        while tamagotchi_data["active"] and not tamagotchi_stop_event.is_set():
+            if tamagotchi_data["last_update"] is not None:
+                update_tamagotchi()
+            time.sleep(random.uniform(30, 200))  # How long it takes for the tamagotchi to update (30 - 200)
 
-    tamagatchi_thread = threading.Thread(target=loop, daemon=True)
-    tamagatchi_thread.start()
+    tamagotchi_thread = threading.Thread(target=loop, daemon=True)
+    tamagotchi_thread.start()
 
 
-def update_tamagatchi():
+def update_tamagotchi():
     global startup_grace_period
-    hunger = tamagatchi_data["hunger"]
-    bond = tamagatchi_data["bond"]
+    hunger = tamagotchi_data["hunger"]
+    bond = tamagotchi_data["bond"]
     kills = persistentStats.get("monsters_killed", 0)
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
     if player["dog_house_purchased"] == True:
@@ -1783,20 +1781,20 @@ def update_tamagatchi():
     # Hunger increases
     if hunger < 100 and startup_grace_period == False:
         if random.randint(0, 100) <= 50:  # only increases hunger half the time
-            tamagatchi_data["hunger"] += 1
+            tamagotchi_data["hunger"] += 1
 
     # Bond slowly increases if well-fed (under 20 hunger)
     if hunger < 20 and random.random() < 0.5 and startup_grace_period == False:  # 50% chance to gain a bond each update if the hunger is low enough (also don't update during the start of the progam)
-        if tamagatchi_data["bond"] < max_bond:
-            tamagatchi_data["bond"] += 1
+        if tamagotchi_data["bond"] < max_bond:
+            tamagotchi_data["bond"] += 1
         else:
-            tamagatchi_data["bond"] = max_bond
+            tamagotchi_data["bond"] = max_bond
     elif hunger >= 20:
         pass
 
-    if tamagatchi_data[
+    if tamagotchi_data[
         "bond"] >= max_bond:  # Ensure the cap is enforced (maybe like actually, please work please work please work)
-        tamagatchi_data["bond"] = max_bond
+        tamagotchi_data["bond"] = max_bond
 
     # Recalculate boosts
     if bond > 0:
@@ -1807,14 +1805,14 @@ def update_tamagatchi():
             scale = 5 * (persistentStats["reborns_used"] + 1)
         floorBoost = (persistentStats["floor"] / 1.5) + 1
 
-        tamagatchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
-        tamagatchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 21) * 0.005))
-        tamagatchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 22) * 0.0005))
+        tamagotchi_data["boosts"]["health"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 20) * 0.2))
+        tamagotchi_data["boosts"]["damage"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 21) * 0.005))
+        tamagotchi_data["boosts"]["defense"] = int(bond * (floorBoost / 2) * scale * (1 + (kills / 22) * 0.0005))
 
     apply_boosts()
 
 
-def tamagatchi():
+def tamagotchi():
     global player, persistentStats
     max_bond = 20 * (persistentStats["reborns_used"] + 1)
     if player["dog_house_purchased"] == True:
@@ -1824,35 +1822,35 @@ def tamagatchi():
 
     if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
         print(Fore.BLACK + "|")
-        print(Fore.RED + "You must reach floor 10 to unlock the Tamagatchi!")
+        print(Fore.RED + "You must reach floor 10 to unlock the Tamagotchi!")
         print(Fore.BLACK + "|")
         input(Fore.BLUE + "Press Enter to return to combat.")
         return
 
-    if not tamagatchi_data["active"]:
+    if not tamagotchi_data["active"]:
         if player["xp"] < 500:
-            print(Fore.RED + "It costs 500 XP to adopt a Tamagatchi, you do not have that much!")
+            print(Fore.RED + "It costs 500 XP to adopt a Tamagotchi, you do not have that much!")
             print(Fore.BLACK + "|")
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
         player["xp"] -= 500
-        tamagatchi_data.update({
+        tamagotchi_data.update({
             "active": True,
             "last_update": datetime.now().isoformat(),
             "hunger": 1,
             "bond": 5
         })
-        start_tamagatchi_thread()
+        start_tamagotchi_thread()
         print(Fore.YELLOW + "You adopted a strange creature!")
         print(Fore.RED + "Feed it to earn permanent boosts.")
         time.sleep(2)
 
     while True:
         clear_screen()
-        hunger = tamagatchi_data["hunger"]
-        bond = tamagatchi_data["bond"]
-        boosts = tamagatchi_data["boosts"]
-        print(Fore.CYAN + "\n--- Tamagatchi Status ---")
+        hunger = tamagotchi_data["hunger"]
+        bond = tamagotchi_data["bond"]
+        boosts = tamagotchi_data["boosts"]
+        print(Fore.CYAN + "\n--- Tamagotchi Status ---")
         print(Fore.MAGENTA + f"Hunger: {hunger} / 100")
         print(Fore.MAGENTA + f"Bond: {bond:,} / {max_bond:,}")
         formatted_boosts = ', '.join(
@@ -1862,13 +1860,13 @@ def tamagatchi():
         print(Fore.GREEN + f"Boosts: {formatted_boosts}")
         print(Fore.YELLOW + f"XP: {round(player['xp'], 1):,}")
         print(Fore.BLACK + "|")
-        print(Fore.YELLOW + "Tamagatchi will be much happier if hunger is kept under 20")
+        print(Fore.YELLOW + "Tamagotchi will be much happier if hunger is kept under 20")
         print(Fore.BLACK + "|")
 
         if hunger < 5:
             print(Fore.YELLOW + "It's not hungry enough to feed.")
         else:
-            cost = round(hunger * 1.2 * (tamagatchi_data["tamagatchiFeeds"] + 1), 1)
+            cost = round(hunger * 1.2 * (tamagotchi_data["tamagotchiFeeds"] + 1), 1)
             print(Fore.YELLOW + f"Feeding cost: {round(cost, 1):,} XP")
 
         print(Fore.CYAN + "\nType 'feed' to feed, or 'exit' to return to combat.")
@@ -1883,10 +1881,10 @@ def tamagatchi():
             if hunger < 5:
                 print(Fore.YELLOW + "It's not hungry enough to feed.")
             elif player["xp"] >= cost:  # type: ignore
-                tamagatchi_data["hunger"] = max(hunger - 4, 0)
-                tamagatchi_data["bond"] = min(bond + 1, max_bond)
+                tamagotchi_data["hunger"] = max(hunger - 4, 0)
+                tamagotchi_data["bond"] = min(bond + 1, max_bond)
                 player["xp"] -= cost  # type: ignore
-                tamagatchi_data["tamagatchiFeeds"] += 1
+                tamagotchi_data["tamagotchiFeeds"] += 1
                 print(Fore.GREEN + "You feed your companion! It looks happier.")
             else:
                 print(Fore.RED + "Not enough XP.")
@@ -1906,17 +1904,17 @@ def minigame_selection():
     print(Fore.BLACK + "|")
     print(Fore.YELLOW + "Fishing        → Relax and earn items or XP.")
     if persistentStats["floor"] < 10 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "Tamagatchi     → Feed a friend for passive stat boosts.")
+        print(Fore.RED + "Tamagotchi     → Feed a friend for passive stat boosts.")
     else:
-        print(Fore.YELLOW + "Tamagatchi     → Feed a friend for passive stat boosts.")
+        print(Fore.YELLOW + "Tamagotchi     → Feed a friend for passive stat boosts.")
     if persistentStats["floor"] < 15 and persistentStats["reborns_used"] <= 0:
         print(Fore.RED + "Gambling       → Risk coins/items to multiply rewards.")
     else:
         print(Fore.YELLOW + "Gambling       → Risk coins/items to multiply rewards.")
     if persistentStats["floor"] < 30 and persistentStats["reborns_used"] <= 0:
-        print(Fore.RED + "Gatcha         → Randomly draw characters to earn xp passivly")
+        print(Fore.RED + "Gacha         → Randomly draw characters to earn xp passivly")
     else:
-        print(Fore.YELLOW + "Gatcha         → Randomly draw characters to earn xp passivly")
+        print(Fore.YELLOW + "Gacha         → Randomly draw characters to earn xp passivly")
     if persistentStats["monsters_killed"] < 550 or persistentStats["floor"] < 50:
         print(Fore.RED + "Wishing Well   → Spend coins for powerful blessings—or curses.")
     else:
@@ -1937,16 +1935,16 @@ def minigame_selection():
     choice = input(Fore.GREEN + "> ").strip().lower()
     update_last_action()
 
-    if choice in ["tamagatchi", "tama"]:
-        tamagatchi()
+    if choice in ["tamagotchi", "tama"]:
+        tamagotchi()
     elif choice in ["gambling", "gamble", "gamb"]:
         gambling()
     elif choice in ["fishing", "fish"]:
         fishing()
     elif choice in ["wishing well", "wish", "wishingwell", "wsh", "well"]:
         wishing_well()
-    elif choice in ["gatcha", "gat", "draw"]:
-        gatcha_game()
+    elif choice in ["gacha", "gach", "draw","ga"]:
+        gacha_game()
     elif choice in ["reborn", "re", "born"]:
         reborn()
     elif choice in ["portal", "travel", "port", "trav", "tele", "teleport"]:
@@ -1961,7 +1959,7 @@ def minigame_selection():
 
 # Saving and Loading Functions
 def save_to_file():  # Saves the file
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
+    global globalSavePath, player, persistentStats, tamagotchi_data, well_data, gacha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
     persistentStats["currentVersion"] = "2.4.3"
@@ -1969,7 +1967,7 @@ def save_to_file():  # Saves the file
     data = {
         "player": player,
         "persistentStats": persistentStats,
-        "tamagatchi_data": tamagatchi_data,
+        "tamagotchi_data": tamagotchi_data,
         "well_data": well_data,
         "shop_data": shop_data,
         "fishing_data": fishing_data,
@@ -1979,7 +1977,7 @@ def save_to_file():  # Saves the file
         "monsterId": monsterId,
         "currentMonsterHealth": currentMonsterHealth,
         "monsterAttack": monsterAttack,
-        "gatcha_data": gatcha_data,
+        "gacha_data": gacha_data,
     }
 
     try:
@@ -2019,7 +2017,7 @@ def list_saved_files():  # lists saved files
 
 
 def load_from_file(filename):  # Load data from files
-    global globalSavePath, player, persistentStats, tamagatchi_data, well_data, gatcha_data, monsterAttack
+    global globalSavePath, player, persistentStats, tamagotchi_data, well_data, gacha_data, monsterAttack
     global endlessMode, endlessKills, monsterId, currentMonsterFight, currentMonsterHealth, currentMonsterDefense
 
     path = os.path.join(saveDirectory, filename)
@@ -2031,10 +2029,10 @@ def load_from_file(filename):  # Load data from files
 
         player.update(data.get("player", {}))
         persistentStats.update(data.get("persistentStats", {}))
-        tamagatchi_data.update(data.get("tamagatchi_data", {}))
+        tamagotchi_data.update(data.get("tamagotchi_data", {}))
         shop_data.update(data.get("shop_data", {}))
         well_data.update(data.get("well_data", {}))
-        gatcha_data.update(data.get("gatcha_data", {}))
+        gacha_data.update(data.get("gacha_data", {}))
         fishing_data.update(data.get("fishing_data", {}))
         gambling_data.update(data.get("gambling_data", {}))
         endlessMode = data.get("endlessMode", False)
@@ -2045,12 +2043,12 @@ def load_from_file(filename):  # Load data from files
         currentMonsterDefense = monster.defense[monsterId]
         monsterAttack = data.get("monsterAttack", 0)
 
-        # Stats the tamagatchi thread
-        if tamagatchi_data.get("active"):
-            start_tamagatchi_thread()
+        # Stats the tamagotchi thread
+        if tamagotchi_data.get("active"):
+            start_tamagotchi_thread()
 
-        if gatcha_data.get("active"):
-            start_gatcha_thread()
+        if gacha_data.get("active"):
+            start_gacha_thread()
 
         # Starts the idle checker
         idle_thread = threading.Thread(target=idle_checker_thread, daemon=True)
@@ -2117,7 +2115,7 @@ def try_drop_item():
             gambling_data["itemsSold"] += 1
             gambling_data["coinsFromSelling"] += value
             print(Fore.MAGENTA + f"You found {dropped_item['name']} again.")
-            print(Fore.YELLOW + f"It was converted into {value:,} coins.")
+            print(Fore.CYAN + "It was converted into " + Fore.YELLOW + f"{value:,}" + Fore.CYAN + " coins.")
         else:
             # New item → add to inventory
             player["inventory"].append(dropped_item)
@@ -2143,15 +2141,14 @@ def try_relic_drop():  # Tries to drop a relic after killing a boss on the 100th
     else:
         new_relic = random.choice(available_relics)
         print(rainbow_text("A strange power surges...") + Fore.YELLOW + " You obtained a relic!")
-        print(
-            Fore.MAGENTA + "→ " + Fore.CYAN + f"{new_relic['name']}" + Fore.WHITE + " — " + Fore.YELLOW + f"{new_relic['desc']}")
+        print(Fore.MAGENTA + f"-> {Fore.CYAN}{new_relic['name']}{Fore.WHITE} - {Fore.YELLOW}{new_relic['desc']}")
         player["relics"].append(new_relic)
         apply_boosts()
         time.sleep(2.5)
 
 
 def apply_boosts():
-    # Recalculate and apply all stat boosts from level-ups, items, tamagatchi, and blessings.
+    # Recalculate and apply all stat boosts from level-ups, items, tamagotchi, and blessings.
     # This function resets stats to base values and then adds all applicable bonuses.
 
     # Base stats
@@ -2185,9 +2182,9 @@ def apply_boosts():
     player["dodge"] = min(player["dodge"], shop_data["dodgeBoostCap"])
     player["escape"] = min(player["escape"], shop_data["escapeBoostCap"])
 
-    # Apply tamagatchi boosts
-    if tamagatchi_data.get("active"):
-        boosts = tamagatchi_data["boosts"]
+    # Apply tamagotchi boosts
+    if tamagotchi_data.get("active"):
+        boosts = tamagotchi_data["boosts"]
         player["maxHealth"] += boosts.get("health", 0)
         player["damage"] += boosts.get("damage", 0)
         player["defense"] += boosts.get("defense", 0)
@@ -2312,13 +2309,13 @@ def level_up():
                     Fore.RED + f" Weighted Dice: {shop_data['weightedDiceCost']:,}  -> Change gambling luck in your favor")
         if player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data["dogHouseFloor"]:
             if player["xp"] >= shop_data["dogHouseCost"]:
-                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagatchi happier")
+                print(Fore.GREEN + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagotchi happier")
             else:
-                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagatchi happier")
+                print(Fore.RED + f" Dog(?) House: {shop_data['dogHouseCost']:,}  -> Make your Tamagotchi happier")
         if player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data["mirrorPendantFloor"]:
             if player["xp"] >= shop_data["mirrorPendantCost"]:
                 print(
-                    Fore.GREEN + f" Mirror Pendant: {shop_data['mirrorPendantCost']:,}  -> Mosters can't seem to hit you")
+                    Fore.GREEN + f" Mirror Pendant: {shop_data['mirrorPendantCost']:,}  -> Monsters can't seem to hit you")
             else:
                 print(Fore.RED + f" Mirror Pendant: {shop_data['mirrorPendantCost']:,}  -> Monsters can't seem to hit you")
         if player["escape_key_purchased"] == False and persistentStats["floor"] >= shop_data["escapeKeyFloor"]:
@@ -2358,38 +2355,38 @@ def level_up():
             else:
                 print(Fore.RED + f" Shield Disruptor: {shop_data['shieldDisruptorCost']:,}  -> Ignore some shielding")
 
-        if player["berzerkerLevel"] == 0:  # and persistentStats["monsters_killed"] >= shop_data["berzerker1Kills"]
-            if player["xp"] >= shop_data["berzerker1Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berzerker1Kills"]:
+        if player["berserkerLevel"] == 0:  # and persistentStats["monsters_killed"] >= shop_data["berserker1Kills"]
+            if player["xp"] >= shop_data["berserker1Cost"] and persistentStats["monsters_killed"] >= shop_data[
+                "berserker1Kills"]:
                 print(
-                    Fore.GREEN + f" Berzerker v1: {shop_data['berzerker1Cost']:,}  -> Unlocked after killing {shop_data["berzerker1Kills"]:,} monsters, doubles your damage")
+                    Fore.GREEN + f" Berzerker v1: {shop_data['berserker1Cost']:,}  -> Unlocked after killing {shop_data["berserker1Kills"]:,} monsters, doubles your damage")
             else:
                 print(
-                    Fore.RED + f" Berzerker v1: {shop_data['berzerker1Cost']:,}  -> Unlocked after killing {shop_data["berzerker1Kills"]:,} monsters, doubles your damage")
-        elif player["berzerkerLevel"] == 1:  # and persistentStats["monsters_killed"] >= shop_data["berzerker2Kills"]
-            if player["xp"] >= shop_data["berzerker2Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berzerker2Kills"]:
+                    Fore.RED + f" Berzerker v1: {shop_data['berserker1Cost']:,}  -> Unlocked after killing {shop_data["berserker1Kills"]:,} monsters, doubles your damage")
+        elif player["berserkerLevel"] == 1:  # and persistentStats["monsters_killed"] >= shop_data["berserker2Kills"]
+            if player["xp"] >= shop_data["berserker2Cost"] and persistentStats["monsters_killed"] >= shop_data[
+                "berserker2Kills"]:
                 print(
-                    Fore.GREEN + f" Berzerker v2: {shop_data['berzerker2Cost']:,}  -> Unlocked after killing {shop_data["berzerker2Kills"]:,} monsters, doubles your damage")
+                    Fore.GREEN + f" Berzerker v2: {shop_data['berserker2Cost']:,}  -> Unlocked after killing {shop_data["berserker2Kills"]:,} monsters, doubles your damage")
             else:
                 print(
-                    Fore.RED + f" Berzerker v2: {shop_data['berzerker2Cost']:,}  -> Unlocked after killing {shop_data["berzerker2Kills"]:,} monsters, doubles your damage")
-        elif player["berzerkerLevel"] == 2:  # and persistentStats["monsters_killed"] >= shop_data["berzerker3Kills"]
-            if player["xp"] >= shop_data["berzerker3Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berzerker3Kills"]:
+                    Fore.RED + f" Berzerker v2: {shop_data['berserker2Cost']:,}  -> Unlocked after killing {shop_data["berserker2Kills"]:,} monsters, doubles your damage")
+        elif player["berserkerLevel"] == 2:  # and persistentStats["monsters_killed"] >= shop_data["berserker3Kills"]
+            if player["xp"] >= shop_data["berserker3Cost"] and persistentStats["monsters_killed"] >= shop_data[
+                "berserker3Kills"]:
                 print(
-                    Fore.GREEN + f" Berzerker v3: {shop_data['berzerker3Cost']:,}  -> Unlocked after killing {shop_data["berzerker3Kills"]:,} monsters, doubles your damage")
+                    Fore.GREEN + f" Berzerker v3: {shop_data['berserker3Cost']:,}  -> Unlocked after killing {shop_data["berserker3Kills"]:,} monsters, doubles your damage")
             else:
                 print(
-                    Fore.RED + f" Berzerker v3: {shop_data['berzerker3Cost']:,}  -> Unlocked after killing {shop_data["berzerker3Kills"]:,} monsters, doubles your damage")
-        elif player["berzerkerLevel"] == 3:  # and persistentStats["monsters_killed"] >= shop_data["berzerker4Kills"]
-            if player["xp"] >= shop_data["berzerker4Cost"] and persistentStats["monsters_killed"] >= shop_data[
-                "berzerker4Kills"]:
+                    Fore.RED + f" Berzerker v3: {shop_data['berserker3Cost']:,}  -> Unlocked after killing {shop_data["berserker3Kills"]:,} monsters, doubles your damage")
+        elif player["berserkerLevel"] == 3:  # and persistentStats["monsters_killed"] >= shop_data["berserker4Kills"]
+            if player["xp"] >= shop_data["berserker4Cost"] and persistentStats["monsters_killed"] >= shop_data[
+                "berserker4Kills"]:
                 print(
-                    Fore.GREEN + f" Berzerker v4: {shop_data['berzerker4Cost']:,}  -> Unlocked after killing {shop_data["berzerker4Kills"]:,} monsters, doubles your damage")
+                    Fore.GREEN + f" Berzerker v4: {shop_data['berserker4Cost']:,}  -> Unlocked after killing {shop_data["berserker4Kills"]:,} monsters, doubles your damage")
             else:
                 print(
-                    Fore.RED + f" Berzerker v4: {shop_data['berzerker4Cost']:,}  -> Unlocked after killing {shop_data["berzerker4Kills"]:,} monsters, doubles your damage")
+                    Fore.RED + f" Berzerker v4: {shop_data['berserker4Cost']:,}  -> Unlocked after killing {shop_data["berserker4Kills"]:,} monsters, doubles your damage")
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Options:", player["buyList"])
         print(Fore.BLUE + "(Type 'exit' to return to combat)")
@@ -2417,7 +2414,7 @@ def level_up():
         elif player["dog_house_purchased"] == False and persistentStats["floor"] >= shop_data[
             "dogHouseFloor"] and choice in ["dog", "doghouse", "house"]:
             if player["xp"] >= shop_data["dogHouseCost"]:
-                print(Fore.GREEN + f"Dog(?) House Purchased! Tamagatchi has a higher max bond!")
+                print(Fore.GREEN + f"Dog(?) House Purchased! Tamagotchi has a higher max bond!")
                 player["xp"] -= shop_data["dogHouseCost"]
                 player["dog_house_purchased"] = True
                 time.sleep(1)
@@ -2435,7 +2432,7 @@ def level_up():
         elif player["mirror_pendant_purchased"] == False and persistentStats["floor"] >= shop_data[
             "mirrorPendantFloor"] and choice in ["pendant", "mirrorpendant", "pend"]:
             if player["xp"] >= shop_data["mirrorPendantCost"]:
-                print(Fore.GREEN + f"Mirror Pendant Purchased! The fist attack from any monster will deal 0 damage!")
+                print(Fore.GREEN + f"Mirror Pendant Purchased! The first attack from any monster will deal 0 damage!")
                 player["xp"] -= shop_data["mirrorPendantCost"]
                 player["mirror_pendant_purchased"] = True
                 time.sleep(1)
@@ -2497,39 +2494,39 @@ def level_up():
             else:
                 print(Fore.RED + f"Not Enough Xp!")
 
-        elif player["berzerkerLevel"] == 0 and persistentStats["monsters_killed"] >= shop_data[
-            "berzerker1Kills"] and choice in ["berzerker", "berz"]:
-            if player["xp"] >= shop_data["berzerker1Cost"]:
-                print(Fore.GREEN + f"Bezerker v1 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berzerker1Cost"]
-                player["berzerkerLevel"] += 1
+        elif player["berserkerLevel"] == 0 and persistentStats["monsters_killed"] >= shop_data[
+            "berserker1Kills"] and choice in ["berserker", "berz","ber","bers"]:
+            if player["xp"] >= shop_data["berserker1Cost"]:
+                print(Fore.GREEN + f"Berserker v1 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berserker1Cost"]
+                player["berserkerLevel"] += 1
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["berzerkerLevel"] == 1 and persistentStats["monsters_killed"] >= shop_data[
-            "berzerker2Kills"] and choice in ["berzerker", "berz"]:
-            if player["xp"] >= shop_data["berzerker2Cost"]:
-                print(Fore.GREEN + f"Bezerker v2 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berzerker2Cost"]
-                player["berzerkerLevel"] += 1
+        elif player["berserkerLevel"] == 1 and persistentStats["monsters_killed"] >= shop_data[
+            "berserker2Kills"] and choice in ["berserker", "berz","ber","bers"]:
+            if player["xp"] >= shop_data["berserker2Cost"]:
+                print(Fore.GREEN + f"Berserker v2 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berserker2Cost"]
+                player["berserkerLevel"] += 1
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["berzerkerLevel"] == 2 and persistentStats["monsters_killed"] >= shop_data[
-            "berzerker3Kills"] and choice in ["berzerker", "berz"]:
-            if player["xp"] >= shop_data["berzerker3Cost"]:
-                print(Fore.GREEN + f"Bezerker v3 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berzerker3Cost"]
-                player["berzerkerLevel"] += 1
+        elif player["berserkerLevel"] == 2 and persistentStats["monsters_killed"] >= shop_data[
+            "berserker3Kills"] and choice in ["berserker", "berz","ber","bers"]:
+            if player["xp"] >= shop_data["berserker3Cost"]:
+                print(Fore.GREEN + f"Berserker v3 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berserker3Cost"]
+                player["berserkerLevel"] += 1
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
-        elif player["berzerkerLevel"] == 4 and persistentStats["monsters_killed"] >= shop_data[
-            "berzerker4Kills"] and choice in ["berzerker", "berz"]:
-            if player["xp"] >= shop_data["berzerker4Cost"]:
-                print(Fore.GREEN + f"Bezerker v4 purchased! Your damage is permanently doubled!")
-                player["xp"] -= shop_data["berzerker1Cost"]
-                player["berzerkerLevel"] += 1
+        elif player["berserkerLevel"] == 4 and persistentStats["monsters_killed"] >= shop_data[
+            "berserker4Kills"] and choice in ["berserker", "berz","ber","bers"]:
+            if player["xp"] >= shop_data["berserker4Cost"]:
+                print(Fore.GREEN + f"Berserker v4 purchased! Your damage is permanently doubled!")
+                player["xp"] -= shop_data["berserker1Cost"]
+                player["berserkerLevel"] += 1
                 time.sleep(1)
             else:
                 print(Fore.RED + f"Not Enough Xp!")
@@ -2680,15 +2677,15 @@ def monster_death_check():
         max_bond = 20 * (persistentStats["reborns_used"] + 1)
         if player["dog_house_purchased"] == True:
             max_bond = (max_bond * 2)
-        if tamagatchi_data.get("active") and tamagatchi_data["hunger"] < max_bond:
+        if tamagotchi_data.get("active") and tamagotchi_data["hunger"] < max_bond:
             if random.random() < 0.2:
                 max_bond = 20 * (persistentStats["reborns_used"] + 1)
-                if tamagatchi_data["bond"] < max_bond:
-                    tamagatchi_data["bond"] += 1
+                if tamagotchi_data["bond"] < max_bond:
+                    tamagotchi_data["bond"] += 1
         print(Fore.GREEN + "You defeated the monster!")
 
         if persistentStats["floor"] >= 30 or persistentStats["reborns_used"] >= 1:
-            try_gatcha_drop(1)  # Tries to drop a gatcha pass/ticket
+            try_gacha_drop(1)  # Tries to drop a gacha pass/ticket
 
         persistentStats["monsters_killed"] += 1
 
@@ -2712,7 +2709,7 @@ def monster_death_check():
             greedCoins = round(
                 random.uniform(1, 2) * 100 * (persistentStats["floor"] / 5) * (persistentStats["reborns_used"] + 1))
             player["coins"] += greedCoins
-            print(Fore.YELLOW + f"Your greed manifestes {greedCoins:,} coins!")
+            print(Fore.CYAN + "Your greed manifests " + Fore.YELLOW + f"{greedCoins:,}" + Fore.CYAN + " coins!")
 
         if persistentStats.get("boss_fight_ready", False):
             persistentStats["floor"] += 1
@@ -2723,7 +2720,7 @@ def monster_death_check():
             persistentStats["boss_fight_ready"] = False
             persistentStats["loop_times"] = 0
             if persistentStats["floor"] >= 30 or persistentStats["reborns_used"] >= 1:
-                try_gatcha_drop(0)
+                try_gacha_drop(0)
             print(Fore.GREEN + f"You conquered the boss! Now entering floor {persistentStats['floor']:,}.")
 
             # Save a backup before progressing to next floor
@@ -2774,7 +2771,6 @@ def monster_turn():
         time.sleep(0.8)
     # The monsters turn
     else:
-        print(Fore.YELLOW + f"{currentMonsterFight} attacks!")
         monsterAttack += 1
         if endlessMode:
             scale = 2 ** endlessKills
@@ -2806,13 +2802,13 @@ def monster_turn():
                 dmg = 1
 
         player["health"] -= dmg
-        print(Fore.RED + f"{currentMonsterFight:,} deals {dmg:,} damage!")
+        print(Fore.RED + f"{currentMonsterFight} deals " + Fore.YELLOW + f"{dmg:,}" + Fore.RED + " damage!")
         if player["soul_mirror_purchased"] == True:  # Damage reflection
             dmgReflect = round(dmg * .25, 1)
             currentMonsterHealth -= dmgReflect
             if currentMonsterHealth <= 1:
                 currentMonsterHealth = 1
-            print(Fore.YELLOW + f"Your soul mirror reflects {dmgReflect:,} damage back onto the {currentMonsterFight:,}")
+            print(Fore.YELLOW + f"Your Soul Mirror reflects {dmgReflect:,} damage back onto the {currentMonsterFight}.")
         time.sleep(0.8)
 
 
@@ -2852,8 +2848,8 @@ def combat():
 
             if choice in ["attack", "atk", ""]:
                 update_last_action()
-                multiplier = 2 ** player["berzerkerLevel"] if player[
-                                                                  "berzerkerLevel"] > 0 else 1  # Apply bezerker levels
+                multiplier = 2 ** player["berserkerLevel"] if player[
+                                                                  "berserkerLevel"] > 0 else 1  # Apply Berserker levels
                 if player["shield_disruptor_purchased"] == True:
                     pierceAmt = currentMonsterDefense * 0.75
                     monsterDefense = currentMonsterDefense - pierceAmt
@@ -2861,7 +2857,7 @@ def combat():
                     monsterDefense = currentMonsterDefense
                 damage = max(1, round(player["damage"] * random.uniform(0.75, 1.25) - monsterDefense, 2)) * multiplier
                 currentMonsterHealth -= damage
-                print(Fore.YELLOW + f"You dealt {damage:,} to {currentMonsterFight}.")
+                print(Fore.YELLOW + f"You dealt {Fore.RED}{damage:,}{Fore.YELLOW} to {currentMonsterFight}.")
                 # Check if damage is less than 10% of the monster's current HP
                 ten_percent = monster.maxHealth[monsterId] * 0.10
                 if damage < ten_percent:
