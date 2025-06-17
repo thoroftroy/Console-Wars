@@ -4,21 +4,6 @@
 
 ---
 
-## Gameplay Features
-
-- Battle through 40+ unique and scaling monster types across endless floors
-- Fight stronger monsters and bosses as you progress through the infinite tower
-- Earn XP and spend it to permanently upgrade **Health**, **Damage**, **Defense**, **Dodge Chance**, **Retreat Chance**, and **Item Drop Rate**
-- Play minigames like:
-  - **Fishing**: Timed reaction-based item/XP minigame with anti-spam logic
-  - **Gambling**: Risk coins for greater rewards, sell items, or convert coins to XP
-  - **Gatcha**: Unlock passive XP-earning characters who fight in the background
-  - **Wishing Well**: Spend coins for powerful blessings or dangerous curses
-  - **Reborn**: Reset progress after Floor 25 for massive rewards and improved scaling
-- Dynamic scaling system for **XP gain**, **coin value**, and **combat difficulty**
-- Fully integrated **save/load system** with automatic saving and a detailed dead-player stats screen
-- **Permadeath**: If you die, your run ends — you can view your stats but must start a new game
-
 ---
 
 ## Save System
@@ -131,23 +116,6 @@ For example, typing attack will attack a monster. You can also use abbreviations
 Pressing Enter without typing anything will trigger the default or primary action—usually something like confirming a choice or attacking. This lets you quickly repeat common actions without retyping them every time.
 
 The goal of the game is to kill as many demon lords as possible, they will be unlocked once you make it far enough into the game. 
-
-Combat
-
-- Face various monsters as you climb through levels, battling them with your stats and inventory items.
-- Use your health, damage, defense, and dodge to survive and defeat enemies.
-- Items found during battles can be sold or used for their stat boosts.
-
-Minigames
-   
-- Tamagatchi: Adopt a pet and feed it to increase stats.
-- Fishing: Catch fish or rare items for XP and bonuses.
-- Gambling: Place bets with your coins for the chance of big rewards.
-- Gatcha: Collect chracters for passive xp gain.
-- Wishing Well: Spend coins to gain blessings or curses. The well offers a random boost or drawback to your character's stats.
-
-Reborn
-- When you reach a certain level, you can choose to reset your progress for better rewards.
 
 ## Note on Releases vs. Source Code
 
