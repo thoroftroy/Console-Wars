@@ -2,10 +2,6 @@
 
 **Console-Wars** is a text-based terminal RPG written in Python. Battle increasingly powerful enemies, manage your inventory, evolve your character, and face off against the **Demon Lord** in endless mode. This is a solo-dev project packed with **scaling stats**, **permadeath**, and **progression systems** that reward tactical decisions.
 
----
-
----
-
 ## Save System
 
 - All data is saved in `.json` files under the `/saves` folder
