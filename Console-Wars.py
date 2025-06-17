@@ -817,7 +817,7 @@ def show_stats_screen():
             if len(owned) % 3 != 0:
                 print()
 
-    print(Fore.BLUE + "\n--- Inventory ---")
+    print(Fore.MAGENTA + "\n--- Inventory ---" + Fore.YELLOW)
     inventory = player_data.get("inventory", [])
     if inventory:
         for i, item in enumerate(inventory, 1):
@@ -829,7 +829,7 @@ def show_stats_screen():
     else:
         print("(Empty)")
 
-    print(Fore.BLUE + "\n--- Relics ---")
+    print(Fore.MAGENTA + "\n--- Relics ---" + Fore.YELLOW)
     relic_list = player.get("relics", [])
     if relic_list:
         for i, relic in enumerate(relic_list, 1):
@@ -2013,7 +2013,7 @@ def save_to_file():  # Saves the file
     global globalSavePath, player, persistentStats, tamagotchi_data, well_data, gacha_data, monsterAttack
     player["name"] = os.path.splitext(currentSaveName)[0]
 
-    persistentStats["currentVersion"] = "2.4.3"
+    persistentStats["currentVersion"] = "2.5"
 
     data = {
         "player": player,
@@ -2132,7 +2132,7 @@ def load_from_file(filename):  # Load data from files
             print(Fore.RED + "Expect to have MAJOR compatability issues")
             print(Fore.RED + "These issues can be totally GAMEBREAKING")
             input(Fore.BLUE + "Press ENTER to continue...")
-        elif persistentStats["currentVersion"] != "2.4.3":
+        elif persistentStats["currentVersion"] != "2.5":
             print(Fore.RED + "WARNING")
             print(Fore.RED + "This save file is not from the current version of the game")
             print(Fore.RED + "This save is from " + Fore.MAGENTA + persistentStats["currentVersion"])
@@ -3016,7 +3016,7 @@ def startup():
     global currentSaveName, savedGames, globalSavePath, endlessMode, endlessKills
 
     clear_screen()
-    print(Fore.YELLOW + "Console Wars v2.4.3 loaded!")
+    print(Fore.YELLOW + "Console Wars v2.5 loaded!")
     print(Fore.BLUE + "What is your name? [Type existing name to load or new name to create a save]")
     list_saved_files()
 
