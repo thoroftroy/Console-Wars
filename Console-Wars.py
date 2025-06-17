@@ -1425,15 +1425,6 @@ def apply_boost(
         elif key in player:
             player[key] += value
 
-    for relic in player["relics"]:  # Relics
-        boosts = relic.get("boosts", {})
-        if "mult_health" in boosts:
-            player["maxHealth"] *= boosts["mult_health"]
-        if "mult_damage" in boosts:
-            player["damage"] *= boosts["mult_damage"]
-        if "mult_defense" in boosts:
-            player["defense"] *= boosts["mult_defense"]
-
 
 # Section for managing the fishing minigame
 def fishing():
@@ -2195,6 +2186,8 @@ def apply_boosts():
     # Recalculate and apply all stat boosts from level-ups, items, tamagotchi, and blessings.
     # This function resets stats to base values and then adds all applicable bonuses.
 
+    was_full_health = abs(player["health"] - player["maxHealth"]) < 1e-2  # Treat nearly full as full
+
     # Base stats
     base_health = 25.0
     base_damage = 3.5
@@ -2237,6 +2230,36 @@ def apply_boosts():
     if player["health"] > player["maxHealth"]:
         player["health"] = player["maxHealth"]
 
+    # Apply relic multipliers
+    total_mults = {
+        "mult_health": 1.0,
+        "mult_damage": 1.0,
+        "mult_defense": 1.0,
+        "mult_dodge": 1.0,
+        "mult_escape": 1.0,
+        "mult_drop": 1.0,
+        "mult_xp": 1.0,
+        "mult_coin_gain": 1.0,
+        "mult_shop_cost": 1.0,
+        "mult_reflect": 1.0
+    }
+
+    for relic in player.get("relics", []):
+        boosts = relic.get("boosts", {})
+        for key, mult in boosts.items():
+            if key in total_mults:
+                total_mults[key] *= mult
+
+    # Now apply to actual player stats
+    player["maxHealth"] *= total_mults["mult_health"]
+    player["damage"] *= total_mults["mult_damage"]
+    player["defense"] *= total_mults["mult_defense"]
+    player["dodge"] *= total_mults["mult_dodge"]
+    player["escape"] *= total_mults["mult_escape"]
+    player["drop"] *= total_mults["mult_drop"]
+
+    if was_full_health:
+        player["health"] = player["maxHealth"]
 
 def reset_monster():
     # Resets monster based on current floor + room count, or spawns boss
