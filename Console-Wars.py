@@ -1060,8 +1060,8 @@ def show_combat_stats():  # this is the main function to show all the stats duri
     if tamagotchi_data["active"]:
         boosts = tamagotchi_data['boosts']
         print(
-            Fore.CYAN + f"Tamagotchi → Bond: {tamagotchi_data['bond']:,} | Hunger: {tamagotchi_data['hunger']:,} | "
-                        f"Boosts → Health: {boosts.get('health', 0):,}, Damage: {boosts.get('damage', 0):,}, Defense: {boosts.get('defense', 0):,}")
+            Fore.CYAN + f"Tamagotchi: Bond: {tamagotchi_data['bond']:,} | Hunger: {tamagotchi_data['hunger']:,} | "
+                        f"Boosts: Health: {boosts.get('health', 0):,}, Damage: {boosts.get('damage', 0):,}, Defense: {boosts.get('defense', 0):,}")
         print(Fore.BLACK + "|")
     print(Fore.BLACK + "|")
     print(Fore.BLUE + "Available Actions:")
@@ -1233,7 +1233,7 @@ def gacha_game():  # When you type gacha into the minigame screen this is shown
         print(
             Fore.CYAN + f"You have {Fore.YELLOW}{gacha_data["gacha_pulls_available"]:,}{Fore.CYAN} pulls")
         print(Fore.BLACK + "|")
-        print(Fore.YELLOW + "Would you like to do a draw? [ENTER -> yes  |  no -> exit]")
+        print(Fore.YELLOW + "Would you like to do a draw? [ENTER → yes  |  no → exit]")
         choice = input()
         update_last_action()
         if choice in ["yes", "y", ""]:
@@ -1375,7 +1375,7 @@ def wishing_well():
             input(Fore.BLUE + "Press Enter to return to combat.")
             return
 
-        print(Fore.MAGENTA + "Make a wish? (ENTER -> Yes   |  Exit -> No)")
+        print(Fore.MAGENTA + "Make a wish? (ENTER → Yes   |  Exit → No)")
 
         choice = input(Fore.GREEN + "> ").strip().lower()
         update_last_action()
@@ -2204,7 +2204,7 @@ def try_relic_drop():  # Tries to drop a relic after killing a boss on the 100th
     else:
         new_relic = random.choice(available_relics)
         print(rainbow_text("A strange power surges...") + Fore.YELLOW + " You obtained a relic!")
-        print(Fore.MAGENTA + f"-> {Fore.CYAN}{new_relic['name']}{Fore.WHITE} - {Fore.YELLOW}{new_relic['desc']}")
+        print(Fore.MAGENTA + f"→ {Fore.CYAN}{new_relic['name']}{Fore.WHITE} - {Fore.YELLOW}{new_relic['desc']}")
         player["relics"].append(new_relic)
         apply_boosts()
         time.sleep(2.5)
@@ -2413,7 +2413,7 @@ def level_up():
             if not player[purchase_flag] and persistentStats["floor"] >= shop_data[floor_key]:
                 cost = shop_data[cost_key]
                 color = Fore.GREEN if player["xp"] >= cost else Fore.RED
-                print(color + f" {name}: {cost:,}  -> {desc}")
+                print(color + f" {name}: {cost:,}  → {desc}")
 
         # --- Berserker Upgrade Tiers ---
         for level in range(4):
@@ -2426,7 +2426,7 @@ def level_up():
                 meets_xp = player["xp"] >= cost
                 color = Fore.GREEN if meets_kills and meets_xp else Fore.RED
                 print(
-                    color + f" Berzerker v{level + 1}: {cost:,}  -> Unlocked after killing {kill_req:,} monsters, doubles your damage")
+                    color + f" Berzerker v{level + 1}: {cost:,}  → Unlocked after killing {kill_req:,} monsters, doubles your damage")
                 break
 
         print(Fore.BLACK + "|\n" + Fore.BLUE + "Upgrade Options:")
