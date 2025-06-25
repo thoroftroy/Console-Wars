@@ -670,25 +670,54 @@ manager = pygame_gui.UIManager(window_size)
 clock = pygame.time.Clock()
 is_running = True
 
-
 # Build the main UI
 button_width = 200
 button_height = 50
 margin = 10
 
-button_names = [
-    "Attack", "Retreat", "Level", "Inventory", "Relics", "Other", "Stats", "Exit"
-]
+# === Screen State Tracking ===
+current_screen = "main"
+screen_cache = {}
 
-buttons = {}
-for i, name in enumerate(button_names):
-    buttons[name] = pygame_gui.elements.UIButton(
-        relative_rect=pygame.Rect((30, 30 + i * (button_height + margin)), (button_width, button_height)),
-        text=name,
+# === UI Builders ===
+def build_main_menu():
+    manager.clear_and_reset()
+    button_names = [
+        "Attack", "Retreat", "Level", "Inventory",
+        "Relics", "Other", "Stats", "Exit"
+    ]
+    for i, name in enumerate(button_names):
+        pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((30, 30 + i * 60), (200, 50)),
+            text=name,
+            manager=manager
+        )
+
+def build_placeholder_screen(title):
+    manager.clear_and_reset()
+
+    pygame_gui.elements.UILabel(
+        relative_rect=pygame.Rect((300, 50), (400, 50)),
+        text=f"{title} Screen",
         manager=manager
     )
 
-# Main Loop
+    pygame_gui.elements.UITextBox(
+        relative_rect=pygame.Rect((300, 120), (400, 300)),
+        html_text=f"<b>{title}</b><br>This is a placeholder for the {title.lower()} functionality.",
+        manager=manager
+    )
+
+    pygame_gui.elements.UIButton(
+        relative_rect=pygame.Rect((30, 600), (200, 50)),
+        text="Back to Main",
+        manager=manager
+    )
+
+# === INITIAL UI ===
+build_main_menu()
+
+# === MAIN LOOP ===
 while is_running:
     time_delta = clock.tick(60) / 1000.0
 
@@ -696,22 +725,24 @@ while is_running:
         if event.type == pygame.QUIT:
             is_running = False
 
-        if event.type == pygame.USEREVENT:
-            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                button_id = event.ui_element.text
-                print(f"[DEBUG] {button_id} button clicked")
-                if button_id == "Attack":
-                    # Call your combat logic or function
-                    pass
-                if button_id == "Retreat":
-                    pass
-                elif button_id == "Exit":
-                    is_running = False
+        elif event.type == pygame.USEREVENT and event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+            button_text = event.ui_element.text
+
+            if button_text == "Back to Main":
+                current_screen = "main"
+                build_main_menu()
+
+            elif button_text == "Exit":
+                is_running = False
+
+            elif button_text in ["Attack", "Retreat", "Level", "Inventory", "Relics", "Other", "Stats"]:
+                current_screen = button_text
+                build_placeholder_screen(button_text)
 
         manager.process_events(event)
 
     manager.update(time_delta)
-    window_surface.fill((25, 25, 25))  # Background
+    window_surface.fill((25, 25, 25))  # dark background
     manager.draw_ui(window_surface)
-
     pygame.display.update()
+
